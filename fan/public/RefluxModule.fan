@@ -4,8 +4,9 @@ using afConcurrent
 using gfx
 using fwt
 
+@NoDoc
 @SubModule { modules=[FileExplorerModule#] }
-internal class RefluxModule {
+class RefluxModule {
 	
 	static Void defineServices(ServiceDefinitions defs) {
 		defs.add(Reflux#)
@@ -22,7 +23,7 @@ internal class RefluxModule {
 	}
 	
 	@Build
-	static Frame buildFrame(RegistryMeta meta) {
+	internal static Frame buildFrame(RegistryMeta meta) {
 		((LocalRef) meta["frameRef"]).val ?: throw Err("No frame in thread...?")
 	}
 
