@@ -2,7 +2,7 @@ using afIoc
 using gfx
 using fwt
 
-internal class FileResource : Resource {
+class FileResource : Resource {
 
 	@Inject private Registry	reg
 	@Inject private FileViews	fileViews

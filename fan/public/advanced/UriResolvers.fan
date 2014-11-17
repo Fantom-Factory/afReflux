@@ -1,11 +1,12 @@
 using afBeanUtils
 
+@NoDoc
 mixin UriResolvers {
 	abstract Resource resolve(Uri uri)
 }
 
 
-class UriResolversImpl : UriResolvers {
+internal class UriResolversImpl : UriResolvers {
 	private Str:UriResolver resolvers
 	
 	new make(Str:UriResolver resolvers) {

@@ -3,13 +3,13 @@ using gfx
 using fwt
 
 // TODO: convert FileExplorer to a service mixin
-internal class FileExplorer {
+class FileExplorer {
 	
 	@Inject private Registry	registry
 	@Inject private Reflux		reflux
 	@Inject	private Frame		frame
 
-	FileExplorerOptions options	
+	internal FileExplorerOptions options	
 	
 	private File? copiedFile
 	private File? cutFile
@@ -116,20 +116,3 @@ internal class FileExplorerOptions {
 	}
 }
 
-mixin FileExplorerEvents {
-
-	virtual Void onShowHiddenFiles(Bool show)	{ }
-
-	// add cut, copy, paste here...maybe
-	
-}
-
-//FIXME: make am injectale plastic version!
-class FileExplorerEventsImpl : FileExplorerEvents {
-	@Inject EventHub eventHub	
-	new make(|This|in) { in(this) }
-	
-	override Void onShowHiddenFiles(Bool show)	{
-		eventHub.fireEvent(FileExplorerEvents#onShowHiddenFiles, [show])
-	}
-}
