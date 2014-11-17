@@ -1,6 +1,6 @@
 
 @NoDoc
-internal class Panels {
+class Panels {
 	Panel[] panels
 	Type:Panel panelMap
 	

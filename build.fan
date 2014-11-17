@@ -4,14 +4,12 @@ using fanr
 class Build : BuildPod {
 
 	new make() {
-//		podName = "afCmdr"
 		podName = "afReflux"
 		summary = "Flux::Reloaded"
 		version = Version("0.0.1")
 
 		meta = [
 			"proj.name"		: "Cmdr",
-			"vcs.uri"		: "https://bitbucket.org/AlienFactory/afcmdr",
 			"repo.private"	: "true",
 
 			"afIoc.module"	: "afReflux::RefluxModule"
@@ -28,16 +26,11 @@ class Build : BuildPod {
 			"afBeanUtils  1.0", 
 			"afConcurrent 1.0", 
 			"afIoc        2.0.1+", 
-			"afIocConfig  1.0",
-			"afIocEnv     1.0",
-
-			"web     1.0",
-			"afBedSheet     1.4"
-
+			"afIocConfig  1.0"
 		]
 
-		srcDirs = [`fan/`, `fan/flux/`, `fan/flux/public/`, `fan/flux/public/services/`, `fan/flux/public/fwt/`, `fan/flux/internal/`, `fan/flux/internal/commands/`, `fan/flux/folders/`, `fan/flux/folders/commands/`, `fan/flux/errors/`, `fan/flux/advanced/`]
-		resDirs = [`res/icons-eclipse/`, `res/icons/` ,`res/icons-file/`]
+		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/folders/`, `fan/public/folders/commands/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`, `fan/flux/`]
+		resDirs = [`res/icons-eclipse/`, `res/icons-file/`]
 		
 //		javaDirs = [`java/`]
 	}
