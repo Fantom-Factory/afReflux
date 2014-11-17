@@ -2,7 +2,7 @@ using afIoc
 using gfx
 using fwt
 
-// x-directory
+@NoDoc
 class FoldersPanel : Panel, RefluxEvents {
 	
 	@Inject		private Reflux				reflux

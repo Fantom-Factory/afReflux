@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+@NoDoc
 class FolderView : View, RefluxEvents {
 	
 	@Inject private Registry		registry

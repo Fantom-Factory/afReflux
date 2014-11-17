@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+@NoDoc
 class FileExplorerModule {
 
 	static Void defineServices(ServiceDefinitions defs) {		

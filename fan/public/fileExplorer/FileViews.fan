@@ -1,5 +1,6 @@
 using afIoc
 
+@NoDoc
 class FileViews {
 	private MimeType:View views
 	

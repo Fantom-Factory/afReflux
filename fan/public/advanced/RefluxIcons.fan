@@ -27,6 +27,7 @@ abstract class RefluxIcons {
 	abstract Uri? iconUri(Str name)
 }
 
+@NoDoc
 class EclipseIcons : RefluxIcons {
 	const Str:Uri iconMap := [
 		"cmdExit"				: ``,

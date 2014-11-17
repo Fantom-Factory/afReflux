@@ -3,6 +3,7 @@ using gfx
 using fwt
 using concurrent
 
+@NoDoc
 class ImageView : View {
 
 	@Inject private RefluxIcons 	icons

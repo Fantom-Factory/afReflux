@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+@NoDoc
 class HtmlView : View {
 	@Inject private Reflux	 	reflux
 			private WebBrowser?	browser

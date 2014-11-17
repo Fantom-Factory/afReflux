@@ -17,6 +17,7 @@ mixin RefluxEvents {
 // private RefluxEvents fireRefluxEvent
 //
 //   fireRefluxEvent.onLoad(file)
+@NoDoc
 class RefluxEventsImpl : RefluxEvents {
 
 	EventHub eventHub
