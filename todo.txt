@@ -1,0 +1,28 @@
+
+Open in New Tab
+ - Have means to define when new tab happens
+ - How do we auto-create views + panels?
+ 
+CTabs w close
+
+HtmlView -> Fandoc vs Internet vs Files
+ - have a RefluxBroswerWidget
+ - different views for each resource?
+ 
+View fandoc files
+
+View fandoc from pods
+ 
+Fandoc Viewer
+ - Sidebar viewer
+ - search bar
+
+How to open extensions -> associate laucnch prog and icon
+ - parse icon files?
+ - assoc edit
+ 
+Can views manipulate the menu / toolbar?
+
+Refresh should also refresh roota
+
+http://www.fantomfactory.org/articles/web-server-in-7-lines has wrong code

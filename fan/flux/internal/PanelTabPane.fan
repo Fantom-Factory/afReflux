@@ -1,0 +1,140 @@
+using afIoc
+using gfx
+using fwt
+
+internal class PanelTabPane : ContentPane {
+	@Inject	Frame 			frame
+			TabPane			tabPane		:= TabPane() { it.onSelect.add |e| { this->onSelect(e) } }
+			PanelTabTuple[]	panelTabs	:= PanelTabTuple[,]	// 'cos I can't use non-const Panel as a key
+			Bool			alwaysShowTabs
+	
+	new make(Bool visible, Bool alwaysShowTabs, |This|in) {
+		in(this)
+		this.visible = visible
+		this.alwaysShowTabs = alwaysShowTabs
+	}
+
+	This addTab(Panel panel) {
+		if (panelTabs.find { it.panel === panel } != null)
+			return this	// already added
+
+		content := panel.content
+
+		if (panelTabs.isEmpty) {
+			super.content = content
+
+			panelTabs.add(PanelTabTuple() {
+				it.panel	= panel
+				it.content	= content
+			})
+			
+			this.visible = true
+		} else {
+
+			if (panelTabs.size == 1) {
+				super.content = tabPane
+				panelTabs.first?.addTab(tabPane)
+			}
+			
+			panelTabs.add(PanelTabTuple() {
+				it.panel	= panel
+				it.content	= content
+			}).last.addTab(tabPane)
+		}
+
+		this.parent.relayout
+		this.relayout
+
+		panel.isShowing = true
+		panel->onShow
+		panel.showHideCommand.update
+
+		return this
+	}
+
+	This removeTab(Panel panel) {
+		tuple := panelTabs.find { it.panel === panel } 
+		if (tuple == null)
+			return this
+
+		panel.isShowing = false
+		panel->onHide
+		panel.showHideCommand.update
+
+		panelTabs.removeSame(tuple)
+
+		if (panelTabs.isEmpty) {
+			super.content = null
+			this.visible = false
+			this.parent.relayout
+			return this
+		}
+
+		tuple.removeTab(tabPane)
+
+		if (panelTabs.size == 1) {
+			this.content = panelTabs.first.removeTab(tabPane).content
+			relayout
+		}
+
+		this.parent.relayout
+		return this
+	}
+	
+	** Pass null to just deactivate
+	This activate(Panel? panel) {
+		tuple := panelTabs.find { it.panel === panel }
+		
+		panelTabs.each {
+			if (it !== tuple && it.panel.isActive) {
+				it.panel.isActive = false
+				it.panel->onDeactivate
+			}
+		}
+
+		if (tuple != null) {
+			if (tuple.tab != null)
+				tabPane.selected = tuple.tab
+			if (tuple.panel.isActive == false) {
+				tuple.panel.isActive = true
+				tuple.panel->onActivate
+			}
+		}
+		
+		return this
+	}
+
+	Void onSelect(Event? event)	{
+		selected := tabPane.selected
+
+		if (selected != null) {
+			tuple := panelTabs.find { it.tab === selected } 
+			if (tuple == null) return
+			activate(tuple.panel)			
+		}
+	}
+}
+
+internal class PanelTabTuple {
+	Tab?	tab
+	Panel?	panel
+	Widget?	content
+	
+	This addTab(TabPane tabPane) {
+		tab	= Tab()
+		tab.add(content)
+		tab.text  = panel.name
+		tab.image = panel.icon
+		tabPane.add(tab)
+		panel._tab = tab
+		return this
+	}
+
+	This removeTab(TabPane tabPane) {
+		tab.remove(content)
+		tabPane.remove(tab)
+		tab = null
+		panel._tab = null
+		return this
+	}
+}

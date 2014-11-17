@@ -1,0 +1,46 @@
+package fan.afCmdr;
+
+import fan.afCmdr.*;
+import fan.sys.*;
+import fan.fwt.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Widget;
+
+public class CTabPanePeer extends WidgetPeer implements SelectionListener {
+
+	public static CTabPanePeer make(CTabPane self) throws Exception {
+		CTabPanePeer peer = new CTabPanePeer();
+		((fan.fwt.Widget) self).peer = peer;
+		peer.self = self;
+		return peer;
+	}
+
+	public Widget create(Widget parent) {
+		CTabFolder c = new CTabFolder((Composite) parent, SWT.TOP);
+		this.control = c;
+		c.addSelectionListener(this);
+		return c;
+	}
+
+	// Int selectedIndex := 0
+	public Long selectedIndex(TabPane self) { return selectedIndex.get(); }
+	public void selectedIndex(TabPane self, Long v) { selectedIndex.set(v); }
+	public final Prop.IntProp selectedIndex = new Prop.IntProp(this, 0, true) {
+		public int get(Widget w) { return ((CTabFolder) w).getSelectionIndex(); }
+		public void set(Widget w, int v) { ((CTabFolder) w).setSelection(v); }
+	};
+
+	public void widgetDefaultSelected(SelectionEvent e) {} // unused
+
+	public void widgetSelected(SelectionEvent e) {
+		CTabFolder control = (CTabFolder) this.control();
+		CTabPane self = (CTabPane) this.self;
+		fan.fwt.Event fe = event(EventId.select);
+		fe.index = Long.valueOf(control.getSelectionIndex());
+		fe.data  = self.tabs().get(fe.index);
+		self.onSelect().fire(fe);
+	}
+}
