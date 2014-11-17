@@ -49,6 +49,18 @@ internal class FileExplorer {
 		}
 		reflux.refresh
 	}
+	
+	static Void start() {
+		Reflux.start([,]) |Registry registry| {
+			// maybe move to an event?
+			panels := (Panels) registry.dependencyByType(Panels#)
+			panels[FoldersPanel#].show	
+			
+			// maybe move this into FoldersPanel, a fav or def folder
+			reflux := (Reflux) registry.dependencyByType(Reflux#)
+			reflux.load(File.osRoots.first.normalize.uri)
+		}
+	}
 }
 
 // TODO: save options as ext file - rename as Prefs?
