@@ -37,16 +37,6 @@ class RefluxModule {
 		config[RefluxConfigIds.appTitle]	= "Reflux"
 		config[RefluxConfigIds.appIcon]		= `fan://icons/x32/flux.png`		
 	}
-	
-	@Contribute { serviceType=RegistryStartup# }
-	internal static Void contributeRegistryStartup(Configuration config, Registry registry) {
-//		config["afReflux.showPanels"] = |->| {
-//			Desktop.callAsync |->| {
-//				panels := (Panels) registry.dependencyByType(Panels#)
-//				panels[FoldersPanel#].show				
-//			}
-//		}
-	}
 
 	@Contribute { serviceType=RegistryShutdown# }
 	internal static Void contributeRegistryShutdown(Configuration config, Registry registry) {

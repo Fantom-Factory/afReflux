@@ -1,4 +1,7 @@
 
+Folder command
+ - add to zip
+
 Open in New Tab
  - Have means to define when new tab happens
  - How do we auto-create views + panels?

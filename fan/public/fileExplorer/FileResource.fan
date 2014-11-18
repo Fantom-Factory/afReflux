@@ -70,12 +70,12 @@ class FileResource : Resource {
 			return
 		}
 		
-		if (uri.mimeType.mediaType == "image") {
+		if (uri.mimeType?.mediaType == "image") {
 			super.doAction
 			return
 		}
 
-		if (uri.mimeType.noParams == MimeType("text/html")) {
+		if (uri.mimeType?.noParams == MimeType("text/html")) {
 			super.doAction
 			return
 		}
