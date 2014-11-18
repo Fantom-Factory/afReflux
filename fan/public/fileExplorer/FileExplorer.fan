@@ -97,11 +97,12 @@ internal class FileExplorerOptions {
 		"^/C:/Documents and Settings/\$",
 		"^/C:/MSOCache/\$",
 		"^/C:/Program Files/\$",
-		"^/C:/Program Files (x86)/\$",
+		"^/C:/Program Files \\(x86\\)/\$",
 		"^/C:/ProgramData/\$",
 		"^/C:/Recovery/\$",
 		"^/C:/System Volume Information/\$",
 		"^/C:/Users/\$",
+		"^/C:/Windows/\$",
 		"^/C:/bootmgr\$",
 		"^/C:/BOOTSECT.BAK\$",
 	]
