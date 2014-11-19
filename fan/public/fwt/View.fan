@@ -5,7 +5,6 @@ abstract class View : Panel {
 	@Inject private  Reflux		_reflux
 			internal Resource?	_resource
 
-	
 	protected new make(|This| in) : super(in) { }
 	
 	override Void onActivate() {

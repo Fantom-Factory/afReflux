@@ -50,11 +50,6 @@ class ImageView : View {
 		
 		// FIXME: Why can't I replace content?
 		edgePane.relayout
-		edgePane.repaint
-	}
-	
-	override Void onHide() {
-		this.content = null
 	}
 	
 	Image? loadImage(File file) {

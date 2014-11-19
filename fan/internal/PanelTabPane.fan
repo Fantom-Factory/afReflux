@@ -131,8 +131,9 @@ internal class PanelTabTuple {
 	Widget?	content
 	
 	This addTab(CTabPane tabPane) {
-		echo("Adding ${panel.name}")
+		echo("Adding ${panel.name} -> $content")
 		tab	= CTab()
+		echo("Adding $content to $tab : $panel.name")
 		tab.add(content)
 		tab.text  = panel.name
 		tab.image = panel.icon
@@ -143,6 +144,8 @@ internal class PanelTabTuple {
 
 	This removeTab(CTabPane tabPane) {
 		echo("Removing ${tab.text}")
+		echo("Removing $content from $tab : $panel.name")
+		echo("  $tab.children")
 		tab.remove(content)
 		tabPane.remove(tab)
 		tab = null
