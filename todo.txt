@@ -7,6 +7,7 @@ Open in New Tab
  - How do we auto-create views + panels?
  
 CTabs w close
+  -> fantom forum
 
 HtmlView -> Fandoc vs Internet vs Files
  - have a RefluxBroswerWidget

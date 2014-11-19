@@ -20,9 +20,9 @@ public class CTabPanePeer extends WidgetPeer implements SelectionListener {
 	}
 
 	public Widget create(Widget parent) {
-		CTabFolder c = new CTabFolder((Composite) parent, SWT.CLOSE);
+		CTabFolder c = new CTabFolder((Composite) parent, SWT.CLOSE | SWT.FLAT);
 		c.setSimple(false);
-		c.setBorderVisible(false);
+		c.setBorderVisible(true);
 		// control is package protected - D'Oh! Use reflection...
 //		this.control = c;
 		try {

@@ -30,17 +30,5 @@ internal class RefluxBar : EdgePane {
 		}
 		
 		center = InsetPane(2, 2) { content, }
-		bottom = Desktop.isMac ? null : ToolBarBorder()
 	}	
 }
-
-internal class ToolBarBorder : Canvas {
-	override Size prefSize(Hints hints := Hints.defVal) { return Size(100, 2) }
-	override Void onPaint(Graphics g) {
-		g.brush = Desktop.sysNormShadow
-		g.drawLine(0, 0, size.w, 0)
-		g.brush = Desktop.sysHighlightShadow
-		g.drawLine(0, 1, size.w, 1)
-	}
-}
-
