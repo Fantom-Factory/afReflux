@@ -50,7 +50,7 @@ class FileExplorer {
 		reflux.refresh
 	}
 	
-	static Void start() {
+	static Void main() {
 		Reflux.start([,]) |Registry registry| {
 			// maybe move to an event?
 			panels := (Panels) registry.dependencyByType(Panels#)

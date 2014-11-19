@@ -9,7 +9,7 @@ abstract class Panel {
 	@Inject private Errors? 		_errors
 	@Inject private RefluxIcons?	_icons
 			private RefluxCommand?	_showHideCommand
-			internal Tab?			_tab
+			internal CTab?			_tab
 
 	Widget? content {
 		set { _tab?.remove(&content); _tab?.add(it); &content = it }

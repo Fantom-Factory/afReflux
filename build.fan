@@ -32,6 +32,6 @@ class Build : BuildPod {
 		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/fileExplorer/`, `fan/public/fileExplorer/commands/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`, `fan/flux/`]
 		resDirs = [`res/icons-eclipse/`, `res/icons-file/`]
 		
-//		javaDirs = [`java/`]
+		javaDirs = [`java/`]
 	}
 }

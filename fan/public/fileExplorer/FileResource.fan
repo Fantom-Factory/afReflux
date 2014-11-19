@@ -58,6 +58,7 @@ class FileResource : Resource {
 		// rename
 		// new - file / folder
 		// cmd prompt
+		// add to zip
 		// properties
 		
 		return menu 

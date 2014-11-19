@@ -12,4 +12,6 @@ class CTab : Pane {
 	
 	override Size prefSize(Hints hints := Hints.defVal){ Size(100,100)}
 	override Void onLayout() {}
+	
+//	native Void attach2()
 }
