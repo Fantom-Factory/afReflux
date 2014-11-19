@@ -4,7 +4,7 @@ using fwt
 
 internal class PanelTabPane : ContentPane {
 	@Inject	Frame 			frame
-			TabPane			tabPane		:= TabPane() { it.onSelect.add |e| { this->onSelect(e) } }
+			CTabPane		tabPane		:= CTabPane() { it.onSelect.add |e| { this->onSelect(e) }; it.onClose.add |e| { this->onClose(e) } }
 			PanelTabTuple[]	panelTabs	:= PanelTabTuple[,]	// 'cos I can't use non-const Panel as a key
 			Bool			alwaysShowTabs
 	
@@ -35,7 +35,7 @@ internal class PanelTabPane : ContentPane {
 				super.content = tabPane
 				panelTabs.first?.addTab(tabPane)
 			}
-			
+
 			panelTabs.add(PanelTabTuple() {
 				it.panel	= panel
 				it.content	= content
@@ -113,15 +113,26 @@ internal class PanelTabPane : ContentPane {
 			activate(tuple.panel)			
 		}
 	}
+
+	Void onClose(Event? event)	{
+		tuple := panelTabs.find { it.tab === event.data }
+		if (tuple?.panel != null) {
+			removeTab(tuple.panel)
+			
+			// we've just removed the tab, so SWT doesn't need to
+			event.consume
+		}
+	}
 }
 
 internal class PanelTabTuple {
-	Tab?	tab
+	CTab?	tab
 	Panel?	panel
 	Widget?	content
 	
-	This addTab(TabPane tabPane) {
-		tab	= Tab()
+	This addTab(CTabPane tabPane) {
+		echo("Adding ${panel.name}")
+		tab	= CTab()
 		tab.add(content)
 		tab.text  = panel.name
 		tab.image = panel.icon
@@ -130,7 +141,8 @@ internal class PanelTabTuple {
 		return this
 	}
 
-	This removeTab(TabPane tabPane) {
+	This removeTab(CTabPane tabPane) {
+		echo("Removing ${tab.text}")
 		tab.remove(content)
 		tabPane.remove(tab)
 		tab = null

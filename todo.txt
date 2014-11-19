@@ -11,6 +11,8 @@ CTabs w close
 HtmlView -> Fandoc vs Internet vs Files
  - have a RefluxBroswerWidget
  - different views for each resource?
+  - HtmlView for files AND internet
+  - FandocView
  
 View fandoc files
 
@@ -26,6 +28,11 @@ How to open extensions -> associate laucnch prog and icon
  
 Can views manipulate the menu / toolbar?
 
-Refresh should also refresh roota
-
 http://www.fantomfactory.org/articles/web-server-in-7-lines has wrong code
+
+http://demo.wizzardsoftware.com/attprocess.php
+http://www.wizzardsoftware.com/wizzard_wavefile_factory.php
+
+
+http://h20564.www2.hp.com/hpsc/swd/public/readIndex?sp4ts.oid=5271147&swLangOid=8&swEnvOid=4059
+

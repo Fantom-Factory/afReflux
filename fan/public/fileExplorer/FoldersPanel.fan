@@ -5,6 +5,7 @@ using fwt
 @NoDoc
 class FoldersPanel : Panel, RefluxEvents {
 	
+	@Inject		private Registry			registry
 	@Inject		private Reflux				reflux
 	@Inject		private RefluxIcons			icons
 	@Inject		private UriResolvers		uriResolvers
@@ -16,7 +17,6 @@ class FoldersPanel : Panel, RefluxEvents {
 	private Combo combo	:= Combo() { it.onModify.add |e| { this->onModify(e) } }
 	private Str:Uri shortcuts
 	private Int lastComboIndex
-	private Bool ignoreNextSelect
 	
 	private Tree tree
 		
@@ -52,14 +52,7 @@ class FoldersPanel : Panel, RefluxEvents {
 	}
 
 	internal Void onSelect(Event event) {
-		file := ((FileNode) event.data).file
-		
-		// a silly hack - refreshing the roots causes us to select a root!? 
-		if (ignoreNextSelect) {
-			ignoreNextSelect = false
-			return
-		}
-		ignoreNextSelect = false
+		file := ((FileNode) event.data).file		
 		reflux.load(file.normalize.uri)
 	}
 
@@ -85,13 +78,15 @@ class FoldersPanel : Panel, RefluxEvents {
 		if (!isShowing || !isActive) return
 		if (resource isnot FileResource || !resource.uri.isAbs) return
 		fileResource := (FileResource) resource
-		
-		ignoreNextSelect = true
-		model.roots.each { it.refresh; tree.refreshNode(it) }
-		showFile(fileResource.uri)
+
+		tree.model = model = registry.autobuild(FoldersTreeModel#)
+		tree.refreshAll
+		Desktop.callLater(50ms) |->| {
+			showFile(fileResource.uri)
+		}
 	}
 	
-	Void showFile(Uri uri) {
+	private Void showFile(Uri uri) {
 		// it may be ugly, but if it aint broke - don't fix it!
 		file	:= (FileNode?) null
 		files	:= model.roots
@@ -101,8 +96,9 @@ class FoldersPanel : Panel, RefluxEvents {
 				if (f.name == s) {
 					file = f
 					files = model.children(f)
-					if (i+1 < path.size)
+					if (i+1 < path.size) {
 						tree.setExpanded(f, true)
+					}
 					return true
 				}
 				return null
@@ -145,7 +141,7 @@ internal class FileNode {
 	FileNode[]? children {
 		get {
 			if (&children == null)
-				&children = map(fe, file.listDirs.exclude { fe.options.shouldHide(it) })
+				&children = map(fe, file.listDirs.sort |f1, f2->Int| { f1.name <=> f2.name }. exclude { fe.options.shouldHide(it) })
 			return &children
 		}
 	}
