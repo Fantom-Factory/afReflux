@@ -9,11 +9,7 @@ class ImageView : View {
 	@Inject private RefluxIcons 	icons
 	@Inject private Registry		registry
 
-	private EdgePane edgePane
-	
-	protected new make(|This| in) : super(in) {
-		content = edgePane = EdgePane {}
-	}
+	protected new make(|This| in) : super(in) { }
 	
 	override Void update(Resource resource) {
 		super.update(resource)
@@ -26,8 +22,8 @@ class ImageView : View {
 			it.addCommand(registry.autobuild(ImageFitToWindowCommand#, [imageWidget]))
 		}
 
-//	    content = EdgePane {
-	    	edgePane.top = EdgePane {
+	    content = EdgePane {
+	    	top = EdgePane {
 				it.top = InsetPane(2) {
 					EdgePane {
 						if (image != null) {
@@ -45,11 +41,8 @@ class ImageView : View {
 					it.border = Border("1, 0, 1, 0 $Desktop.sysNormShadow, #000, $Desktop.sysHighlightShadow")
 				}
 			}
-			edgePane.center = ScrollPane { it.content = imageWidget; it.border = false }
-//	    }
-		
-		// FIXME: Why can't I replace content?
-		edgePane.relayout
+			center = ScrollPane { it.content = imageWidget; it.border = false }
+	    }		
 	}
 	
 	Image? loadImage(File file) {
