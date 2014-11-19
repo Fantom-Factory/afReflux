@@ -25,7 +25,6 @@ internal class PanelTabPane : ContentPane {
 
 			panelTabs.add(PanelTabTuple() {
 				it.panel	= panel
-				it.content	= content
 			})
 			
 			this.visible = true
@@ -38,7 +37,6 @@ internal class PanelTabPane : ContentPane {
 
 			panelTabs.add(PanelTabTuple() {
 				it.panel	= panel
-				it.content	= content
 			}).last.addTab(tabPane)
 		}
 
@@ -73,7 +71,7 @@ internal class PanelTabPane : ContentPane {
 		tuple.removeTab(tabPane)
 
 		if (panelTabs.size == 1) {
-			this.content = panelTabs.first.removeTab(tabPane).content
+			this.content = panelTabs.first.removeTab(tabPane).panel.content
 			relayout
 		}
 
@@ -128,13 +126,10 @@ internal class PanelTabPane : ContentPane {
 internal class PanelTabTuple {
 	CTab?	tab
 	Panel?	panel
-	Widget?	content
 	
 	This addTab(CTabPane tabPane) {
-		echo("Adding ${panel.name} -> $content")
 		tab	= CTab()
-		echo("Adding $content to $tab : $panel.name")
-		tab.add(content)
+		tab.add(panel.content)
 		tab.text  = panel.name
 		tab.image = panel.icon
 		tabPane.add(tab)
@@ -143,10 +138,7 @@ internal class PanelTabTuple {
 	}
 
 	This removeTab(CTabPane tabPane) {
-		echo("Removing ${tab.text}")
-		echo("Removing $content from $tab : $panel.name")
-		echo("  $tab.children")
-		tab.remove(content)
+		tab.remove(panel.content)
 		tabPane.remove(tab)
 		tab = null
 		panel._tab = null
