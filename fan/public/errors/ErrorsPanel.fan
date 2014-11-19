@@ -14,8 +14,7 @@ internal class ErrorsPanel : Panel, RefluxEvents {
 
 	@Autobuild private ErrorsPanelModel model
 	
-//	override Obj	prefAlign	:= Valign.bottom
-	override Obj	prefAlign	:= Halign.left
+	override Obj	prefAlign	:= Valign.bottom
 
 	new make(|This| in) : super(in) {		
 		content = table = Table {
