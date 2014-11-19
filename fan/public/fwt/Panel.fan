@@ -46,7 +46,6 @@ abstract class Panel {
 	**   - Halign.left (default)
 	**   - Halign.right
 	**   - Valign.bottom
-	**   - Valign.center
 	virtual Obj prefAlign() { return Halign.left }
 	
 	** Is the panel currently the active tab?

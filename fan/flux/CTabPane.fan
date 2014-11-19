@@ -50,6 +50,7 @@ class CTabPane : Pane {
 //		return this
 //	}
 	
-	override Size prefSize(Hints hints := Hints.defVal){ Size(100,100)}
+	override Size prefSize(Hints hints := Hints.defVal) { Size(100,100) }
+
 	override Void onLayout() {}
 }
