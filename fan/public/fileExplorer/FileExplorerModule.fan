@@ -9,7 +9,6 @@ class FileExplorerModule {
 		defs.add(FileExplorer#)
 		defs.add(FileExplorerEvents#)
 		defs.add(FileResolver#)
-		defs.add(FileViews#)
 	}
 
 	@Contribute { serviceType=UriResolvers# }
@@ -24,12 +23,12 @@ class FileExplorerModule {
 		config.add(config.autobuild(FoldersPanel#))
 	}
 
-	@Contribute { serviceType=FileViews# }
-	static Void contributeFileViews(Configuration config) {
-		config["x-directory/*"]	= config.autobuild(FolderView#)
-		config["image/*"]		= config.autobuild(ImageView#)
-		config["text/html"]		= config.autobuild(HtmlView#)
-	}
+//	@Contribute { serviceType=FileViews# }
+//	static Void contributeFileViews(Configuration config) {
+//		config["x-directory/*"]	= config.autobuild(FolderView#)
+//		config["image/*"]		= config.autobuild(ImageView#)
+//		config["text/html"]		= config.autobuild(HtmlView#)
+//	}
 
 
 	// ---- Reflux Tool Bar -----------------------------------------------------------------------

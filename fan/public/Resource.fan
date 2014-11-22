@@ -4,8 +4,9 @@ using fwt
 
 abstract class Resource {
 
-	@Inject private const Registry	registry
-	@Inject private Reflux			reflux
+	@Inject private const Registry				registry
+	@Inject private const DefaultResourceViews	defaultViews
+	@Inject private Reflux						reflux
 	
 	new make(|This|in) { in(this) }
 	
@@ -33,7 +34,10 @@ abstract class Resource {
 	} 
 	
 	virtual View? defaultView() {
-		null
+		viewType := defaultViews[this.typeof]
+		
+		// FIXME: need Views service / holder
+		return registry.autobuild(viewType)
 	}
 	
 	@NoDoc
