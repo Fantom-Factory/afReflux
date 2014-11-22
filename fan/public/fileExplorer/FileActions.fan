@@ -11,7 +11,8 @@ class FileAction {
 	new make(|This|in) { in(this) }
 }
 
-class FileLauncher {	
+class FileLauncher {
+	Str 	id
 	Str 	name
 	Image	icon
 	File	program

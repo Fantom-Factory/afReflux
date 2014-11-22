@@ -4,8 +4,8 @@ using fwt
 
 class FileResource : Resource {
 
-	@Inject private Registry	reg
-	@Inject private FileViews	fileViews
+	@Inject private const Registry			registry
+	@Inject private const DefaultFileViews	defaultViews
 
 	override Uri 	uri
 	override Str 	name
@@ -18,7 +18,10 @@ class FileResource : Resource {
 	}
 
 	override View? defaultView() {
-		fileViews.get(this)
+		viewType := defaultViews[file.ext]
+		
+		// FIXME: need Views service / holder
+		return registry.autobuild(viewType)
 	}
 	
 	override Menu populatePopup(Menu m) {
@@ -85,6 +88,6 @@ class FileResource : Resource {
 	}
 	
 	Void addCommand(Menu menu, Type commandType, Obj[]? context := null) {
-		menu.add(MenuItem.makeCommand(reg.autobuild(commandType, context)))		
+		menu.add(MenuItem.makeCommand(registry.autobuild(commandType, context)))		
 	}
 }
