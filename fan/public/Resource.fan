@@ -4,9 +4,9 @@ using fwt
 
 abstract class Resource {
 
-	@Inject private const Registry				registry
-	@Inject private const DefaultResourceViews	defaultViews
-	@Inject private Reflux						reflux
+	@Inject private const Registry				_registry
+	@Inject private const DefaultResourceViews	_defaultViews
+	@Inject private Reflux						_reflux
 	
 	new make(|This|in) { in(this) }
 	
@@ -21,7 +21,7 @@ abstract class Resource {
 	** By populating an existing menu, it allows Panels to create the initial menu. 
 	virtual Menu populatePopup(Menu menu) {
 		serviceId := this.typeof.qname.replace("::", ".") + ".popupMenu"
-		menuItems := (MenuItem[]?) registry.buildService(serviceId, false)
+		menuItems := (MenuItem[]?) _registry.buildService(serviceId, false)
 		if (menuItems != null)
 			menu.addAll(menuItems)
 		return menu 
@@ -30,14 +30,14 @@ abstract class Resource {
 //	virtual ToolBar populateToolBar(ToolBar toolBar) { toolBar }
 //
 	virtual Void doAction() {
-		reflux.load(uri)
+		_reflux.load(uri)
 	} 
 	
 	virtual View? defaultView() {
-		viewType := defaultViews[this.typeof]
+		viewType := _defaultViews[this.typeof]
 		
 		// FIXME: need Views service / holder
-		return registry.autobuild(viewType)
+		return _registry.autobuild(viewType)
 	}
 	
 	@NoDoc

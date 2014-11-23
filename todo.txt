@@ -6,9 +6,6 @@ Open in New Tab
  - Have means to define when new tab happens
  - How do we auto-create views + panels?
  
-CTabs w close
-  -> fantom forum
-
 HtmlView -> Fandoc vs Internet vs Files
  - have a RefluxBroswerWidget
  - different views for each resource?
