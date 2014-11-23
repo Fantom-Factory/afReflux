@@ -20,6 +20,9 @@ class FileResource : Resource {
 	override View? defaultView() {
 		viewType := defaultViews[file.ext]
 		
+		if (viewType == null)
+			return null
+		
 		// FIXME: need Views service / holder
 		return registry.autobuild(viewType)
 	}

@@ -10,7 +10,7 @@ class FolderView : View, RefluxEvents {
 	@Inject private RefluxIcons		icons
 	@Inject private UriResolvers	uriResolvers
 	@Inject	private FileExplorer	fileExplorer
-	@Inject	private FileResolver	fileResolver
+	@Inject	private FolderResolver	folderResolver
 			private	Table			table
 
 	@Autobuild private FolderViewModel model
@@ -18,7 +18,7 @@ class FolderView : View, RefluxEvents {
 	// FIXME: Views don't need prefAlign
 	override Obj	prefAlign	:= Halign.left
 
-	private FileResource? fileResource
+	private FolderResource? fileResource
 
 	protected new make(|This| in) : super(in) {
 		content = table = Table {
@@ -32,10 +32,10 @@ class FolderView : View, RefluxEvents {
 	
 	override Void update(Resource resource) {
 		super.update(resource)
-		fileResource = (FileResource) resource
+		fileResource = (FolderResource) resource
 		// only update if it's a Directory
 		if (resource.uri.mimeType?.mediaType == "x-directory") {
-			model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.options.shouldHide(it) }.map { fileResolver.resolve(it.uri) }
+			model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.options.shouldHide(it) }.map { folderResolver.resolve(it.uri) }
 			table.refreshAll
 		}
 	}

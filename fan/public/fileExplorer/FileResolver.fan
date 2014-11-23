@@ -7,14 +7,13 @@ internal class FileResolver : UriResolver {
 	@Inject private RefluxIcons		icons
 	@Inject private ImageSource		imgSrc
 	@Inject private FileExplorer	fileExplorer
-			private File[]			osRoots			:= File.osRoots.map { it.normalize }
 					Uri				fileIconsRoot	:= `fan://afReflux/res/icons-file/`
 
 	new make(|This|in) { in(this) }	
 	
 	override Resource? resolve(Uri uri) {
 		file := uri.toFile.normalize
-		if (!file.exists)
+		if (!file.exists || file.isDir)
 			return null
 		return registry.autobuild(FileResource#, null, [
 			FileResource#uri	: file.uri,
@@ -35,9 +34,6 @@ internal class FileResolver : UriResolver {
 		
 		mimeType := f.mimeType?.noParams
 		if (mimeType != null) {
-			if (f.isDir)
-				return osRoots.contains(f) ? icons.icon("icoFolderRoot", hidden) : icons.icon("icoFolder", hidden)
-			
 			mime := mimeType.mediaType.fromDisplayName.capitalize + mimeType.subType.fromDisplayName.capitalize
 			icon := fileIcon("file${mime}.png", hidden)
 			if (icon != null) return icon

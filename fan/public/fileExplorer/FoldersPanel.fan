@@ -67,8 +67,8 @@ class FoldersPanel : Panel, RefluxEvents {
 		// FIXME: don't want to specify this line in every panel!
 		if (!isShowing || !isActive) return
 		
-		if (resource isnot FileResource || !resource.uri.isAbs) return
-		fileResource := (FileResource) resource
+		if (resource isnot FolderResource || !resource.uri.isAbs) return
+		fileResource := (FolderResource) resource
 
 		showFile(fileResource.uri)
 	}
@@ -114,7 +114,7 @@ class FoldersPanel : Panel, RefluxEvents {
 }
 
 internal class FoldersTreeModel : TreeModel {
-	@Inject	private  FileResolver	fileResolver
+	@Inject	private  FolderResolver	fileResolver
 	@Inject	private  FileExplorer	fileExplorer
 			override FileNode[]		roots
 			private	 Color			hiddenColour

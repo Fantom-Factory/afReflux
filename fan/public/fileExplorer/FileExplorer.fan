@@ -3,6 +3,7 @@ using gfx
 using fwt
 
 // TODO: convert FileExplorer to a service mixin
+// TODO: move all command actions in here - make a generic command
 class FileExplorer {
 	
 	@Inject private Registry	registry

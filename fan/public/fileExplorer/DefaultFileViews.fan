@@ -9,6 +9,6 @@ const class DefaultFileViews {
 	
 	@Operator
 	Type? getView(Str? ext) {
-		extViews[ext]
+		ext == null ? null : extViews[ext]
 	}
 }

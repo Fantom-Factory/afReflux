@@ -8,19 +8,37 @@ class FileExplorerModule {
 	static Void defineServices(ServiceDefinitions defs) {		
 		defs.add(FileExplorer#)
 		defs.add(FileExplorerEvents#)
-		defs.add(FileResolver#)
+		defs.add(FileResolver#)	// TODO: kill the service
+		defs.add(FolderResolver#)// TODO: kill the service
+		defs.add(DefaultResourceViews#)
+		defs.add(DefaultFileViews#)
 	}
 
 	@Contribute { serviceType=UriResolvers# }
-//	internal static Void contributeUriResolvers(Configuration config, FileResolver fileResolver) {
-	internal static Void contributeUriResolvers(Configuration config, Registry reg) {
-		// FIXME: Why can't I just inject FileResolver?
-		config["file"] = reg.dependencyByType(FileResolver#)
+	internal static Void contributeUriResolvers(Configuration config) {
+		config["file"]		= config.autobuild(FileResolver#)
+		config["folder"]	= config.autobuild(FolderResolver#)
 	}
 
 	@Contribute { serviceType=Panels# }
 	static Void contributePanels(Configuration config) {
 		config.add(config.autobuild(FoldersPanel#))
+	}
+
+	@Contribute { serviceType=DefaultResourceViews# }
+	static Void contributeDefaultResourceViews(Configuration config) {
+		config[FolderResource#]	= FolderView#
+	}
+
+	@Contribute { serviceType=DefaultFileViews# }
+	static Void contributeDefaultFileViews(Configuration config) {
+		config["bmp"]	= ImageView#
+		config["gif"]	= ImageView#
+		config["jpg"]	= ImageView#
+		config["png"]	= ImageView#
+
+		config["htm"]	= HtmlView#
+		config["html"]	= HtmlView#
 	}
 
 //	@Contribute { serviceType=FileViews# }
