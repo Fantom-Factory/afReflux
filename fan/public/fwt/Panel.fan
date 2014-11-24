@@ -5,7 +5,6 @@ using fwt
 abstract class Panel {
 
 	@Inject private Registry?		_registry
-	@Inject private Frame? 			_frame
 	@Inject private Errors? 		_errors
 	@Inject private RefluxIcons?	_icons
 			private RefluxCommand?	_showHideCommand
@@ -46,7 +45,7 @@ abstract class Panel {
 	**   - Halign.left (default)
 	**   - Halign.right
 	**   - Valign.bottom
-	virtual Obj prefAlign() { return Halign.left }
+	virtual Obj prefAlign() { Halign.left }
 	
 	** Is the panel currently the active tab?
 	Bool isActive := false { internal set }
@@ -65,14 +64,6 @@ abstract class Panel {
 
 	** Callback when this panel is unselected as the active tab.
 	virtual Void onDeactivate() {}
-	
-	This show() {
-		_frame.showPanel(this)
-	}
-	
-	This hide() {
-		_frame.hidePanel(this)
-	}
 	
 	override Obj? trap(Str name, Obj?[]? args := null) {
 		try return super.trap(name, args)

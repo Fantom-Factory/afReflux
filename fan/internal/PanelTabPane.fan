@@ -3,10 +3,9 @@ using gfx
 using fwt
 
 internal class PanelTabPane : ContentPane {
-	@Inject	Frame 			frame
-			CTabPane		tabPane		:= CTabPane() { it.onSelect.add |e| { this->onSelect(e) }; it.onClose.add |e| { this->onClose(e) } }
-			PanelTabTuple[]	panelTabs	:= PanelTabTuple[,]	// 'cos I can't use non-const Panel as a key
-			Bool			alwaysShowTabs
+	CTabPane		tabPane		:= CTabPane() { it.onSelect.add |e| { this->onSelect(e) }; it.onClose.add |e| { this->onClose(e) } }
+	PanelTabTuple[]	panelTabs	:= PanelTabTuple[,]	// 'cos I can't use non-const Panel as a key
+	Bool			alwaysShowTabs
 	
 	new make(Bool visible, Bool alwaysShowTabs, |This|in) {
 		in(this)

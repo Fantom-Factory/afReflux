@@ -6,6 +6,8 @@ abstract class View : Panel {
 			internal Resource?	_resource
 
 	protected new make(|This| in) : super(in) { }
+
+	final override Obj prefAlign() { -1 }
 	
 	override Void onActivate() {
 		super.onActivate
@@ -17,5 +19,4 @@ abstract class View : Panel {
 		super.icon = resource.icon
 		super.name = resource.name
 	}
-
 }

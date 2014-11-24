@@ -6,7 +6,7 @@ using fwt
 class FoldersPanel : Panel, RefluxEvents {
 	
 	@Inject		private Registry			registry
-	@Inject		private Reflux				reflux
+//	@Inject		private Reflux				reflux	// TODO: needs proxy
 	@Inject		private RefluxIcons			icons
 	@Inject		private UriResolvers		uriResolvers
 	@Inject		private FileExplorer		fileExplorer
@@ -45,7 +45,8 @@ class FoldersPanel : Panel, RefluxEvents {
 		if (isActive && combo.selectedIndex >= 0) {
 			// this event fires when we switch tabs - then errs when we're not attached! Grr...
 			if (lastComboIndex != combo.selectedIndex) {
-				lastComboIndex  = combo.selectedIndex				
+				lastComboIndex  = combo.selectedIndex
+				reflux := (Reflux) registry.serviceById(Reflux#.qname)
 				reflux.load(shortcuts[combo.selected])
 			}
 		}
@@ -53,6 +54,7 @@ class FoldersPanel : Panel, RefluxEvents {
 
 	internal Void onSelect(Event event) {
 		file := ((FileNode) event.data).file
+		reflux := (Reflux) registry.serviceById(Reflux#.qname)
 		reflux.load(file.normalize.uri)
 	}
 
@@ -66,23 +68,22 @@ class FoldersPanel : Panel, RefluxEvents {
 	override Void onLoad(Resource resource) {
 		// FIXME: don't want to specify this line in every panel!
 		if (!isShowing || !isActive) return
-		
 		if (resource isnot FolderResource || !resource.uri.isAbs) return
-		fileResource := (FolderResource) resource
+		folderResource := (FolderResource) resource
 
-		showFile(fileResource.uri)
+		showFile(folderResource.uri)
 	}
 
 	override Void onRefresh(Resource resource)	{
 		// FIXME: don't want to specify this line in every panel!
 		if (!isShowing || !isActive) return
-		if (resource isnot FileResource || !resource.uri.isAbs) return
-		fileResource := (FileResource) resource
+		if (resource isnot FolderResource || !resource.uri.isAbs) return
+		folderResource := (FolderResource) resource
 
 		tree.model = model = registry.autobuild(FoldersTreeModel#)
 		tree.refreshAll
 		Desktop.callLater(50ms) |->| {
-			showFile(fileResource.uri)
+			showFile(folderResource.uri)
 		}
 	}
 	
