@@ -9,9 +9,9 @@ using fwt
 class RefluxModule {
 	
 	static Void defineServices(ServiceDefinitions defs) {
-		defs.add(Reflux#)
+		defs.add(Reflux#).withProxy
 		defs.add(Errors#)
-		
+
 		defs.add(ImageSource#)
 		defs.add(EventHub#)
 		defs.add(Panels#)
@@ -22,11 +22,6 @@ class RefluxModule {
 		defs.add(RefluxEvents#).withProxy
 	}
 	
-	@Build
-	internal static Frame buildFrame(RegistryMeta meta) {
-		((LocalRef) meta["frameRef"]).val ?: throw Err("No frame in thread...?")
-	}
-
 	@Contribute { serviceType=Panels# }
 	static Void contributePanels(Configuration config) {
 		config.add(config.autobuild(ErrorsPanel#))

@@ -2,9 +2,9 @@ using afIoc
 using fwt
 
 internal class ShowHidePanelCommand : RefluxCommand {
-	@Inject private Registry reg
-//	@Inject private Reflux	reflux	// TODO: needs proxy
-			private Panel 	panel
+	@Inject private Registry	reg
+	@Inject private Reflux		reflux
+			private Panel 		panel
 
 	new make(Panel panel, |This|in) : super.make(in) {
 		this.panel = panel
@@ -13,7 +13,6 @@ internal class ShowHidePanelCommand : RefluxCommand {
 	}
 
 	override Void invoked(Event? event) {
-		reflux := (Reflux) reg.serviceById(Reflux#.qname)
 		if (panel.isShowing) reflux.hidePanel(panel.typeof); else reflux.showPanel(panel.typeof)
 	}
 

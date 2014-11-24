@@ -9,7 +9,7 @@ class FileExplorer {
 	@Inject private Registry	registry
 	@Inject private RefluxIcons	icons
 	@Inject private ImageSource	imgSrc
-//	@Inject private Reflux		reflux	// TODO: needs proxy
+	@Inject private Reflux		reflux
 					Uri			fileIconsRoot	:= `fan://afReflux/res/icons-file/`
 
 	internal FileExplorerOptions options	
@@ -23,11 +23,9 @@ class FileExplorer {
 	}
 
 	Void rename(File file) {
-		frame := registry.serviceById(Frame#.qname)
-		newName := Dialog.openPromptStr(frame, "Rename", file.name)
+		newName := Dialog.openPromptStr(reflux.window, "Rename", file.name)
 		if (newName != null) {
 			file.rename(newName)
-			reflux := (Reflux) registry.serviceById(Reflux#.qname)
 			reflux.refresh
 		}
 	}

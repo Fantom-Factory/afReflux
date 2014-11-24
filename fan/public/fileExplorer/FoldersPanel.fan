@@ -6,7 +6,7 @@ using fwt
 class FoldersPanel : Panel, RefluxEvents {
 	
 	@Inject		private Registry			registry
-//	@Inject		private Reflux				reflux	// TODO: needs proxy
+	@Inject		private Reflux				reflux
 	@Inject		private RefluxIcons			icons
 	@Inject		private UriResolvers		uriResolvers
 	@Inject		private FileExplorer		fileExplorer
@@ -46,7 +46,6 @@ class FoldersPanel : Panel, RefluxEvents {
 			// this event fires when we switch tabs - then errs when we're not attached! Grr...
 			if (lastComboIndex != combo.selectedIndex) {
 				lastComboIndex  = combo.selectedIndex
-				reflux := (Reflux) registry.serviceById(Reflux#.qname)
 				reflux.load(shortcuts[combo.selected])
 			}
 		}
@@ -54,7 +53,6 @@ class FoldersPanel : Panel, RefluxEvents {
 
 	internal Void onSelect(Event event) {
 		file := ((FileNode) event.data).file
-		reflux := (Reflux) registry.serviceById(Reflux#.qname)
 		reflux.load(file.normalize.uri)
 	}
 

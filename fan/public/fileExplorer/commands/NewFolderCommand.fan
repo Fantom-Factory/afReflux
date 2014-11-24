@@ -3,7 +3,6 @@ using gfx
 using fwt
 
 internal class NewFolderCommand : RefluxCommand {
-	@Inject	private Frame	frame
 	@Inject	private Reflux	reflux
 	private File	containingFolder
 
@@ -12,7 +11,7 @@ internal class NewFolderCommand : RefluxCommand {
 	}
 
 	override Void invoked(Event? event) {
-		dirName := Dialog.openPromptStr(frame, "New Folder", "NewFolder")
+		dirName := Dialog.openPromptStr(reflux.window, "New Folder", "NewFolder")
 		if (dirName != null) {
 			containingFolder.createDir(dirName)
 			reflux.refresh

@@ -3,7 +3,6 @@ using gfx
 using fwt
 
 internal class DeleteFileCommand : RefluxCommand {
-	@Inject	private Frame	frame
 	@Inject	private Reflux	reflux
 			private File	file
 
@@ -13,7 +12,7 @@ internal class DeleteFileCommand : RefluxCommand {
 	}
 
 	override Void invoked(Event? event) {
-		okay := Dialog.openQuestion(frame, "Delete ${file.osPath}?", null, Dialog.yesNo)
+		okay := Dialog.openQuestion(reflux.window, "Delete ${file.osPath}?", null, Dialog.yesNo)
 		if (okay == Dialog.yes) {
 			file.delete
 			reflux.refresh
