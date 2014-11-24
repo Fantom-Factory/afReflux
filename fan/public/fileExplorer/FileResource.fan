@@ -6,6 +6,7 @@ class FileResource : Resource {
 
 	@Inject protected const Registry			registry
 	@Inject protected const DefaultFileViews	defaultViews
+	@Inject protected 		FileExplorerCmds	fileCmds
 
 	override Uri 	uri
 	override Str 	name
@@ -35,9 +36,9 @@ class FileResource : Resource {
 		addCommand(menu, DeleteFileCommand#, [file])
 
 		menu.addSep
-		addCommand(menu, CutFileCommand#, [file])
-		addCommand(menu, CopyFileCommand#, [file])
-		addCommand(menu, PasteFileCommand#, [file])
+		addCmd(menu, fileCmds.cutFileCmd(file))
+		addCmd(menu, fileCmds.copyFileCmd(file))
+		addCmd(menu, fileCmds.pasteFileCmd(file))
 		
 		menu.addSep
 		addCommand(menu, CopyFileNameCommand#, [file])
@@ -85,7 +86,11 @@ class FileResource : Resource {
 	}
 	
 	Void addCommand(Menu menu, Type commandType, Obj[]? context := null) {
-		menu.add(MenuItem.makeCommand(registry.autobuild(commandType, context)))		
+		menu.add(MenuItem.makeCommand(registry.autobuild(commandType, context)))
+	}
+
+	Void addCmd(Menu menu, Command cmd) {
+		menu.add(MenuItem.makeCommand(cmd))
 	}
 }
 
@@ -100,6 +105,7 @@ class FolderResource : FileResource {
 	}
 	
 	override Menu populatePopup(Menu m) {
+		// FIXME: menu appears twice
 		menu := super.populatePopup(m)
 		
 		addCommand(menu, OpenFileCommand#,		[file])		
@@ -109,9 +115,9 @@ class FolderResource : FileResource {
 		addCommand(menu, DeleteFileCommand#,	[file])
 
 		menu.addSep
-		addCommand(menu, CutFileCommand#,		[file])
-		addCommand(menu, CopyFileCommand#,		[file])
-		addCommand(menu, PasteFileCommand#,		[file])
+		addCmd(menu, fileCmds.cutFileCmd(file))
+		addCmd(menu, fileCmds.copyFileCmd(file))
+		addCmd(menu, fileCmds.pasteFileCmd(file))
 		
 		menu.addSep
 		addCommand(menu, CopyFileNameCommand#,	[file])

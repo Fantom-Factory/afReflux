@@ -7,7 +7,7 @@ class RefluxCommand : Command {
 	@Inject private RefluxIcons	_refluxIcons
 	@Inject private ImageSource	_imgSrc
 	
-	new make(|This|in) : super.make("fwt", null) {
+	new make(|This|in) : super.make("reflux", null) {
 		in(this)
 
 		baseName := typeof.name.endsWith("Command") ? typeof.name[0..<-"Command".size] : typeof.name

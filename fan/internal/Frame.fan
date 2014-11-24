@@ -18,12 +18,12 @@ internal class Frame : Window, RefluxEvents {
 	internal new make(|This|in) : super() {
 		in(this)
 
-		imageSource	:= (ImageSource) registry.dependencyByType(ImageSource#)
+		imageSource	:= (ImageSource) registry.serviceById(ImageSource#.qname)
 		this.title	= appTitle
 		this.icon	= imageSource.get(appIcon, false)
 		this.size	= Size(640, 480)
 
-		eventHub	:= (EventHub) registry.dependencyByType(EventHub#)
+		eventHub	:= (EventHub) registry.serviceById(EventHub#.qname)
 		eventHub.register(this)
 		
 		panelTabs[Halign.left]	= registry.autobuild(PanelTabPane#, [false, false])

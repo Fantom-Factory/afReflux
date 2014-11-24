@@ -35,6 +35,7 @@ class EclipseIcons : RefluxIcons {
 		"cmdRefresh"			: `nav_refresh.gif`,
 		"cmdParent"				: `up_nav.gif`,
 		"cmdShowHidePanel"		: ``,
+		"cmdReflux"				: ``,	// the default img -> should always be null
 		
 		"icoErrorsPanel"		: `error_log.gif`,
 		
