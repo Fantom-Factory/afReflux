@@ -8,7 +8,6 @@ class FileExplorerModule {
 	static Void defineServices(ServiceDefinitions defs) {		
 		defs.add(FileExplorer#)
 		defs.add(FileExplorerEvents#)
-		defs.add(FileResolver#)	// TODO: kill the service
 		defs.add(DefaultResourceViews#)
 		defs.add(DefaultFileViews#)
 	}

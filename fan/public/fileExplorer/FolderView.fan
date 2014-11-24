@@ -10,7 +10,7 @@ class FolderView : View, RefluxEvents {
 	@Inject private RefluxIcons		icons
 	@Inject private UriResolvers	uriResolvers
 	@Inject	private FileExplorer	fileExplorer
-	@Inject	private FileResolver	fileResolver
+	@Autobuild private FileResolver	fileResolver
 			private	Table			table
 
 	@Autobuild private FolderViewModel model

@@ -6,66 +6,98 @@ using fwt
 using concurrent
 
 ** (Service) - 
-class Reflux {		
-	@Inject private UriResolvers	uriResolvers
-	@Inject private RefluxEvents	refluxEvents
-
-			private Resource?		resource  
+mixin Reflux {
 	
-	// add event sink?
-	
-	new make(|This| in) { in(this) }
-
-	Void load(Uri uri) {
-		resource = uriResolvers.resolve(uri)
-		refluxEvents.onLoad(resource)
-	}
-
-	Void loadResource(Resource resource) {
-		refluxEvents.onLoad(resource)
-	}
-
-	Void refresh() {
-		if (resource != null)
-			refluxEvents.onRefresh(resource)
-	}
-	
-	Resource? showing() {
-		resource
-	}
-	
-
-	@Inject private Registry	registry
-	@Inject private Panels		panels
-
-	Void showPanel(Type panelType) {
-		panel := panels.panelMap[panelType]
-		frame := (Frame) registry.serviceById(Frame#.qname)
-		frame.showPanel(panel)
-	}
-
-	Void hidePanel(Type panelType) {
-		panel := panels.panelMap[panelType]
-		frame := (Frame) registry.serviceById(Frame#.qname)
-		frame.hidePanel(panel)		
-	}
+	abstract Void load(Uri uri)
+	abstract Void loadResource(Resource resource)
+	abstract Void refresh()
+	abstract Resource? resource()
+	abstract Panel showPanel(Type panelType)
+	abstract Panel hidePanel(Type panelType)
+	abstract Window window()
+	abstract Void exit()
 	
 	static Void start(Type[] modules, |Reflux| onOpen) {
-		registry	:= RegistryBuilder().addModules([RefluxModule#, ConfigModule#]).addModules(modules).set("frameRef", LocalRef("frame")).build.startup
-		
-		// TODO: move to build meth
-		frame 		:= (Frame) registry.autobuild(Frame#)
+		registry := RegistryBuilder().addModules([RefluxModule#, ConfigModule#]).addModules(modules).build.startup
+		reflux	 := (Reflux) registry.serviceById(Reflux#.qname)
+		frame	 := (Frame)  reflux.window
 		
 		// onActive -> onFocus -> onOpen
 		frame.onOpen.add {
 			// Give the widgets a chance to display themselves and set defaults
 			Desktop.callLater(50ms) |->| {
-				reflux := (Reflux) registry.dependencyByType(Reflux#)
 				onOpen.call(reflux)
 			}
 		}
 
 		frame.open
 		registry.shutdown
+	}
+}
+
+internal class RefluxImpl : Reflux {
+	@Inject private UriResolvers	uriResolvers
+	@Inject private RefluxEvents	refluxEvents
+			override Resource?		resource
+//	@Autobuild { implType=Frame# }
+			override Window			window
+
+	new make(Registry reg, |This| in) { in(this)
+		// FIXME: IoC Err
+		window = reg.autobuild(Frame#)
+	}
+
+	override Void load(Uri uri) {
+		resource = uriResolvers.resolve(uri)
+		refluxEvents.onLoad(resource)
+	}
+
+	override Void loadResource(Resource resource) {
+		refluxEvents.onLoad(resource)
+	}
+
+	override Void refresh() {
+		if (resource != null)
+			refluxEvents.onRefresh(resource)
+	}
+	
+	@Inject private Registry	registry
+	@Inject private Panels		panels
+
+	override Panel showPanel(Type panelType) {
+		panel := panels.panelMap[panelType]
+		
+		if (panel.isShowing)
+			return panel
+		
+		frame.showPanel(panel)
+
+		// initialise panel with data
+		if (panel is RefluxEvents && resource != null)
+			Desktop.callLater(50ms) |->| {
+				((RefluxEvents) panel).onLoad(resource)
+			}
+
+		return panel
+	}
+
+	override Panel hidePanel(Type panelType) {
+		panel := panels.panelMap[panelType]
+		
+		if (!panel.isShowing)
+			return panel
+
+		frame.hidePanel(panel)		
+
+		return panel
+	}
+	
+	override Void exit() {
+		// TODO: deactivate and hide all panels...? 
+		frame.close
+	}
+
+	private Frame frame() {
+		window
 	}
 }

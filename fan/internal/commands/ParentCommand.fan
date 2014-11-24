@@ -11,7 +11,7 @@ internal class ParentCommand : RefluxCommand, RefluxEvents {
 	}
 	
 	override Void invoked(Event? event) {
-		parent := reflux.showing?.uri?.parent
+		parent := reflux.resource?.uri?.parent
 		if (parent != null && parent.pathOnly != `/`)
 			reflux.load(parent)
 	}

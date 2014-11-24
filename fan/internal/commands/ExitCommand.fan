@@ -3,7 +3,7 @@ using gfx
 using fwt
 
 internal class ExitCommand : RefluxCommand {
-	@Inject	private Frame frame
+	@Inject	private Reflux reflux
 	
 	new make(|This|in) : super.make(in) { }
 
@@ -35,12 +35,7 @@ internal class ExitCommand : RefluxCommand {
 //				}
 //			}
 //		}
-		frame.exit
+		
+		reflux.exit
 	}
 }
-
-//internal class ExitSaveCommand : Command {
-//	new make(Pod pod, Str keyBase) : super.makeLocale(pod, keyBase) {}
-//	override Void invoked(Event? e) { window?.close(this) }
-//}
-
