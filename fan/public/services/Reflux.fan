@@ -17,9 +17,7 @@ class Reflux {
 	new make(|This| in) { in(this) }
 
 	Void load(Uri uri) {
-		echo("loading $uri")
 		resource = uriResolvers.resolve(uri)
-		echo("resource $resource.typeof $resource ")
 		refluxEvents.onLoad(resource)
 	}
 

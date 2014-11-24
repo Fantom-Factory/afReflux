@@ -33,11 +33,8 @@ abstract class Resource {
 		_reflux.load(uri)
 	} 
 	
-	virtual View? defaultView() {
-		viewType := _defaultViews[this.typeof]
-		
-		// FIXME: need Views service / holder
-		return _registry.autobuild(viewType)
+	virtual Type? defaultView() {
+		_defaultViews[this.typeof]
 	}
 	
 	@NoDoc

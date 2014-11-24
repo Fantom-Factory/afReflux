@@ -14,17 +14,19 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	}
 
 	override Void onLoad(Resource resource) {
-		view := resource.defaultView
+		viewType := resource.defaultView
 		
 		// TODO: what to do when no view?
-		if (view == null)
+		if (viewType == null)
 			return
-		
-		if (!panelTabs.any { it.panel === view }) {
-			// FIXME: use frame.showPanel
-			super.addTab(view)
-		}			
 
+		view := (View?) panelTabs.find { it.panel.typeof.fits(viewType) }?.panel
+		
+		if (view == null) {
+			view = registry.autobuild(viewType)			
+			super.addTab(view)
+		}
+		
 		super.activate(view)
 		view._resource = resource
 		view.update(resource)		
