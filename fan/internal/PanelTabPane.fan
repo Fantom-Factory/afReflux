@@ -32,7 +32,7 @@ internal class PanelTabPane : ContentPane {
 
 			if (panelTabs.size == 1) {
 				super.content = tabPane
-				panelTabs.first?.addTab(tabPane)
+				panelTabs.first.addTab(tabPane)
 			}
 
 			panelTabs.add(PanelTabTuple() {

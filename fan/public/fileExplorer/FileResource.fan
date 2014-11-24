@@ -17,14 +17,8 @@ class FileResource : Resource {
 		displayName = file.osPath
 	}
 
-	override View? defaultView() {
-		viewType := defaultViews[file.ext]
-		
-		if (viewType == null)
-			return null
-		
-		// FIXME: need Views service / holder
-		return registry.autobuild(viewType)
+	override Type? defaultView() {
+		defaultViews[file.ext]
 	}
 	
 	override Menu populatePopup(Menu m) {
@@ -101,9 +95,8 @@ class FolderResource : FileResource {
 
 	new make(|This|in) : super.make(in) { }
 
-	override View? defaultView() {
-		// FIXME: need Views service / holder
-		return registry.autobuild(FolderView#)
+	override Type? defaultView() {
+		FolderView#
 	}
 	
 	override Menu populatePopup(Menu m) {
