@@ -10,7 +10,7 @@ class FolderView : View, RefluxEvents {
 	@Inject private RefluxIcons		icons
 	@Inject private UriResolvers	uriResolvers
 	@Inject	private FileExplorer	fileExplorer
-	@Inject	private FolderResolver	folderResolver
+	@Inject	private FileResolver	fileResolver
 			private	Table			table
 
 	@Autobuild private FolderViewModel model
@@ -33,9 +33,11 @@ class FolderView : View, RefluxEvents {
 	override Void update(Resource resource) {
 		super.update(resource)
 		fileResource = (FolderResource) resource
+		// FIXME: Should folder res extend file res? resolve folder res first, before file
+		// Only have fodlerRes to associate a view with it....?
 		// only update if it's a Directory
 		if (resource.uri.mimeType?.mediaType == "x-directory") {
-			model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.options.shouldHide(it) }.map { folderResolver.resolve(it.uri) }
+			model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.options.shouldHide(it) }.map { fileResolver.resolve(it.uri) }
 			table.refreshAll
 		}
 	}

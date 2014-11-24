@@ -4,8 +4,8 @@ using fwt
 
 class FileResource : Resource {
 
-	@Inject private const Registry			registry
-	@Inject private const DefaultFileViews	defaultViews
+	@Inject protected const Registry			registry
+	@Inject protected const DefaultFileViews	defaultViews
 
 	override Uri 	uri
 	override Str 	name
@@ -93,4 +93,42 @@ class FileResource : Resource {
 	Void addCommand(Menu menu, Type commandType, Obj[]? context := null) {
 		menu.add(MenuItem.makeCommand(registry.autobuild(commandType, context)))		
 	}
+}
+
+
+
+class FolderResource : FileResource {
+
+	new make(|This|in) : super.make(in) { }
+
+	override View? defaultView() {
+		// FIXME: need Views service / holder
+		return registry.autobuild(FolderView#)
+	}
+	
+	override Menu populatePopup(Menu m) {
+		menu := super.populatePopup(m)
+		
+		addCommand(menu, OpenFileCommand#,		[file])		
+		menu.addSep
+
+		addCommand(menu, RenameFileCommand#,	[file])	// TODO: F2 accel
+		addCommand(menu, DeleteFileCommand#,	[file])
+
+		menu.addSep
+		addCommand(menu, CutFileCommand#,		[file])
+		addCommand(menu, CopyFileCommand#,		[file])
+		addCommand(menu, PasteFileCommand#,		[file])
+		
+		menu.addSep
+		addCommand(menu, CopyFileNameCommand#,	[file])
+		addCommand(menu, CopyFilePathCommand#,	[file])
+		addCommand(menu, CopyFileUriCommand#,	[file])
+
+		menu.addSep
+		addCommand(menu, NewFileCommand#,		[file])
+		addCommand(menu, NewFolderCommand#,		[file])
+		
+		return menu 
+	}	
 }
