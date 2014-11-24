@@ -3,20 +3,20 @@ using gfx
 using fwt
 
 class RefluxCommand : Command {
-	@Inject private Errors? 	errors
-	@Inject private RefluxIcons	refluxIcons
-	@Inject private ImageSource	imgSrc
+	@Inject private Errors? 	_errors
+	@Inject private RefluxIcons	_refluxIcons
+	@Inject private ImageSource	_imgSrc
 	
 	new make(|This|in) : super.make("fwt", null) {
 		in(this)
 
 		baseName := typeof.name.endsWith("Command") ? typeof.name[0..<-"Command".size] : typeof.name
 		this.name = baseName.toDisplayName
-		this.icon = refluxIcons["cmd${baseName}"]
+		this.icon = _refluxIcons["cmd${baseName}"]
 	}
 	
 	override Void onInvokeErr(Event? event, Err err) {
-		errors.add(err)
+		_errors.add(err)
 	}
 
 	@NoDoc	// patching an FWT bug - Errs are swallowed in Event.fire() 
@@ -47,9 +47,9 @@ class RefluxCommand : Command {
 			locIcon = pod.locale("${keyBase}.icon", null)
 		try {
 			if (locIcon != null)
-				this.icon = imgSrc.get(locIcon.toUri, false)
+				this.icon = _imgSrc.get(locIcon.toUri, false)
 		} catch
-			errors.add(Err("Command: cannot load '${keyBase}.icon' => $locIcon"))
+			_errors.add(Err("Command: cannot load '${keyBase}.icon' => $locIcon"))
 		
 		// accelerator
 		locAcc := pod.locale("${keyBase}.accelerator.${plat}", null)
@@ -66,6 +66,6 @@ class RefluxCommand : Command {
 				this.accelerator = this.accelerator.replace(Key.ctrl, Key.command)
 			}
 		} catch
-			errors.add(Err("Command: cannot load '${keyBase}.accelerator ' => $locAcc"))		
+			_errors.add(Err("Command: cannot load '${keyBase}.accelerator ' => $locAcc"))		
 	}
 }

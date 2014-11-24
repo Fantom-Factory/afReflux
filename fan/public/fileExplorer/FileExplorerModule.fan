@@ -39,14 +39,6 @@ class FileExplorerModule {
 		config["html"]	= HtmlView#
 	}
 
-//	@Contribute { serviceType=FileViews# }
-//	static Void contributeFileViews(Configuration config) {
-//		config["x-directory/*"]	= config.autobuild(FolderView#)
-//		config["image/*"]		= config.autobuild(ImageView#)
-//		config["text/html"]		= config.autobuild(HtmlView#)
-//	}
-
-
 	// ---- Reflux Tool Bar -----------------------------------------------------------------------
 
 	@Contribute { serviceId="afReflux.optionsMenu" }

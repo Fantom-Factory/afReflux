@@ -9,8 +9,7 @@ class FileExplorer {
 	@Inject private Registry	registry
 	@Inject private RefluxIcons	icons
 	@Inject private ImageSource	imgSrc
-	@Inject private Reflux		reflux
-	@Inject	private Frame		frame
+//	@Inject private Reflux		reflux	// TODO: needs proxy
 					Uri			fileIconsRoot	:= `fan://afReflux/res/icons-file/`
 
 	internal FileExplorerOptions options	
@@ -24,9 +23,11 @@ class FileExplorer {
 	}
 
 	Void rename(File file) {
+		frame := registry.serviceById(Frame#.qname)
 		newName := Dialog.openPromptStr(frame, "Rename", file.name)
 		if (newName != null) {
 			file.rename(newName)
+			reflux := (Reflux) registry.serviceById(Reflux#.qname)
 			reflux.refresh
 		}
 	}
@@ -51,6 +52,7 @@ class FileExplorer {
 			copiedFile.copyInto(destDir)
 			copiedFile = null
 		}
+		reflux := (Reflux) registry.serviceById(Reflux#.qname)
 		reflux.refresh
 	}
 	
@@ -89,13 +91,8 @@ class FileExplorer {
 
 	
 	static Void main() {
-		Reflux.start([,]) |Registry registry| {
-			// maybe move to an event?
-			panels := (Panels) registry.dependencyByType(Panels#)
-			panels[FoldersPanel#].show	
-			
-			// maybe move this into FoldersPanel, a fav or def folder
-			reflux := (Reflux) registry.dependencyByType(Reflux#)
+		Reflux.start([,]) |Reflux reflux| {
+			reflux.showPanel(FoldersPanel#)
 			reflux.load(File.osRoots.first.normalize.uri)
 		}
 	}

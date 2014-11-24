@@ -7,7 +7,6 @@ using fwt
 internal class ErrorsPanel : Panel, RefluxEvents {
 
 	@Inject private Registry		registry
-	@Inject private Reflux			reflux
 	@Inject private RefluxIcons		icons
 	@Inject private Log				log
 			private Table			table

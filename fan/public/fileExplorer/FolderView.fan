@@ -15,9 +15,6 @@ class FolderView : View, RefluxEvents {
 
 	@Autobuild private FolderViewModel model
 	
-	// FIXME: Views don't need prefAlign
-	override Obj	prefAlign	:= Halign.left
-
 	private FolderResource? fileResource
 
 	protected new make(|This| in) : super(in) {
@@ -33,13 +30,8 @@ class FolderView : View, RefluxEvents {
 	override Void update(Resource resource) {
 		super.update(resource)
 		fileResource = (FolderResource) resource
-		// FIXME: Should folder res extend file res? resolve folder res first, before file
-		// Only have fodlerRes to associate a view with it....?
-		// only update if it's a Directory
-		if (resource.uri.mimeType?.mediaType == "x-directory") {
-			model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.options.shouldHide(it) }.map { fileResolver.resolve(it.uri) }
-			table.refreshAll
-		}
+		model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.options.shouldHide(it) }.map { fileResolver.resolve(it.uri) }
+		table.refreshAll
 	}
 
 	internal Void onPopup(Event event) {
