@@ -10,6 +10,48 @@ class FileExplorerCmds {
 
 	new make(|This|in) { in(this) }
 
+	Command openFileCmd(File file) {
+		command("OpenFile") {
+			it.onInvoke.add {
+				fileExplorer.openFile(file)
+			}
+		}
+	}
+
+	Command renameFileCmd(File file) {
+		command("RenameFile") {
+			it.name = "Rename"
+			it.onInvoke.add {
+				fileExplorer.rename(file)
+			}
+		}
+	}
+
+	Command deleteFileCmd(File file) {
+		command("DeleteFile") {
+			it.name = "Delete"
+			it.onInvoke.add {
+				fileExplorer.delete(file)
+			}
+		}
+	}
+
+	Command newFileCmd(File file) {
+		command("NewFile") {
+			it.onInvoke.add {
+				fileExplorer.newFile(file)
+			}
+		}
+	}
+
+	Command newFolderCmd(File file) {
+		command("NewFolder") {
+			it.onInvoke.add {
+				fileExplorer.newFolder(file)
+			}
+		}
+	}
+
 	Command cutFileCmd(File file) {
 		command("CutFile") {
 			it.name = "Cut"
@@ -18,7 +60,7 @@ class FileExplorerCmds {
 			}
 		}
 	}
-	
+
 	Command copyFileCmd(File file) {
 		command("CopyFile") {
 			it.name = "Copy"
@@ -27,7 +69,7 @@ class FileExplorerCmds {
 			}
 		}
 	}
-	
+
 	Command pasteFileCmd(File file) {
 		command("PasteFile") {
 			it.name = "Paste"
@@ -37,7 +79,31 @@ class FileExplorerCmds {
 			}
 		}
 	}
-	
+
+	Command copyFileNameCmd(File file) {
+		command("CopyFileName") {
+			it.onInvoke.add {
+				reflux.copyToClipboard(file.name)
+			}
+		}
+	}
+
+	Command copyFilePathCmd(File file) {
+		command("CopyFilePath") {
+			it.onInvoke.add {
+				reflux.copyToClipboard(file.osPath)
+			}
+		}
+	}
+
+	Command copyFileUriCmd(File file) {
+		command("CopyFileUri") {
+			it.onInvoke.add {
+				reflux.copyToClipboard(file.uri.toStr)
+			}
+		}
+	}
+
 	private RefluxCommand command(Str baseName) {
 		((RefluxCommand) registry.autobuild(RefluxCommand#)) {
 			it.name = baseName.toDisplayName

@@ -25,30 +25,29 @@ class FileResource : Resource {
 	override Menu populatePopup(Menu m) {
 		menu := super.populatePopup(m)
 		
-		// TODO: how to contribute and add the file
-
 		if (!file.isDir) {
-			addCommand(menu, OpenFileCommand#, [file])		
+			addCmd(menu, fileCmds.openFileCmd(file))		
 			menu.addSep
 		}
 
-		addCommand(menu, RenameFileCommand#, [file])	// TODO: F2 accel
-		addCommand(menu, DeleteFileCommand#, [file])
+		// TODO: F2 accel
+		addCmd(menu, fileCmds.renameFileCmd(file))
+		addCmd(menu, fileCmds.deleteFileCmd(file))
 
 		menu.addSep
 		addCmd(menu, fileCmds.cutFileCmd(file))
 		addCmd(menu, fileCmds.copyFileCmd(file))
 		addCmd(menu, fileCmds.pasteFileCmd(file))
-		
+
 		menu.addSep
-		addCommand(menu, CopyFileNameCommand#, [file])
-		addCommand(menu, CopyFilePathCommand#, [file])
-		addCommand(menu, CopyFileUriCommand#, [file])
+		addCmd(menu, fileCmds.copyFileNameCmd(file))
+		addCmd(menu, fileCmds.copyFilePathCmd(file))
+		addCmd(menu, fileCmds.copyFileUriCmd(file))
 
 		if (file.isDir) {
 			menu.addSep
-			addCommand(menu, NewFileCommand#, [file])
-			addCommand(menu, NewFolderCommand#, [file])
+			addCmd(menu, fileCmds.newFileCmd(file))
+			addCmd(menu, fileCmds.newFolderCmd(file))
 		}
 		
 		// open
@@ -97,37 +96,8 @@ class FileResource : Resource {
 
 
 class FolderResource : FileResource {
-
 	new make(|This|in) : super.make(in) { }
-
 	override Type? defaultView() {
 		FolderView#
 	}
-	
-	override Menu populatePopup(Menu m) {
-		// FIXME: menu appears twice
-		menu := super.populatePopup(m)
-		
-		addCommand(menu, OpenFileCommand#,		[file])		
-		menu.addSep
-
-		addCommand(menu, RenameFileCommand#,	[file])	// TODO: F2 accel
-		addCommand(menu, DeleteFileCommand#,	[file])
-
-		menu.addSep
-		addCmd(menu, fileCmds.cutFileCmd(file))
-		addCmd(menu, fileCmds.copyFileCmd(file))
-		addCmd(menu, fileCmds.pasteFileCmd(file))
-		
-		menu.addSep
-		addCommand(menu, CopyFileNameCommand#,	[file])
-		addCommand(menu, CopyFilePathCommand#,	[file])
-		addCommand(menu, CopyFileUriCommand#,	[file])
-
-		menu.addSep
-		addCommand(menu, NewFileCommand#,		[file])
-		addCommand(menu, NewFolderCommand#,		[file])
-		
-		return menu 
-	}	
 }
