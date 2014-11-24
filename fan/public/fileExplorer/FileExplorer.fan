@@ -2,17 +2,35 @@ using afIoc
 using gfx
 using fwt
 
-// TODO: convert FileExplorer to a service mixin
-// TODO: move all command actions in here - make a generic command
-class FileExplorer {
+mixin FileExplorer {
+	abstract Void rename(File file)
+	abstract Void delete(File file)
+	abstract Void cut(File file)
+	abstract Void copy(File file)
+	abstract Void paste(File destDir)
+	abstract Void newFile(File containingFolder)
+	abstract Void newFolder(File containingFolder)
+	abstract Void openFile(File file)
+	abstract Image fileToIcon(File f)
+
+	internal abstract FileExplorerOptions options
+
+	static Void main() {
+		Reflux.start([,]) |Reflux reflux| {
+			reflux.showPanel(FoldersPanel#)
+			reflux.load(File.osRoots.first.normalize.uri)
+		}
+	}
+}
 	
+internal class FileExplorerImpl : FileExplorer {
 	@Inject private Registry	registry
 	@Inject private RefluxIcons	icons
 	@Inject private ImageSource	imgSrc
 	@Inject private Reflux		reflux
 					Uri			fileIconsRoot	:= `fan://afReflux/res/icons-file/`
 
-	internal FileExplorerOptions options	
+	override FileExplorerOptions options
 
 	private File? copiedFile
 	private File? cutFile
@@ -22,25 +40,33 @@ class FileExplorer {
 		this.options = registry.autobuild(FileExplorerOptions#)
 	}
 
-	Void rename(File file) {
+	override Void rename(File file) {
 		newName := Dialog.openPromptStr(reflux.window, "Rename", file.name)
 		if (newName != null) {
 			file.rename(newName)
 			reflux.refresh
 		}
 	}
-	
-	Void cut(File file) {
+
+	override Void delete(File file) {
+		okay := Dialog.openQuestion(reflux.window, "Delete ${file.osPath}?", null, Dialog.yesNo)
+		if (okay == Dialog.yes) {
+			file.delete
+			reflux.refresh
+		}
+	}
+
+	override Void cut(File file) {
 		cutFile		= file
 		copiedFile	= null
 	}
 	
-	Void copy(File file) {
+	override Void copy(File file) {
 		cutFile		= null
 		copiedFile	= file
 	}
 
-	Void paste(File destDir) {
+	override Void paste(File destDir) {
 		// TODO: dialog for copy overwrite options
 		if (cutFile != null) {
 			cutFile.moveInto(destDir)
@@ -54,7 +80,27 @@ class FileExplorer {
 		reflux.refresh
 	}
 	
-	Image fileToIcon(File f) {
+	override Void newFile(File containingFolder) {
+		fileName := Dialog.openPromptStr(reflux.window, "New File", "NewFile.txt")
+		if (fileName != null) {
+			containingFolder.createFile(fileName)
+			reflux.refresh
+		}
+	}
+
+	override Void newFolder(File containingFolder) {
+		dirName := Dialog.openPromptStr(reflux.window, "New Folder", "NewFolder")
+		if (dirName != null) {
+			containingFolder.createDir(dirName)
+			reflux.refresh
+		}
+	}
+	
+	override Void openFile(File file) {
+		Desktop.launchProgram(file.uri)
+	}
+	
+	override Image fileToIcon(File f) {
 		hidden := options.isHidden(f)
 
 		if (f.isDir) {
@@ -85,14 +131,6 @@ class FileExplorer {
 	
 	private Image? fileIcon(Str fileName, Bool hidden) {
 		imgSrc.get(fileIconsRoot.plusName(fileName), hidden, false)
-	}
-
-	
-	static Void main() {
-		Reflux.start([,]) |Reflux reflux| {
-			reflux.showPanel(FoldersPanel#)
-			reflux.load(File.osRoots.first.normalize.uri)
-		}
 	}
 }
 

@@ -17,6 +17,8 @@ mixin Reflux {
 	abstract Window window()
 	abstract Void exit()
 	
+	abstract Void copyToClipboard(Str text)
+	
 	static Void start(Type[] modules, |Reflux| onOpen) {
 		registry := RegistryBuilder().addModules([RefluxModule#, ConfigModule#]).addModules(modules).build.startup
 		reflux	 := (Reflux) registry.serviceById(Reflux#.qname)
@@ -95,6 +97,10 @@ internal class RefluxImpl : Reflux {
 	override Void exit() {
 		// TODO: deactivate and hide all panels...? 
 		frame.close
+	}
+	
+	override Void copyToClipboard(Str text) {
+		Desktop.clipboard.setText(text)
 	}
 
 	private Frame frame() {
