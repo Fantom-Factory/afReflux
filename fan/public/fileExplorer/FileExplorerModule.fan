@@ -7,6 +7,7 @@ class FileExplorerModule {
 
 	static Void defineServices(ServiceDefinitions defs) {		
 		defs.add(FileExplorer#)
+		defs.add(FileExplorerCmds#)
 		defs.add(FileExplorerEvents#)
 		defs.add(DefaultResourceViews#)
 		defs.add(DefaultFileViews#)

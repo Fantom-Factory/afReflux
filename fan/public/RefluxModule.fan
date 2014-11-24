@@ -15,7 +15,7 @@ class RefluxModule {
 		defs.add(ImageSource#)
 		defs.add(EventHub#)
 		defs.add(Panels#)
-		defs.add(UriResolvers#).withProxy	// Reflux should really have the proxy
+		defs.add(UriResolvers#)
 		defs.add(LocaleFormat#)
 		defs.add(RefluxIcons#, EclipseIcons#)
 
