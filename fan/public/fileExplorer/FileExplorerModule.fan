@@ -9,7 +9,6 @@ class FileExplorerModule {
 		defs.add(FileExplorer#)
 		defs.add(FileExplorerEvents#)
 		defs.add(FileResolver#)	// TODO: kill the service
-		defs.add(FolderResolver#)// TODO: kill the service
 		defs.add(DefaultResourceViews#)
 		defs.add(DefaultFileViews#)
 	}
@@ -17,7 +16,6 @@ class FileExplorerModule {
 	@Contribute { serviceType=UriResolvers# }
 	internal static Void contributeUriResolvers(Configuration config) {
 		config["file"]		= config.autobuild(FileResolver#)
-		config["folder"]	= config.autobuild(FolderResolver#)
 	}
 
 	@Contribute { serviceType=Panels# }

@@ -7,11 +7,14 @@ using fwt
 class FileExplorer {
 	
 	@Inject private Registry	registry
+	@Inject private RefluxIcons	icons
+	@Inject private ImageSource	imgSrc
 	@Inject private Reflux		reflux
 	@Inject	private Frame		frame
+					Uri			fileIconsRoot	:= `fan://afReflux/res/icons-file/`
 
 	internal FileExplorerOptions options	
-	
+
 	private File? copiedFile
 	private File? cutFile
 
@@ -19,7 +22,7 @@ class FileExplorer {
 		in(this)
 		this.options = registry.autobuild(FileExplorerOptions#)
 	}
-	
+
 	Void rename(File file) {
 		newName := Dialog.openPromptStr(frame, "Rename", file.name)
 		if (newName != null) {
@@ -50,6 +53,40 @@ class FileExplorer {
 		}
 		reflux.refresh
 	}
+	
+	Image fileToIcon(File f) {
+		hidden := options.isHidden(f)
+
+		if (f.isDir) {
+			// can't cache osRoots 'cos it changes with flash drives et al
+			osRoots	:= File.osRoots.map { it.normalize }		
+			return osRoots.contains(f) ? icons.icon("icoFolderRoot", hidden) : icons.icon("icoFolder", hidden)
+		}
+		
+		// look for explicit match based off ext
+		if (f.ext != null) {
+			icon := fileIcon("file${f.ext.capitalize}.png", hidden)
+			if (icon != null) return icon
+		}
+		
+		mimeType := f.mimeType?.noParams
+		if (mimeType != null) {
+			mime := mimeType.mediaType.fromDisplayName.capitalize + mimeType.subType.fromDisplayName.capitalize
+			icon := fileIcon("file${mime}.png", hidden)
+			if (icon != null) return icon
+
+			mime = mimeType.mediaType.fromDisplayName.capitalize
+			icon = fileIcon("file${mime}.png", hidden)
+			if (icon != null) return icon
+		}
+
+		return fileIcon("file.png", hidden)
+	}
+	
+	private Image? fileIcon(Str fileName, Bool hidden) {
+		imgSrc.get(fileIconsRoot.plusName(fileName), hidden, false)
+	}
+
 	
 	static Void main() {
 		Reflux.start([,]) |Registry registry| {

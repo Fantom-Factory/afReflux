@@ -52,7 +52,7 @@ class FoldersPanel : Panel, RefluxEvents {
 	}
 
 	internal Void onSelect(Event event) {
-		file := ((FileNode) event.data).file		
+		file := ((FileNode) event.data).file
 		reflux.load(file.normalize.uri)
 	}
 
@@ -114,7 +114,6 @@ class FoldersPanel : Panel, RefluxEvents {
 }
 
 internal class FoldersTreeModel : TreeModel {
-	@Inject	private  FolderResolver	fileResolver
 	@Inject	private  FileExplorer	fileExplorer
 			override FileNode[]		roots
 			private	 Color			hiddenColour
@@ -125,7 +124,7 @@ internal class FoldersTreeModel : TreeModel {
 		this.hiddenColour = Desktop.sysListFg.lighter(0.5f)
 	}
 	override Str	text(Obj node)			{ n(node).name		}
-	override Image?	image(Obj node)			{ fileResolver.fileToIcon(n(node).file) }
+	override Image?	image(Obj node)			{ fileExplorer.fileToIcon(n(node).file) }
 	override Bool 	hasChildren(Obj node)	{ n(node).hasChildren	}
 	override FileNode[]	children(Obj node)	{ n(node).children	}
 	override Color? fg(Obj node)			{ fileExplorer.options.isHidden(n(node).file) ? hiddenColour : null  }
