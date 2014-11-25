@@ -8,13 +8,16 @@ using concurrent
 ** (Service) - 
 mixin Reflux {
 	
+	abstract Registry registry()
+	
+	abstract Resource? resource()
 	abstract Void load(Uri uri)
 	abstract Void loadResource(Resource resource)
 	abstract Void refresh()
-	abstract Resource? resource()
+	
+	abstract Window window()
 	abstract Panel showPanel(Type panelType)
 	abstract Panel hidePanel(Type panelType)
-	abstract Window window()
 	abstract Void exit()
 	
 	abstract Void copyToClipboard(Str text)
@@ -40,13 +43,14 @@ mixin Reflux {
 internal class RefluxImpl : Reflux {
 	@Inject private UriResolvers	uriResolvers
 	@Inject private RefluxEvents	refluxEvents
+	@Inject override Registry		registry
 			override Resource?		resource
 //	@Autobuild { implType=Frame# }
 			override Window			window
 
-	new make(Registry reg, |This| in) { in(this)
-		// FIXME: IoC Err
-		window = reg.autobuild(Frame#)
+	new make(|This| in) { in(this)
+		// FIXME: IoC Err - autobuild builds twice
+		window = registry.autobuild(Frame#)
 	}
 
 	override Void load(Uri uri) {
@@ -63,7 +67,6 @@ internal class RefluxImpl : Reflux {
 			refluxEvents.onRefresh(resource)
 	}
 	
-	@Inject private Registry	registry
 	@Inject private Panels		panels
 
 	override Panel showPanel(Type panelType) {

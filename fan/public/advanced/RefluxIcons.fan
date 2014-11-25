@@ -3,7 +3,7 @@ using gfx
 
 @NoDoc	// Advanced use only!
 abstract class RefluxIcons {
-	@Inject private Log			log
+	@Inject private const Log	log
 	@Inject private ImageSource imgSrc
 	
 	new make(|This| in) { in(this) }

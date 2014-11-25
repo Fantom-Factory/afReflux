@@ -1,5 +1,6 @@
 using afIoc
 using afBeanUtils
+using fwt
 
 class EventHub {
 	@Inject private Errors	errors
@@ -12,7 +13,7 @@ class EventHub {
 		eventSinks.add(eventSink)
 	}
 
-	Void fireEvent(Method method, Obj?[] args) {
+	Void fireEvent(Method method, Obj?[]? args := null) {
 		sinks := eventSinks.findAll { it.typeof.fits(method.parent) }
 		
 		sinks.each {
@@ -20,5 +21,9 @@ class EventHub {
 			catch (Err err)
 				errors.add(err)
 		}
+	}
+	
+	Void fireEventIn(Duration delay, Method method, Obj?[]? args := null) {
+		Desktop.callLater(delay) |->| { fireEvent(method, args) }
 	}
 }
