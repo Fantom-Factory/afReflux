@@ -16,15 +16,15 @@ class Build : BuildPod {
 		]
 
 		depends = [	
-			"sys 1.0", 
-			"gfx 1.0",
-			"fwt 1.0",
-			"concurrent 1.0",
-//			"flux 1.0",
+			"sys        1.0", 
+			"gfx        1.0",
+			"fwt        1.0",
+			"concurrent 1.0",	// for Actor.sleep when loading images
 			
 			// ---- Core ------------------------
 			"afBeanUtils  1.0", 
 			"afConcurrent 1.0", 
+			"afPlastic    1.0", 
 			"afIoc        2.0.1+", 
 			"afIocConfig  1.0"
 		]

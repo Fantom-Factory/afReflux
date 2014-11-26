@@ -10,21 +10,31 @@ class RefluxModule {
 	
 	static Void defineServices(ServiceDefinitions defs) {
 		defs.add(Reflux#).withProxy
-		defs.add(Errors#)
+		defs.add(Errors#).withProxy
 
 		defs.add(ImageSource#)
 		defs.add(EventHub#)
+		defs.add(EventTypes#)
 		defs.add(Panels#)
 		defs.add(UriResolvers#)
 		defs.add(LocaleFormat#)
 		defs.add(RefluxIcons#, EclipseIcons#)
-
-		defs.add(RefluxEvents#).withProxy
 	}
 	
 	@Contribute { serviceType=Panels# }
 	static Void contributePanels(Configuration config) {
 		config.add(config.autobuild(ErrorsPanel#))
+	}
+
+	@Contribute { serviceType=EventTypes# }
+	static Void contributeEventHub(Configuration config) {
+		config["afReflux.reflux"] = RefluxEvents#
+	}
+
+	@Contribute { serviceType=DependencyProviders# }
+	static Void contributeDependencyProviders(Configuration config) {
+		eventProvider := config.autobuild(EventProvider#)
+		config.set("afReflux.eventProvider", eventProvider).before("afIoc.serviceProvider")
 	}
 
 	@Contribute { serviceType=FactoryDefaults# }

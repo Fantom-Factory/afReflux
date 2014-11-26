@@ -8,19 +8,23 @@ class FileExplorerModule {
 	static Void defineServices(ServiceDefinitions defs) {		
 		defs.add(FileExplorer#)
 		defs.add(FileExplorerCmds#)
-		defs.add(FileExplorerEvents#)
 		defs.add(DefaultResourceViews#)
 		defs.add(DefaultFileViews#)
 	}
 
 	@Contribute { serviceType=UriResolvers# }
 	internal static Void contributeUriResolvers(Configuration config) {
-		config["file"]		= config.autobuild(FileResolver#)
+		config["file"] = config.autobuild(FileResolver#)
 	}
 
 	@Contribute { serviceType=Panels# }
 	static Void contributePanels(Configuration config) {
 		config.add(config.autobuild(FoldersPanel#))
+	}
+	
+	@Contribute { serviceType=EventTypes# }
+	static Void contributeEventHub(Configuration config) {
+		config["afReflux.fileExplorer"] = FileExplorerEvents#
 	}
 
 	@Contribute { serviceType=DefaultResourceViews# }

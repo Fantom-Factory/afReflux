@@ -12,30 +12,3 @@ mixin RefluxEvents {
 	virtual Void onError(Error error)	{ }
 
 }
-
-//FIXME: make am injectale plastic version!
-// private RefluxEvents fireRefluxEvent
-//
-//   fireRefluxEvent.onLoad(file)
-@NoDoc
-class RefluxEventsImpl : RefluxEvents {
-
-	EventHub eventHub
-	
-	new make(EventHub eventHub) {
-		this.eventHub = eventHub
-	}
-	
-	override Void onLoad(Resource resource)	{
-		eventHub.fireEvent(RefluxEvents#onLoad, [resource])
-	}
-	
-	override Void onRefresh(Resource resource)	{
-		eventHub.fireEvent(RefluxEvents#onRefresh, [resource])
-	}
-	
-	override Void onError(Error error)	{
-		eventHub.fireEvent(RefluxEvents#onError, [error])
-	}
-	
-}
