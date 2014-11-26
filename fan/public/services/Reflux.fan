@@ -3,7 +3,6 @@ using afIocConfig
 using afConcurrent
 using gfx
 using fwt
-using concurrent
 
 ** (Service) - 
 mixin Reflux {

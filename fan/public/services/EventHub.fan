@@ -1,12 +1,13 @@
 using afIoc
-using afBeanUtils
 using fwt
 
 class EventHub {
 	@Inject private Errors	errors
 			private Obj[]	eventSinks	:= [,]
 	
-	new make(|This| in) { in(this) }
+	private new make(|This| in) {
+		in(this)
+	}
 
 	// TODO: save into map of sinks, for optomidation
 	Void register(Obj eventSink) {
