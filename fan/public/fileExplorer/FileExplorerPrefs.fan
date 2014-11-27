@@ -1,25 +1,25 @@
 using afIoc
 
-// TODO: save options as ext file?
 @Serializable
 class FileExplorerPrefs {
 
 	@Inject @Transient 
-	private FileExplorerEvents	events
+	private FileExplorerEvents?	events
 	
 	Str:Uri shortcuts := 
+		// FIXME: maps are serialised as ordered
 		Str:Uri[:] { it.ordered=true }
-			.add("My Computer", `file:/C:/`) 
-			.add("My Documents", `file:/C:/Users/${Env.cur.user}/Documents/`) 
-			.add("My Downloads", `file:/C:/Users/${Env.cur.user}/Downloads/`) 
-			.add("C:\\Apps\\fantom-1.0.66", `file:/C:/Apps/fantom-1.0.66/`) 
-			.add("C:\\Projects", `file:/C:/Projects/`) 
-			.add("C:\\Temp", `file:/C:/Temp/`) 
+			// FIXME: These dirs are Windows only
+			.add("My Computer", 	`file:/C:/`) 
+			.add("My Documents",	`file:/C:/Users/${Env.cur.user}/Documents/`) 
+			.add("My Downloads",	`file:/C:/Users/${Env.cur.user}/Downloads/`) 
+			.add("Fantom Home",		Env.cur.homeDir.normalize.uri)
+			.add("Temp", 			`file:/C:/Temp/`) 
 
 	Bool showHiddenFiles	:= false {
 		set {
 			&showHiddenFiles = it
-			events.onShowHiddenFiles(it)
+			events?.onShowHiddenFiles(it)
 		}
 	}
 	
