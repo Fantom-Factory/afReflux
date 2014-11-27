@@ -30,7 +30,7 @@ class FolderView : View, RefluxEvents {
 	override Void update(Resource resource) {
 		super.update(resource)
 		fileResource = (FolderResource) resource
-		model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.options.shouldHide(it) }.map { fileResolver.resolve(it.uri) }
+		model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.preferences.shouldHide(it) }.map { fileResolver.resolve(it.uri) }
 		table.refreshAll
 	}
 
@@ -71,7 +71,7 @@ internal class FolderViewModel : TableModel {
 	override Str header(Int col) { return headers[col] }
 	override Halign halign(Int col) { return col == 1 ? Halign.right : Halign.left }
 	override Int? prefWidth(Int col) { width[col] }
-	override Color? fg(Int col, Int row) { fileExplorer.options.isHidden(fileRes[row].file) ? hiddenColour : null }
+	override Color? fg(Int col, Int row) { fileExplorer.preferences.isHidden(fileRes[row].file) ? hiddenColour : null }
 
 	override Str text(Int col, Int row) {
 		f := fileRes[row]

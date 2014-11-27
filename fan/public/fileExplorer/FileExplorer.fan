@@ -12,8 +12,7 @@ mixin FileExplorer {
 	abstract Void newFolder(File containingFolder)
 	abstract Void openFile(File file)
 	abstract Image fileToIcon(File f)
-
-	internal abstract FileExplorerOptions options
+	abstract FileExplorerPrefs preferences()
 
 	static Void main() {
 		Reflux.start([,]) |Reflux reflux| {
@@ -27,18 +26,14 @@ internal class FileExplorerImpl : FileExplorer {
 	@Inject private Registry	registry
 	@Inject private RefluxIcons	icons
 	@Inject private ImageSource	imgSrc
+	@Inject private PrefsCache	prefsCache
 	@Inject private Reflux		reflux
 					Uri			fileIconsRoot	:= `fan://afReflux/res/icons-file/`
-
-	override FileExplorerOptions options
 
 	private File? copiedFile
 	private File? cutFile
 
-	new make(|This| in) {
-		in(this)
-		this.options = registry.autobuild(FileExplorerOptions#)
-	}
+	new make(|This| in) { in(this) }
 
 	override Void rename(File file) {
 		newName := Dialog.openPromptStr(reflux.window, "Rename", file.name)
@@ -101,7 +96,7 @@ internal class FileExplorerImpl : FileExplorer {
 	}
 	
 	override Image fileToIcon(File f) {
-		hidden := options.isHidden(f)
+		hidden := preferences.isHidden(f)
 
 		if (f.isDir) {
 			// can't cache osRoots 'cos it changes with flash drives et al
@@ -128,63 +123,12 @@ internal class FileExplorerImpl : FileExplorer {
 
 		return fileIcon("file.png", hidden)
 	}
-	
+
+	override FileExplorerPrefs preferences() {
+		prefsCache.loadPrefs(FileExplorerPrefs#)
+	}
+
 	private Image? fileIcon(Str fileName, Bool hidden) {
 		imgSrc.get(fileIconsRoot.plusName(fileName), hidden, false)
 	}
 }
-
-// TODO: save options as ext file - rename as Prefs?
-internal class FileExplorerOptions {
-
-	@Inject private FileExplorerEvents	events
-	
-	new make(|This| in) { in(this) }
-	
-	Str:Uri shortcuts := 
-		Str:Uri[:] { it.ordered=true }
-			.add("My Computer", `file:/C:/`) 
-			.add("My Documents", `file:/C:/Users/${Env.cur.user}/Documents/`) 
-			.add("My Downloads", `file:/C:/Users/${Env.cur.user}/Downloads/`) 
-			.add("C:\\Apps\\fantom-1.0.66", `file:/C:/Apps/fantom-1.0.66/`) 
-			.add("C:\\Projects", `file:/C:/Projects/`) 
-			.add("C:\\Temp", `file:/C:/Temp/`) 
-
-	Bool showHiddenFiles	:= false {
-		set {
-			&showHiddenFiles = it
-			events.onShowHiddenFiles(it)
-		}
-	}
-	
-	Str[] hiddenNameFilters := [
-		"^\\..*\$",
-		"^\\\$.*\$",
-		"^build\$",
-	]
-
-	Str[] hiddenPathFilters := [
-		"^/C:/Boot/\$",
-		"^/C:/Documents and Settings/\$",
-		"^/C:/MSOCache/\$",
-		"^/C:/Program Files/\$",
-		"^/C:/Program Files \\(x86\\)/\$",
-		"^/C:/ProgramData/\$",
-		"^/C:/Recovery/\$",
-		"^/C:/System Volume Information/\$",
-		"^/C:/Users/\$",
-		"^/C:/Windows/\$",
-		"^/C:/bootmgr\$",
-		"^/C:/BOOTSECT.BAK\$",
-	]
-
-	Bool isHidden(File file) {
-		hiddenNameFilters.map { it.toRegex }.any |Regex rex -> Bool| { rex.matches(file.name) } ||
-		hiddenPathFilters.map { it.toRegex }.any |Regex rex -> Bool| { rex.matches(file.uri.pathStr) }
-	}
-
-	Bool shouldHide(File file) {
-		showHiddenFiles ? false : isHidden(file)
-	}
-}
-

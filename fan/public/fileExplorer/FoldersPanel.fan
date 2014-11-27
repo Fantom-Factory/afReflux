@@ -36,7 +36,7 @@ class FoldersPanel : Panel, RefluxEvents {
 			}
 		}
 		
-		shortcuts = fileExplorer.options.shortcuts		
+		shortcuts = fileExplorer.preferences.shortcuts		
 		combo.items = shortcuts.keys
 	}
 
@@ -125,7 +125,7 @@ internal class FoldersTreeModel : TreeModel {
 	override Image?	image(Obj node)			{ fileExplorer.fileToIcon(n(node).file) }
 	override Bool 	hasChildren(Obj node)	{ n(node).hasChildren	}
 	override FileNode[]	children(Obj node)	{ n(node).children	}
-	override Color? fg(Obj node)			{ fileExplorer.options.isHidden(n(node).file) ? hiddenColour : null  }
+	override Color? fg(Obj node)			{ fileExplorer.preferences.isHidden(n(node).file) ? hiddenColour : null  }
 	private  FileNode n(FileNode node)		{ node }
 }
 
@@ -138,7 +138,7 @@ internal class FileNode {
 	FileNode[]? children {
 		get {
 			if (&children == null)
-				&children = map(fe, file.listDirs.sort |f1, f2->Int| { f1.name <=> f2.name }. exclude { fe.options.shouldHide(it) })
+				&children = map(fe, file.listDirs.sort |f1, f2->Int| { f1.name <=> f2.name }. exclude { fe.preferences.shouldHide(it) })
 			return &children
 		}
 	}

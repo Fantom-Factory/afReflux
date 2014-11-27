@@ -5,7 +5,7 @@ using fwt
 internal class PanelTabPane : ContentPane {
 	CTabPane		tabPane		:= CTabPane() { it.onSelect.add |e| { this->onSelect(e) }; it.onClose.add |e| { this->onClose(e) } }
 	PanelTabTuple[]	panelTabs	:= PanelTabTuple[,]	// 'cos I can't use non-const Panel as a key
-	Bool			alwaysShowTabs
+	Bool			alwaysShowTabs	// TODO: alwaysShowTabs
 	
 	new make(Bool visible, Bool alwaysShowTabs, |This|in) {
 		in(this)

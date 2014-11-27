@@ -8,6 +8,8 @@ using fwt
 mixin Reflux {
 	
 	abstract Registry registry()
+
+	abstract RefluxPrefs preferences()
 	
 	abstract Resource? resource()
 	abstract Void load(Uri uri)
@@ -21,6 +23,8 @@ mixin Reflux {
 	abstract Void exit()
 	
 	abstract Void copyToClipboard(Str text)
+	
+//	abstract internal Void startup()
 	
 	static Void start(Type[] modules, |Reflux| onOpen) {
 		registry := RegistryBuilder().addModules([RefluxModule#, ConfigModule#]).addModules(modules).build.startup
@@ -43,6 +47,7 @@ mixin Reflux {
 internal class RefluxImpl : Reflux {
 	@Inject private UriResolvers	uriResolvers
 	@Inject private RefluxEvents	refluxEvents
+	@Inject private PrefsCache		prefsCache
 	@Inject override Registry		registry
 			override Resource?		resource
 //	@Autobuild { implType=Frame# }
@@ -50,7 +55,11 @@ internal class RefluxImpl : Reflux {
 
 	new make(|This| in) { in(this)
 		// FIXME: IoC Err - autobuild builds twice
-		window = registry.autobuild(Frame#)
+		window = registry.autobuild(Frame#, [this])
+	}
+
+	override RefluxPrefs preferences() {
+		prefsCache.loadPrefs(RefluxPrefs#)
 	}
 
 	override Void load(Uri uri) {

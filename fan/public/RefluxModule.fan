@@ -13,6 +13,7 @@ class RefluxModule {
 		defs.add(Errors#).withProxy
 
 		defs.add(ImageSource#)
+		defs.add(PrefsCache#)
 		defs.add(EventHub#)
 		defs.add(EventTypes#)
 		defs.add(Panels#)
