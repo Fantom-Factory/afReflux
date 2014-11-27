@@ -7,8 +7,6 @@ abstract class View : Panel {
 
 	protected new make(|This| in) : super(in) { }
 
-	final override Obj prefAlign() { -1 }
-	
 	override Void onActivate() {
 		super.onActivate
 		if (_resource != null)

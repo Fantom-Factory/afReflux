@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import fan.sys.*;
 import fan.fwt.*;
+import fan.gfx.Valign;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.custom.*;
@@ -20,9 +22,15 @@ public class CTabPanePeer extends WidgetPeer implements SelectionListener {
 	}
 
 	public Widget create(Widget parent) {
-		CTabFolder c = new CTabFolder((Composite) parent, SWT.CLOSE | SWT.FLAT);
-		c.setSimple(false);
-		c.setBorderVisible(true);
+		CTabPane self = (CTabPane) CTabPanePeer.this.self;
+		int style = SWT.CLOSE | SWT.FLAT;
+		if (self.tabsValign.equals(Valign.top))
+			style |= SWT.TOP;
+		if (self.tabsValign.equals(Valign.bottom))
+			style |= SWT.BOTTOM;
+		CTabFolder c = new CTabFolder((Composite) parent, style);
+		c.setSimple(self.simpleTabs);
+		c.setBorderVisible(true);	// the border is on the tab pane - makes them look more like tabs!
 		c.addSelectionListener(this);
 		c.addCTabFolder2Listener(new CTabFolder2Adapter() {
 			public void close(CTabFolderEvent event) {

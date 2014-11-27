@@ -1,4 +1,5 @@
 
+@NoDoc
 const class DefaultFileViews {
 	
 	private const Str:Type extViews
