@@ -124,7 +124,7 @@ internal class FileExplorerImpl : FileExplorer {
 		return fileIcon("file.png", hidden)
 	}
 
-	override FileExplorerPrefs preferences() {
+	override once FileExplorerPrefs preferences() {
 		prefsCache.loadPrefs(FileExplorerPrefs#)
 	}
 

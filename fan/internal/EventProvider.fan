@@ -17,11 +17,11 @@ const class EventProvider : DependencyProvider {
 		injectionCtx.injectingIntoType.pod.name != "afIoc" && 
 		injectionCtx.injectingIntoType != EventTypes# &&
 		injectionCtx.dependencyType != EventTypes# &&
-		eventTypes.eventTypes.contains(injectionCtx.dependencyType)
+		eventTypes.eventTypes.contains(injectionCtx.dependencyType.toNonNullable)
 	}
 
 	override Obj? provide(InjectionCtx injectionCtx) {
-		eventType := injectionCtx.dependencyType
+		eventType := injectionCtx.dependencyType.toNonNullable
 		
 		return cache.getOrAdd(eventType) |->Obj| {
 			model	:= PlasticClassModel("${eventType.name}Impl", false).extend(eventType)

@@ -7,7 +7,7 @@ class PrefsCache {
 	
 	new make(|This| in) { in(this) }
 		
-	Obj loadPrefs(Type prefsType, Str name := prefsType.name) {
+	Obj loadPrefs(Type prefsType, Str name := "${prefsType.name}.fog") {
 		cached	:= loadFromCache(prefsType)
 		
 		if (cached != null) {
@@ -19,7 +19,7 @@ class PrefsCache {
 		prefs 	:= loadFromFile(file)
 
 		if (prefs == null) {
-			log.info("Making preferences: $prefsType.name")
+			log.debug("Making preferences: $prefsType.name")
 			prefs = registry.autobuild(prefsType)
 		}
 
@@ -28,7 +28,7 @@ class PrefsCache {
 		return prefs
 	}
 
-	Void savePrefs(Obj prefs, Str name := prefs.typeof.name) {
+	Void savePrefs(Obj prefs, Str name := "${prefs.typeof.name}.fog") {
 		if (runtimeIsJs) {
 			log.info("Cannot save $name in JS")
 			return 
@@ -41,14 +41,14 @@ class PrefsCache {
 		((CachedPrefs?) cache[prefsType])?.modified ?: true
 	}
 	
-	static File? toFile(Type prefsType, Str name := prefsType.name) {
+	static File? toFile(Type prefsType, Str name := "${prefsType.name}.fog") {
 		pathUri := `etc/${prefsType.pod.name}/${name}`
 		if (runtimeIsJs) {
 			log.info("File $pathUri does not exist in JS")
 			return null
 		}
 		
-		envFile := Env.cur.findFile(pathUri, false) ?: File(pathUri)
+		envFile := Env.cur.findFile(pathUri, false) ?: Env.cur.workDir + pathUri
 		return envFile.normalize	// normalize gives the full absolute path
 	}
 	
@@ -59,13 +59,14 @@ class PrefsCache {
 		modified 	:= cached?.modified ?: true
 		return modified ? null : cached.prefs
 	}
-	
+
 	private Obj? loadFromFile(File? file) {
 		Obj? value := null
 		try {
 			if (file != null && file.exists) {
-				log.info("Loading preferences: $file")
+				log.debug("Loading preferences: $file")
 				value = file.readObj
+				registry.injectIntoFields(value)
 			}
 		} catch (Err e) {
 			log.err("Cannot load options: $file", e)
