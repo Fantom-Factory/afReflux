@@ -12,7 +12,8 @@ internal class Frame : Window, RefluxEvents {
 	@Inject private Uri					appIcon
 
 	@Inject private Registry			registry
-	@Inject private Reflux				reflux
+	@Inject private RefluxEvents		refluxEvents
+			private Reflux				reflux
 			private Obj:PanelTabPane	panelTabs	:= [:]
 			private ViewTabPane			viewTabs
 
@@ -56,10 +57,12 @@ internal class Frame : Window, RefluxEvents {
 	
 	Void showPanel(Panel panel) {
 		panelTabs[prefAlign(panel)].addTab(panel).activate(panel)
+		refluxEvents.onShowPanel(panel)
 	}
 	
 	Void hidePanel(Panel panel) {
 		panelTabs[prefAlign(panel)].activate(null).removeTab(panel)
+		refluxEvents.onHidePanel(panel)
 	}
 	
 	override Void onLoad(Resource resource) {

@@ -1,8 +1,6 @@
 
 mixin RefluxEvents {
 
-	// TODO: virtual Void onAppStartup() 	{ }
-	// TODO: virtual Void onAppShutdown() 	{ }
 	virtual Void onLoad(Resource resource)	{ }
 
 	virtual Void onRefresh(Resource resource) {
@@ -11,4 +9,13 @@ mixin RefluxEvents {
 	
 	virtual Void onError(Error error)	{ }
 
+	virtual Void onShowPanel(Panel panel) { }
+	virtual Void onHidePanel(Panel panel) { }
+	virtual Void onActivatePanel(Panel panel) { }
+	virtual Void onDeactivatePanel(Panel panel) { }
+
+	virtual Void onShowView(View view) { }
+	virtual Void onHideView(View view) { }
+	virtual Void onActivateView(View view) { }
+	virtual Void onDeactivateView(View view) { }
 }

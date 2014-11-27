@@ -26,7 +26,7 @@ How to open extensions -> associate laucnch prog and icon
  
 Can views manipulate the menu / toolbar?
 
-http://www.fantomfactory.org/articles/web-server-in-7-lines has wrong code
+
 
 http://demo.wizzardsoftware.com/attprocess.php
 http://www.wizzardsoftware.com/wizzard_wavefile_factory.php
