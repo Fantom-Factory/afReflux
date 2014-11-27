@@ -11,12 +11,14 @@ internal class Frame : Window, RefluxEvents {
 	@Config
 	@Inject private Uri					appIcon
 
-	@Inject private Registry?			registry
+	@Inject private Registry			registry
+	@Inject private Reflux				reflux
 			private Obj:PanelTabPane	panelTabs	:= [:]
 			private ViewTabPane			viewTabs
 
-	internal new make(|This|in) : super() {
+	internal new make(Reflux reflux, |This|in) : super() {
 		in(this)
+		this.reflux = reflux	// need to pass this in, 'cos it's created in Reflux's ctor
 
 		imageSource	:= (ImageSource) registry.serviceById(ImageSource#.qname)
 		this.title	= appTitle
@@ -29,7 +31,7 @@ internal class Frame : Window, RefluxEvents {
 		panelTabs[Halign.left]	= registry.autobuild(PanelTabPane#, [false, false])
 		panelTabs[Halign.right]	= registry.autobuild(PanelTabPane#, [false, false])
 		panelTabs[Valign.bottom]= registry.autobuild(PanelTabPane#, [false, true])
-		viewTabs				= registry.autobuild(ViewTabPane#)
+		viewTabs				= registry.autobuild(ViewTabPane#, [reflux])
 		
 		navBar := (RefluxBar) registry.autobuild(RefluxBar#)
 		
@@ -53,14 +55,18 @@ internal class Frame : Window, RefluxEvents {
 	}
 	
 	Void showPanel(Panel panel) {
-		panelTabs[panel.prefAlign].addTab(panel).activate(panel)
+		panelTabs[prefAlign(panel)].addTab(panel).activate(panel)
 	}
 	
 	Void hidePanel(Panel panel) {
-		panelTabs[panel.prefAlign].activate(null).removeTab(panel)
+		panelTabs[prefAlign(panel)].activate(null).removeTab(panel)
 	}
 	
 	override Void onLoad(Resource resource) {
 		this.title = "${appTitle} - ${resource.name}" 
-	}	
+	}
+	
+	Obj prefAlign(Panel panel) {
+		reflux.preferences.panelPrefAligns[panel.typeof] ?: panel.prefAlign
+	}
 }

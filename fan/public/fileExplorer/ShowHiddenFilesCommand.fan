@@ -9,11 +9,11 @@ internal class ShowHiddenFilesCommand : RefluxCommand, FileExplorerEvents {
 	new make(EventHub eventHub, |This|in) : super.make(in) {
 		eventHub.register(this)
 		this.mode = CommandMode.toggle
-		this.selected = fileExplorer.options.showHiddenFiles
+		this.selected = fileExplorer.preferences.showHiddenFiles
 	}
 
 	override Void invoked(Event? event) {
-		fileExplorer.options.showHiddenFiles = !fileExplorer.options.showHiddenFiles
+		fileExplorer.preferences.showHiddenFiles = !fileExplorer.preferences.showHiddenFiles
 		reflux.refresh
 	}
 	
