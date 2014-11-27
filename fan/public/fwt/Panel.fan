@@ -14,6 +14,13 @@ abstract class Panel {
 		set { _tab?.remove(&content); _tab?.add(it); &content = it }
 	}
 	
+	** Return this sidebar's preferred alignment which is used to
+	** determine its default position.  Valid values are:
+	**   - Halign.left (default)
+	**   - Halign.right
+	**   - Valign.bottom
+	Obj prefAlign := Halign.left
+
 	Str name := "" {
 		set { &name = it; if (_tab != null) _tab.text = it; showHideCommand.update }
 	}
@@ -36,16 +43,9 @@ abstract class Panel {
 	}
 
 	@PostInjection
-	private Void setup(EventHub eventHub) {
+	private Void _setup(EventHub eventHub) {
 		eventHub.register(this)
 	}
-	
-	** Return this sidebar's preferred alignment which is used to
-	** determine its default position.  Valid values are:
-	**   - Halign.left (default)
-	**   - Halign.right
-	**   - Valign.bottom
-	virtual Obj prefAlign() { Halign.left }
 	
 	** Is the panel currently the active tab?
 	Bool isActive := false { internal set }

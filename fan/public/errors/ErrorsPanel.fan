@@ -13,10 +13,9 @@ internal class ErrorsPanel : Panel, RefluxEvents {
 
 	@Autobuild private ErrorsPanelModel model
 	
-	override Obj	prefAlign	:= Valign.bottom
-
-	new make(|This| in) : super(in) {		
-		content = table = Table {
+	new make(|This| in) : super(in) {
+		prefAlign	= Valign.bottom
+		content		= table = Table {
 			it.multi = true
 			it.onAction.add |e| { this->onAction(e) }
 //			it.onPopup.add	|e| { this.onPopup(e) }

@@ -13,6 +13,7 @@ mixin Reflux {
 	abstract Void load(Uri uri)
 	abstract Void loadResource(Resource resource)
 	abstract Void refresh()
+	abstract Bool loadParent()
 	
 	abstract Window window()
 	abstract Panel showPanel(Type panelType)
@@ -64,6 +65,15 @@ internal class RefluxImpl : Reflux {
 	override Void refresh() {
 		if (resource != null)
 			refluxEvents.onRefresh(resource)
+	}
+	
+	override Bool loadParent() {
+		parent := resource?.uri?.parent
+		if (parent != null && parent.pathOnly != `/`) {
+			load(parent)
+			return true
+		}
+		return false
 	}
 	
 	@Inject private Panels		panels

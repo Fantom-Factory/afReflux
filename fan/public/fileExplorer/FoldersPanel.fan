@@ -12,8 +12,6 @@ class FoldersPanel : Panel, RefluxEvents {
 	@Inject		private FileExplorer		fileExplorer
 	@Autobuild	private FoldersTreeModel	model
 	
-	override Obj	prefAlign	:= Halign.left
-	
 	private Combo combo	:= Combo() { it.onModify.add |e| { this->onModify(e) } }
 	private Str:Uri shortcuts
 	private Int lastComboIndex
@@ -21,6 +19,7 @@ class FoldersPanel : Panel, RefluxEvents {
 	private Tree tree
 		
 	protected new make(|This| in) : super(in) {
+		prefAlign	= Halign.left
 		
 		tree = Tree {
 			it.model = this.model
