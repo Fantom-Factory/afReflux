@@ -77,11 +77,12 @@ internal class RefluxImpl : Reflux {
 	}
 
 	override Void load(Uri uri) {
-		resource = uriResolvers.resolve(uri)
+		this.resource = uriResolvers.resolve(uri)
 		refluxEvents.onLoad(resource)
 	}
 
 	override Void loadResource(Resource resource) {
+		this.resource = resource
 		refluxEvents.onLoad(resource)
 	}
 
