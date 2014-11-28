@@ -6,7 +6,7 @@ class FileExplorerPrefs {
 	@Inject @Transient 
 	private FileExplorerEvents?	events
 	
-	Str:Uri shortcuts := 
+	Str:Uri favourites := 
 		// FIXME: maps are serialised as ordered
 		Str:Uri[:] { it.ordered=true }
 			// FIXME: These dirs are Windows only

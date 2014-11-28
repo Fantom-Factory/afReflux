@@ -1,6 +1,7 @@
 using afIoc
 using gfx
 using fwt
+using afBeanUtils
 
 @NoDoc
 class FoldersPanel : Panel, RefluxEvents {
@@ -12,12 +13,11 @@ class FoldersPanel : Panel, RefluxEvents {
 	@Inject		private FileExplorer		fileExplorer
 	@Autobuild	private FoldersTreeModel	model
 	
-	private Combo combo	:= Combo() { it.onModify.add |e| { this->onModify(e) } }
-	private Str:Uri shortcuts
-	private Int lastComboIndex
-	
-	private Tree tree
-		
+	private Combo	combo	:= Combo() { it.onModify.add |e| { this->onModify(e) } }
+	private Str:Uri	favourites
+	private Int		lastComboIndex
+	private Tree	tree
+
 	protected new make(|This| in) : super(in) {
 		prefAlign	= Halign.left
 		
@@ -36,26 +36,31 @@ class FoldersPanel : Panel, RefluxEvents {
 			}
 		}
 		
-		shortcuts = fileExplorer.preferences.shortcuts		
-		combo.items = shortcuts.keys
+		favourites = fileExplorer.preferences.favourites		
+		combo.items = favourites.keys
+	}
+	
+	Void gotoFavourite(Str favourite) {
+		uri := fileExplorer.preferences.favourites[favourite] ?: throw ArgNotFoundErr("Favourite does not exist: ${favourite}", fileExplorer.preferences.favourites.keys)
+		combo.selected = favourite
 	}
 
-	internal Void onModify(Event event)	{
+	private Void onModify(Event event)	{
 		if (isActive && combo.selectedIndex >= 0) {
 			// this event fires when we switch tabs - then errs when we're not attached! Grr...
 			if (lastComboIndex != combo.selectedIndex) {
 				lastComboIndex  = combo.selectedIndex
-				reflux.load(shortcuts[combo.selected])
+				reflux.load(favourites[combo.selected])
 			}
 		}
 	}
 
-	internal Void onSelect(Event event) {
+	private Void onSelect(Event event) {
 		file := ((FileNode) event.data).file
 		reflux.load(file.normalize.uri)
 	}
 
-	internal Void onPopup(Event event) {
+	private Void onPopup(Event event) {
 		if (event.data == null) return
 		file := ((FileNode) event.data).file
 		res	 := uriResolvers.resolve(file.normalize.uri)
