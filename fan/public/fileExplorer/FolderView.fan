@@ -3,7 +3,7 @@ using gfx
 using fwt
 
 @NoDoc
-class FolderView : View, RefluxEvents {
+class FolderView : View, RefluxEvents, FileExplorerEvents {
 	
 	@Inject private Registry		registry
 	@Inject private Reflux			reflux
@@ -11,11 +11,9 @@ class FolderView : View, RefluxEvents {
 	@Inject private UriResolvers	uriResolvers
 	@Inject	private FileExplorer	fileExplorer
 	@Autobuild private FileResolver	fileResolver
-			private	Table			table
-
 	@Autobuild private FolderViewModel model
-	
-	private FolderResource? fileResource
+			private	Table			table
+			private FolderResource? fileResource
 
 	protected new make(|This| in) : super(in) {
 		content = table = Table {
@@ -32,6 +30,10 @@ class FolderView : View, RefluxEvents {
 		fileResource = (FolderResource) resource
 		model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.preferences.shouldHide(it) }.map { fileResolver.resolve(it.uri) }
 		table.refreshAll
+	}
+	
+	override Void onShowHiddenFiles(Bool show) {
+		update(fileResource)
 	}
 
 	internal Void onPopup(Event event) {

@@ -4,7 +4,7 @@ using fwt
 using afBeanUtils
 
 @NoDoc
-class FoldersPanel : Panel, RefluxEvents {
+class FoldersPanel : Panel, RefluxEvents, FileExplorerEvents {
 	
 	@Inject		private Registry			registry
 	@Inject		private Reflux				reflux
@@ -17,7 +17,8 @@ class FoldersPanel : Panel, RefluxEvents {
 	private Str:Uri	favourites
 	private Int		lastComboIndex
 	private Tree	tree
-
+	private FolderResource? fileResource
+	
 	protected new make(|This| in) : super(in) {
 		prefAlign	= Halign.left
 		
@@ -43,6 +44,13 @@ class FoldersPanel : Panel, RefluxEvents {
 	Void gotoFavourite(Str favourite) {
 		uri := fileExplorer.preferences.favourites[favourite] ?: throw ArgNotFoundErr("Favourite does not exist: ${favourite}", fileExplorer.preferences.favourites.keys)
 		combo.selected = favourite
+	}
+
+	override Void onShowHiddenFiles(Bool show) {
+		// FIXME: don't want to specify this line in every panel!
+		if (!isShowing || !isActive) return
+
+		showFile(fileResource.uri)
 	}
 
 	private Void onModify(Event event)	{
@@ -71,21 +79,21 @@ class FoldersPanel : Panel, RefluxEvents {
 		// FIXME: don't want to specify this line in every panel!
 		if (!isShowing || !isActive) return
 		if (resource isnot FolderResource || !resource.uri.isAbs) return
-		folderResource := (FolderResource) resource
+		fileResource = (FolderResource) resource
 
-		showFile(folderResource.uri)
+		showFile(fileResource.uri)
 	}
 
 	override Void onRefresh(Resource resource)	{
 		// FIXME: don't want to specify this line in every panel!
 		if (!isShowing || !isActive) return
 		if (resource isnot FolderResource || !resource.uri.isAbs) return
-		folderResource := (FolderResource) resource
+		fileResource = (FolderResource) resource
 
 		tree.model = model = registry.autobuild(FoldersTreeModel#)
 		tree.refreshAll
 		Desktop.callLater(50ms) |->| {
-			showFile(folderResource.uri)
+			showFile(fileResource.uri)
 		}
 	}
 	
