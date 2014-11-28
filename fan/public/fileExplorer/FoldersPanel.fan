@@ -50,7 +50,7 @@ class FoldersPanel : Panel, RefluxEvents, FileExplorerEvents {
 		// FIXME: don't want to specify this line in every panel!
 		if (!isShowing || !isActive) return
 
-		showFile(fileResource.uri)
+		onRefresh(fileResource)
 	}
 
 	private Void onModify(Event event)	{
