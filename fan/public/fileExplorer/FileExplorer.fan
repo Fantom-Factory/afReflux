@@ -18,6 +18,7 @@ mixin FileExplorer {
 		Reflux.start([,]) |Reflux reflux| {
 			reflux.showPanel(FoldersPanel#)
 			reflux.load(File.osRoots.first.normalize.uri)
+			Reflux#.pod.log.level = LogLevel.debug
 		}
 	}
 }

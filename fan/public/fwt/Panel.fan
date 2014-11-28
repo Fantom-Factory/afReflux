@@ -4,10 +4,11 @@ using fwt
 
 abstract class Panel {
 
-	@Inject private Registry?		_registry
-	@Inject private Errors? 		_errors
-	@Inject private RefluxIcons?	_icons
-	@Inject private RefluxEvents?	_events
+	@Inject private Log				_log
+	@Inject private Registry		_registry
+	@Inject private Errors 			_errors
+	@Inject private RefluxIcons		_icons
+	@Inject private RefluxEvents	_events
 			private RefluxCommand?	_showHideCommand
 			internal CTab?			_tab
 
@@ -69,18 +70,21 @@ abstract class Panel {
 	override Obj? trap(Str name, Obj?[]? args := null) {
 		if (this is View)
 			switch (name) {
-				case "onShow"		: _events.onShowView(this)
-				case "onHide"		: _events.onHideView(this)
-				case "onActivate"	: _events.onActivateView(this)
-				case "onDeactivate"	: _events.onDeactivateView(this)
+				case #onShow.name		: _events.onShowView(this)
+				case #onHide.name		: _events.onHideView(this)
+				case #onActivate.name	: _events.onActivateView(this)
+				case #onDeactivate.name	: _events.onDeactivateView(this)
 			}
 		else
 			switch (name) {
-				case "onShow"		: _events.onShowPanel(this)
-				case "onHide"		: _events.onHidePanel(this)
-				case "onActivate"	: _events.onActivatePanel(this)
-				case "onDeactivate"	: _events.onDeactivatePanel(this)
+				case #onShow.name		: _events.onShowPanel(this)
+				case #onHide.name		: _events.onHidePanel(this)
+				case #onActivate.name	: _events.onActivatePanel(this)
+				case #onDeactivate.name	: _events.onDeactivatePanel(this)
 			}
+		
+		if (name.startsWith("on"))
+			_log.debug("${name} - $this")
 
 		try return super.trap(name, args)
 		catch(Err err) {
