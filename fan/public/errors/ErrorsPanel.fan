@@ -15,6 +15,7 @@ internal class ErrorsPanel : Panel, RefluxEvents {
 	
 	new make(|This| in) : super(in) {
 		prefAlign	= Valign.bottom
+		prefAlign	= Halign.left
 		content		= table = Table {
 			it.multi = true
 			it.onAction.add |e| { this->onAction(e) }

@@ -54,6 +54,7 @@ internal class PanelTabPane : ContentPane {
 		if (tuple == null)
 			return this
 
+		activate(null)	// deactivate it if its showing
 		panel.isShowing = false
 		panel->onHide
 		panel.showHideCommand.update
@@ -114,6 +115,7 @@ internal class PanelTabPane : ContentPane {
 	Void onClose(Event? event)	{
 		tuple := panelTabs.find { it.tab === event.data }
 		if (tuple?.panel != null) {
+//			activate(null)
 			removeTab(tuple.panel)
 			
 			// we've just removed the tab, so SWT doesn't need to

@@ -20,6 +20,9 @@ mixin Reflux {
 	abstract Window window()
 	abstract Panel showPanel(Type panelType)
 	abstract Panel hidePanel(Type panelType)
+	abstract Panel getPanel(Type panelType)
+	
+	abstract Void closeView(View view)
 	abstract Void exit()
 	
 	abstract Void copyToClipboard(Str text)
@@ -85,10 +88,17 @@ internal class RefluxImpl : Reflux {
 		return false
 	}
 	
+	override Void closeView(View view) {
+		frame.closeView(view)
+	}
+	
 	@Inject private Panels		panels
-
+	override Panel getPanel(Type panelType) {
+		panels.panelMap[panelType]
+	}
+	
 	override Panel showPanel(Type panelType) {
-		panel := panels.panelMap[panelType]
+		panel := getPanel(panelType)
 		
 		if (panel.isShowing)
 			return panel
@@ -105,7 +115,7 @@ internal class RefluxImpl : Reflux {
 	}
 
 	override Panel hidePanel(Type panelType) {
-		panel := panels.panelMap[panelType]
+		panel := getPanel(panelType)
 		
 		if (!panel.isShowing)
 			return panel

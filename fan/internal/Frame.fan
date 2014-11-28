@@ -65,6 +65,10 @@ internal class Frame : Window, RefluxEvents {
 		refluxEvents.onHidePanel(panel)
 	}
 	
+	Void closeView(View view) {
+		viewTabs.removeTab(view)
+	}
+
 	override Void onLoad(Resource resource) {
 		this.title = "${appTitle} - ${resource.name}" 
 	}

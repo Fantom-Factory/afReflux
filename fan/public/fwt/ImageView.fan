@@ -3,23 +3,25 @@ using gfx
 using fwt
 using concurrent
 
-@NoDoc
 class ImageView : View {
 
-	@Inject private RefluxIcons 	icons
-	@Inject private Registry		registry
+	@Inject private RefluxIcons 		icons
+	@Inject private Registry			registry
+			private ImageViewWidget?	imageWidget
 
+	@NoDoc	// Boring!
 	protected new make(|This| in) : super(in) { }
 	
+	** Displays the given 'FileResource' as an image.
 	override Void update(Resource resource) {
 		super.update(resource)
 		fileResource := (FileResource) resource
 		image := loadImage(fileResource.file) 
 
-		imageWidget := ImageViewWidget(image ?: icons["icoImageNotFound"])
+		imageWidget = ImageViewWidget(image ?: icons["icoImageNotFound"])
 		toolBar := ToolBar {
-			it.addCommand(registry.autobuild(ImageFullSizeCommand#, [imageWidget]))
-			it.addCommand(registry.autobuild(ImageFitToWindowCommand#, [imageWidget]))
+			it.addCommand(registry.autobuild(ImageFullSizeCommand#, [this]))
+			it.addCommand(registry.autobuild(ImageFitToWindowCommand#, [this]))
 		}
 
 	    content = EdgePane {
@@ -45,7 +47,17 @@ class ImageView : View {
 	    }		
 	}
 	
-	Image? loadImage(File file) {
+	** Expands or shrinks the image to fit the view.
+	Void fitToWindow() {
+		imageWidget?.doFitToWindow
+	}
+
+	** Displays the image at 100%
+	Void showFullSize() {
+		imageWidget?.doFullSize
+	}
+
+	private Image? loadImage(File file) {
 		image := (Image?) (file.exists ? Image.makeFile(file) : null)
 		
 		if (image != null) {
@@ -83,9 +95,16 @@ internal class ImageViewWidget : Canvas {
 	}
 
 	override Void onPaint(Graphics g) {
+		// centre the image if it's smaller than the view
+		w  := (parent.size.w - (border*2))
+		h  := (parent.size.h - (border*2))
+		dw := (zoom * image.size.w.toFloat).toInt
+		dh := (zoom * image.size.h.toFloat).toInt
+		x  := 0.max((w - dw) / 2)
+		y  := 0.max((h - dh) / 2)
 		g.brush = Color.white
 		g.fillRect(0, 0, size.w, size.h)
-		g.copyImage(image, Rect(0, 0, image.size.w, image.size.h), Rect(border, border, (zoom * image.size.w.toFloat).toInt, (zoom * image.size.h.toFloat).toInt))
+		g.copyImage(image, Rect(0, 0, image.size.w, image.size.h), Rect(x + border, y + border, dw, dh))
 	}
 
 	override Size prefSize(Hints hints := Hints.defVal) { iSize }
@@ -108,27 +127,27 @@ internal class ImageViewWidget : Canvas {
 }
 
 internal class ImageFitToWindowCommand : RefluxCommand {
-	private ImageViewWidget	imageWidget
+	private ImageView	imageView
 
-	new make(ImageViewWidget imageWidget, |This|in) : super.make(in) {
-		this.imageWidget = imageWidget
+	new make(ImageView imageView, |This|in) : super.make(in) {
+		this.imageView = imageView
 		this.name = "Fit to Window"
 	}
 
 	override Void invoked(Event? event) {
-		imageWidget.doFitToWindow
+		imageView.fitToWindow
 	}
 }
 
 internal class ImageFullSizeCommand : RefluxCommand {
-	private ImageViewWidget	imageWidget
+	private ImageView	imageView
 
-	new make(ImageViewWidget imageWidget, |This|in) : super.make(in) {
-		this.imageWidget = imageWidget
+	new make(ImageView imageView, |This|in) : super.make(in) {
+		this.imageView = imageView
 		this.name = "Zoom to 100%"
 	}
 
 	override Void invoked(Event? event) {
-		imageWidget.doFullSize
+		imageView.showFullSize
 	}
 }
