@@ -8,6 +8,7 @@ using fwt
 mixin Reflux {
 	
 	abstract Registry registry()
+	abstract Void callLater(Duration delay, |->| f)
 
 	abstract RefluxPrefs preferences()
 	
@@ -51,6 +52,7 @@ internal class RefluxImpl : Reflux {
 	@Inject private UriResolvers	uriResolvers
 	@Inject private RefluxEvents	refluxEvents
 	@Inject private PrefsCache		prefsCache
+	@Inject private Errors			errors
 	@Inject override Registry		registry
 			override Resource?		resource
 //	@Autobuild { implType=Frame# }
@@ -63,6 +65,15 @@ internal class RefluxImpl : Reflux {
 
 	override RefluxPrefs preferences() {
 		prefsCache.loadPrefs(RefluxPrefs#)
+	}
+
+	override Void callLater(Duration delay, |->| f) {
+		Desktop.callLater(delay) |->| {
+			try f()
+			catch (Err err) {
+				errors.add(err)
+			}
+		}
 	}
 
 	override Void load(Uri uri) {
