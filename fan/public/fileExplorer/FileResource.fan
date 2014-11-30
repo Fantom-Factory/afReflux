@@ -1,9 +1,12 @@
 using afIoc
+using afBeanUtils
 using gfx
 using fwt
 
 class FileResource : Resource {
 
+	@Inject private 		FileExplorer		_fileExplorer
+	@Inject private 		Errors				_errors
 	@Inject protected const Registry			registry
 	@Inject protected const DefaultFileViews	defaultViews
 	@Inject protected 		FileExplorerCmds	fileCmds
@@ -26,9 +29,21 @@ class FileResource : Resource {
 		menu := super.populatePopup(m)
 		
 		if (!file.isDir) {
-			addCmd(menu, fileCmds.openFileCmd(file))		
+			addCmd(menu, fileCmds.openFileCmd(file))
+			
+			fileExt := file.ext.lower
+			prefs	:= _fileExplorer.preferences
+			actions := prefs.fileActions.findAll { it.ext == fileExt }
+			actions.each |action| {
+				launcher := prefs.fileLaunchers.find { it.id == action.launcherId }
+				if (launcher == null)
+					_errors.add(ArgNotFoundErr("Could not find a launcher with id '${action.launcherId}'", prefs.fileLaunchers.map { it.id }))
+				else
+					addCmd(menu, fileCmds.actionFileCmd(file, action, launcher))
+			}
+
 			menu.addSep
-		}
+		}		
 
 		// TODO: F2 accel
 		addCmd(menu, fileCmds.renameFileCmd(file))
@@ -54,9 +69,6 @@ class FileResource : Resource {
 		// open in new tab
 		// edit
 		// find in files
-		// delete
-		// rename
-		// new - file / folder
 		// cmd prompt
 		// add to zip
 		// properties
@@ -84,10 +96,6 @@ class FileResource : Resource {
 		Desktop.launchProgram(uri)
 	}
 	
-	Void addCommand(Menu menu, Type commandType, Obj[]? context := null) {
-		menu.add(MenuItem.makeCommand(registry.autobuild(commandType, context)))
-	}
-
 	Void addCmd(Menu menu, Command cmd) {
 		menu.add(MenuItem.makeCommand(cmd))
 	}

@@ -104,6 +104,16 @@ class FileExplorerCmds {
 		}
 	}
 
+	Command actionFileCmd(File file, FileAction action, FileLauncher laucher) {
+		command("actionFile") {
+			it.name = "${action.verb} with ${laucher.name}"
+			it.icon = refluxIcons.fromUri(laucher.iconUri)
+			it.onInvoke.add {
+				Process([laucher.programUri.toFile.osPath, file.osPath], file.parent).run
+			}
+		}
+	}
+
 	private RefluxCommand command(Str baseName) {
 		((RefluxCommand) registry.autobuild(RefluxCommand#)) {
 			it.name = baseName.toDisplayName
@@ -111,3 +121,4 @@ class FileExplorerCmds {
 		}
 	}
 }
+

@@ -25,6 +25,11 @@ abstract class RefluxIcons {
 	}
 	
 	abstract Uri? iconUri(Str name)
+	
+	Image? fromUri(Uri? icoUri, Bool faded := false, Bool checked := true) {
+		imgSrc.get(icoUri, faded, checked)
+	}
+
 }
 
 @NoDoc
@@ -48,6 +53,7 @@ class EclipseIcons : RefluxIcons {
 		"cmdShowHiddenFiles"	: ``,
 
 		"cmdOpenFile"			: ``,
+		"cmdActionFile"			: ``,
 		"cmdRenameFile"			: ``,
 		"cmdDeleteFile"			: `delete_obj.gif`,
 		"cmdCutFile"			: `cut_edit.gif`,
