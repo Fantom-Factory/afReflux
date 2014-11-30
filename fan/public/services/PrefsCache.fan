@@ -1,9 +1,11 @@
 using afIoc
+using afIocConfig
 
 class PrefsCache {
-	private static const Log 	log 	:= PrefsCache#.pod.log
-	private Type:CachedPrefs	cache	:= Type:CachedPrefs[:]
-	@Inject private Registry	registry
+			private static const Log 	log 	:= PrefsCache#.pod.log
+			private Type:CachedPrefs	cache	:= Type:CachedPrefs[:]
+	@Inject private Registry			registry
+	@Inject @Config private Str			appTitle
 	
 	new make(|This| in) { in(this) }
 		
@@ -41,8 +43,8 @@ class PrefsCache {
 		((CachedPrefs?) cache[prefsType])?.modified ?: true
 	}
 	
-	static File? toFile(Type prefsType, Str name := "${prefsType.name}.fog") {
-		pathUri := `etc/${prefsType.pod.name}/${name}`
+	File? toFile(Type prefsType, Str name := "${prefsType.name}.fog") {
+		pathUri := `etc/${appTitle}/${name}`
 		if (runtimeIsJs) {
 			log.info("File $pathUri does not exist in JS")
 			return null

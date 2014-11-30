@@ -25,25 +25,23 @@ class FileExplorerPrefs {
 	
 	Str[] hiddenNameFilters := [
 		"^\\..*\$",
-		"^\\\$.*\$",
-		"^build\$",
+		"^\\\$.*\$"
 	]
 
 	Str[] hiddenPathFilters := [
 		"^/C:/Boot/\$",
-		"^/C:/Documents and Settings/\$",
 		"^/C:/MSOCache/\$",
-		"^/C:/Program Files/\$",
-		"^/C:/Program Files \\(x86\\)/\$",
 		"^/C:/ProgramData/\$",
 		"^/C:/Recovery/\$",
 		"^/C:/System Volume Information/\$",
-		"^/C:/Users/\$",
-		"^/C:/Windows/\$",
 		"^/C:/bootmgr\$",
 		"^/C:/BOOTSECT.BAK\$",
 	]
-
+	
+	FileLauncher[] fileLaunchers := [,]
+	
+	FileAction[] fileActions := [,]
+	
 	new make(|This|? f := null) { f?.call(this) }
 
 	Bool isHidden(File file) {
@@ -54,4 +52,22 @@ class FileExplorerPrefs {
 	Bool shouldHide(File file) {
 		showHiddenFiles ? false : isHidden(file)
 	}
+}
+
+
+@Serializable
+class FileAction {
+	Str 	verb
+	Str		ext
+	Str		launcherId
+	new make(|This|? f := null) { f?.call(this) }
+}
+
+@Serializable
+class FileLauncher {
+	Str 	id
+	Str 	name
+	Uri		iconUri
+	Uri		programUri
+	new make(|This|? f := null) { f?.call(this) }
 }
