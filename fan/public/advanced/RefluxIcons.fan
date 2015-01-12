@@ -39,8 +39,7 @@ class EclipseIcons : RefluxIcons {
 		"cmdAbout"				: `fan://icons/x16/flux.png`,
 		"cmdRefresh"			: `nav_refresh.gif`,
 		"cmdParent"				: `up_nav.gif`,
-		"cmdShowHidePanel"		: ``,
-		"cmdReflux"				: ``,	// the default img -> should always be null
+//		"cmdReflux"				: ``,	// the default img -> should always be null
 		
 		"icoErrorsPanel"		: `error_log.gif`,
 		
@@ -51,8 +50,6 @@ class EclipseIcons : RefluxIcons {
 		"icoImageView"			: `image_obj.gif`,
 		"icoTextEditorView"		: `file_obj.gif`,
 		
-		"cmdShowHiddenFiles"	: ``,
-
 		"cmdOpenFile"			: ``,
 		"cmdActionFile"			: ``,
 		"cmdRenameFile"			: ``,

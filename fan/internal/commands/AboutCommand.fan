@@ -2,11 +2,11 @@ using afIoc
 using gfx
 using fwt
 
-internal class AboutCommand : RefluxCommand {
+internal class AboutCommand : GlobalCommand {
 	
-	new make(|This|in) : super.make(in) { }
+	new make(|This|in) : super.make("afReflux.cmdAbout", in) { }
 	
-	override Void invoked(Event? event) {
+	override Void onInvoke(Event? event) {
 		icon	:= Pod.find("icons").file(`/x48/flux.png`)
 		big		:= Font { it.name=Desktop.sysFont.name; it.size=Desktop.sysFont.size+(Desktop.isMac ? 2 : 3); it.bold=true }
 		small	:= Font { it.name=Desktop.sysFont.name; it.size=Desktop.sysFont.size-(Desktop.isMac ? 3 : 1) }
@@ -32,7 +32,7 @@ internal class AboutCommand : RefluxCommand {
 				 Licensed under the MIT Licence"
 			},
 		}
-		d := Dialog(window) { title="About Flux"; body=content; commands=[Dialog.ok] }
+		d := Dialog(command.window) { title="About Flux"; body=content; commands=[Dialog.ok] }
 		d.open
 	}
 }

@@ -2,20 +2,19 @@ using afIoc
 using gfx
 using fwt
 
-internal class ParentCommand : RefluxCommand, RefluxEvents {
+internal class ParentCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux reflux
 	
-	new make(EventHub eventHub, |This|in) : super.make(in) {
+	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdParent", in) {
 		eventHub.register(this)
-		this.name = "Up Folder"
 	}
 	
-	override Void invoked(Event? event) {
+	override Void onInvoke(Event? event) {
 		reflux.loadParent
 	}
 	
 	override Void onLoad(Resource resource)	{
 		parent := resource.uri.parent
-		enabled = parent != null && parent.pathOnly != `/`
+		command.enabled = parent != null && parent.pathOnly != `/`
 	}
 }

@@ -82,6 +82,11 @@ class FileResource : Resource {
 			super.doAction
 			return
 		}
+
+		if (file.isDir) {
+			super.doAction
+			return			
+		}
 		
 		// else launch it
 		Desktop.launchProgram(uri)
