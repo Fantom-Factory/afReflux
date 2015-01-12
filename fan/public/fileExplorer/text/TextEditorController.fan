@@ -12,12 +12,12 @@ using fwt
 **
 ** TextEditorController manages user events on the text editor.
 **
-internal class TextEditorController : TextEditorSupport
-{
-
-//////////////////////////////////////////////////////////////////////////
-// Constructor
-//////////////////////////////////////////////////////////////////////////
+internal class TextEditorController : TextEditorSupport {
+	
+	override TextEditorView editor { private set }
+	Int		caretLine
+	Int		caretCol
+	Bool	inUndo := false
 
 	new make(TextEditorView editor) { this.editor = editor }
 
@@ -26,7 +26,6 @@ internal class TextEditorController : TextEditorSupport
 //////////////////////////////////////////////////////////////////////////
 
 	Void register() {
-	
 		richText.onVerifyKey.add { onVerifyKey(it) }
 		richText.onVerify.add { onVerify(it) }
 		richText.onModify.add { onModified(it) }
@@ -35,33 +34,28 @@ internal class TextEditorController : TextEditorSupport
 	}
 
 	Void onVerifyKey(Event event) {
-	
 		checkBlockIndent(event)
 	}
 
 	Void onVerify(Event event) {
-	
 		clearBraceMatch
 		checkTabConvert(event.data)
 		checkAutoIndent(event)
 	}
 
 	Void onModified(Event event) {
-	
 		pushUndo(event.data)
 		// FIXME: dirty
 //		editor.dirty = true
 	}
 
 	Void onCaret(Event event) {
-	
 		updateCaretPos
 		updateCaretStatus
 		checkBraceMatch(event)
 	}
 
 	Void onFocus(Event event) {
-	
 		checkFileOutOfDate
 	}
 
@@ -70,7 +64,6 @@ internal class TextEditorController : TextEditorSupport
 //////////////////////////////////////////////////////////////////////////
 
 	Void updateCaretPos() {
-	
 		offset := editor.richText.caretOffset
 		this.caretLine = doc.lineAtOffset(offset)
 		this.caretCol	= offset-doc.offsetAtLine(caretLine)
@@ -78,7 +71,6 @@ internal class TextEditorController : TextEditorSupport
 	}
 
 	Void updateCaretStatus() {
-	
 		try {
 		
 			editor.caretField.text = "${(caretLine+1)}:${caretCol+1}"
@@ -92,7 +84,6 @@ internal class TextEditorController : TextEditorSupport
 //////////////////////////////////////////////////////////////////////////
 
 	Void checkTabConvert(TextChange tc) {
-	
 		if (!options.convertTabsToSpaces) return
 		if (!tc.newText.containsChar('\t')) return
 
@@ -107,7 +98,6 @@ internal class TextEditorController : TextEditorSupport
 //////////////////////////////////////////////////////////////////////////
 
 	internal Void checkAutoIndent(Event event) {
-	
 		// we only auto-indent on return/enter
 		TextChange tc := event.data
 		if (tc.newText != "\n") return
@@ -126,7 +116,6 @@ internal class TextEditorController : TextEditorSupport
 	}
 
 	Void checkBlockIndent(Event event) {
-	
 		// check if tab or shift+tab
 		indent := event.key == blockIndentKey
 		unindent := event.key == blockUnindentKey
@@ -136,8 +125,8 @@ internal class TextEditorController : TextEditorSupport
 		// we don't really count the last line if the selection is at first col
 		selStart	:= richText.selectStart
 		selEnd		:= selStart + richText.selectSize
-		startLine := doc.lineAtOffset(selStart)
-		endLine	 := doc.lineAtOffset(selEnd)
+		startLine	:= doc.lineAtOffset(selStart)
+		endLine		:= doc.lineAtOffset(selEnd)
 		if (startLine == endLine) return
 		if (selEnd == doc.offsetAtLine(endLine)) --endLine
 
@@ -150,13 +139,10 @@ internal class TextEditorController : TextEditorSupport
 		(startLine..endLine).each |Int i| {
 		
 			line := doc.line(i)
-			if (indent)
-			{
+			if (indent) {
 				// indent
 				s.add(ws).add(line).addChar('\n')
-			}
-			else
-			{
+			} else {
 				// unindent
 				if (line.startsWith(ws)) line = line[ws.size..-1]
 				else line = line.trimStart
@@ -180,7 +166,6 @@ internal class TextEditorController : TextEditorSupport
 //////////////////////////////////////////////////////////////////////////
 
 	Void pushUndo(TextChange tc) {
-	
 		// FIXME: undo stack
 //		if (!inUndo) editor.commandStack.push(TextChangeCommand(tc))
 	}
@@ -190,7 +175,6 @@ internal class TextEditorController : TextEditorSupport
 //////////////////////////////////////////////////////////////////////////
 
 	Void clearBraceMatch() {
-	
 		if (doc.bracketLine1 == null) return
 		oldLine1 := doc.bracketLine1
 		oldLine2 := doc.bracketLine2
@@ -201,7 +185,6 @@ internal class TextEditorController : TextEditorSupport
 	}
 
 	Void checkBraceMatch(Event event) {
-	
 		// clear old brace match
 		clearBraceMatch
 
@@ -231,7 +214,6 @@ internal class TextEditorController : TextEditorSupport
 //////////////////////////////////////////////////////////////////////////
 
 	Void checkFileOutOfDate() {
-	
 		// on focus always check if the file has been modified
 		// from out from under us and ask user if they want to reload
 		if (editor.fileTimeAtLoad == editor.file.modified) return
@@ -287,13 +269,4 @@ internal class TextEditorController : TextEditorSupport
 //		if (line < 0) line = 0
 //		richText.select(doc.offsetAtLine(line), 0)
 	}
-
-//////////////////////////////////////////////////////////////////////////
-// Fields
-//////////////////////////////////////////////////////////////////////////
-
-	override TextEditorView editor { private set }
-	Int caretLine
-	Int caretCol
-	Bool inUndo := false
 }
