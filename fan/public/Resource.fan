@@ -20,10 +20,11 @@ abstract class Resource {
 
 	** By populating an existing menu, it allows Panels to create the initial menu. 
 	virtual Menu populatePopup(Menu menu) {
-		serviceId := this.typeof.qname.replace("::", ".") + ".popupMenu"
-		menuItems := (MenuItem[]?) _registry.buildService(serviceId, false)
-		if (menuItems != null)
-			menu.addAll(menuItems)
+		// FIXME:
+//		serviceId := this.typeof.qname.replace("::", ".") + ".popupMenu"
+//		menuItems := (MenuItem[]?) _registry.buildService(serviceId, false)
+//		if (menuItems != null)
+//			menu.addAll(menuItems)
 		return menu 
 	}
 

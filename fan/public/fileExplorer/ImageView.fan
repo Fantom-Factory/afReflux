@@ -3,6 +3,7 @@ using gfx
 using fwt
 using concurrent
 
+** (View) - A 'View' that displays images. 
 class ImageView : View {
 
 	@Inject private RefluxIcons 		icons
@@ -13,8 +14,8 @@ class ImageView : View {
 	protected new make(|This| in) : super(in) { }
 	
 	** Displays the given 'FileResource' as an image.
-	override Void update(Resource resource) {
-		super.update(resource)
+	override Void load(Resource resource) {
+		super.load(resource)
 		fileResource := (FileResource) resource
 		image := loadImage(fileResource.file) 
 

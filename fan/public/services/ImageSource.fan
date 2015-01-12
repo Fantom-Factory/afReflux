@@ -1,7 +1,17 @@
 using afIoc
 using gfx::Image
 
-class ImageSource {
+** (Service) - Creates and caches images; disposes them on registry shutdown. 
+mixin ImageSource {
+	
+	abstract internal Void disposeOfImages()
+	
+	abstract Void stash(Image image)
+	
+	abstract Image? get(Uri? icoUri, Bool faded, Bool checked := true)
+}
+
+internal class ImageSourceImpl : ImageSource {
 	@Inject private Log			log
 			private Uri:Image	images		:= Uri:Image[:]
 			private Uri:Image	fadedImages	:= Uri:Image[:]
@@ -9,18 +19,18 @@ class ImageSource {
 
 	new make(|This| in) { in(this) }
 
-	internal Void disposeOfImages() {
+	override internal Void disposeOfImages() {
 		images.vals.each { it.dispose }
 		images.clear
 		extra.each { it.dispose }
 		extra.clear
 	}
 
-	Void stash(Image image) {
+	override Void stash(Image image) {
 		extra.add(image)
 	}
 	
-	Image? get(Uri? icoUri, Bool faded, Bool checked := true) {
+	override Image? get(Uri? icoUri, Bool faded, Bool checked := true) {
 		if (icoUri == null)
 			return null
 		try {
@@ -41,6 +51,4 @@ class ImageSource {
 			return null
 		}
 	}
-	
-	
 }

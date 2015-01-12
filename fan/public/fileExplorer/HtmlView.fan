@@ -2,7 +2,7 @@ using afIoc
 using gfx
 using fwt
 
-@NoDoc
+** (View) - A 'View' that displays HTML. 
 class HtmlView : View {
 	@Inject private Reflux	 	reflux
 			private WebBrowser?	browser
@@ -10,8 +10,8 @@ class HtmlView : View {
 
 	protected new make(|This| in) : super(in) { }
 
-	override Void update(Resource resource) {
-		super.update(resource)
+	override Void load(Resource resource) {
+		super.load(resource)
 		this.resource = resource
 
 		browser = WebBrowser() {

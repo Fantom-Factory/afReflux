@@ -31,6 +31,6 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		
 		super.activate(view)
 		view._resource = resource
-		view.update(resource)		
+		view.load(resource)		
 	}
 }
