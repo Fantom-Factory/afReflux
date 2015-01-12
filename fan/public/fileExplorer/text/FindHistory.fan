@@ -37,7 +37,6 @@ class FindHistory {
 	** Return this.
 	**
 	This pushFind(Str s) {
-	
 		if (s.size == 0) return this
 
 		// remove first so it bubbles to top
@@ -52,7 +51,6 @@ class FindHistory {
 	** Return this.
 	**
 	This pushDir(Uri u) {
-	
 		if (!u.isDir) throw ArgErr("Uri must be a directory: $u")
 
 		// remove first so it bubbles to top
@@ -68,7 +66,6 @@ class FindHistory {
 	** item is the oldest query.
 	**
 	Str[] find() {
-	
 		return findList.ro
 	}
 
@@ -78,7 +75,6 @@ class FindHistory {
 	** last item is the oldest query.
 	**
 	Uri[] dir() {
-	
 		return dirList.ro
 	}
 
@@ -86,7 +82,6 @@ class FindHistory {
 	** Convenience to return [dir]`FindHistory.dir` as a 'Str[]'.
 	**
 	Str[] dirAsStr() {
-	
 		dirList.map |Uri u->Str| { u.toStr }
 	}
 

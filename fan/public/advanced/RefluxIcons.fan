@@ -49,6 +49,7 @@ class EclipseIcons : RefluxIcons {
 		"icoFoldersPanel"		: `filenav_nav.gif`,
 		"icoFolderView"			: `fldr_obj.gif`,
 		"icoImageView"			: `image_obj.gif`,
+		"icoTextEditorView"		: `file_obj.gif`,
 		
 		"cmdShowHiddenFiles"	: ``,
 

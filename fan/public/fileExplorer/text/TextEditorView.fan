@@ -23,8 +23,8 @@ class TextEditorView : View {
 		
 	}
 	
-	override Void onActivate() {
-		super.onActivate
+	override Void onShow() {
+		super.onShow
 		
 //		frame.command(CommandId.find).enabled = true
 //		frame.command(CommandId.findNext).enabled = true
@@ -37,11 +37,11 @@ class TextEditorView : View {
 //		topLine := Actor.locals["fluxText.topLine.$resource.uri"]
 //		if (caretOffset != null) richText.caretOffset = caretOffset
 //		if (topLine != null) richText.topLine = topLine
-		richText.focus
+		richText?.focus
 	}
 	
-	override Void onDeactivate() {
-		super.onDeactivate
+	override Void onHide() {
+		super.onHide
 		
 		// save viewport and caret position
 //		Actor.locals["fluxText.caretOffset.$resource.uri"] = richText.caretOffset
@@ -49,6 +49,8 @@ class TextEditorView : View {
 	}
 	
 	override Void load(Resource resource) {
+		super.load(resource)
+
 		// init
 		file = resource->file
 
@@ -69,22 +71,20 @@ class TextEditorView : View {
 		// update ui
 		find = FindBar(this)
 		content = BorderPane {
-		
 			it.content	= richText
 			it.border	 = Border("1,0,1,1 $Desktop.sysNormShadow")
 		}
+		richText.focus
 	}
 
 	
 	
 	internal Void loadDoc() {
-	
 		// read document into memory, if we fail with the
 		// configured charset, then fallback to ISO 8859-1
 		// which will always "work" since it is byte based
 		lines := readAllLines
 		if (lines == null) {
-		
 			charset = Charset.fromStr("ISO-8859-1")
 			lines	 = readAllLines
 		}
@@ -94,8 +94,7 @@ class TextEditorView : View {
 
 		// figure out what syntax file to use
 		// based on file extension and shebang
-		rules = SyntaxRules.loadForFile(file, lines.first)
-		if (rules == null) rules = SyntaxRules {}
+		rules = SyntaxRules.loadForFile(file, lines.first) ?: SyntaxRules()
 
 		// load document
 		doc = TextDoc(options, rules)
@@ -103,14 +102,10 @@ class TextEditorView : View {
 	}
 
 	private Str[]? readAllLines() {
-	
 		in := file.in { it.charset = this.charset }
-		try
-			return in.readAllLines
-		catch
-			return null
-		finally
-			in.close
+		try		return in.readAllLines
+		catch	return null
+		finally	in.close
 	}
 
 //////////////////////////////////////////////////////////////////////////
@@ -146,6 +141,7 @@ class TextEditorView : View {
 //		}
 //	}
 //
+//	FIXME: status bar
 //	override Widget? buildStatusBar() {
 //		controller.updateCaretStatus()
 //		return GridPane {
