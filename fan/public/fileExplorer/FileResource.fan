@@ -77,22 +77,13 @@ class FileResource : Resource {
 	}
 	
 	override Void doAction() {
-		// FIXME: specify def action for mimetype / ext
-		if (uri.isDir) {
+		// show view if there is one 
+		if (defaultViews[file.ext] != null) {
 			super.doAction
 			return
 		}
 		
-		if (uri.mimeType?.mediaType == "image") {
-			super.doAction
-			return
-		}
-
-		if (uri.mimeType?.noParams == MimeType("text/html")) {
-			super.doAction
-			return
-		}
-		
+		// else launch it
 		Desktop.launchProgram(uri)
 	}
 	

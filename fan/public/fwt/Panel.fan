@@ -54,7 +54,7 @@ abstract class Panel {
 
 	** Is the panel currently showing in the frame?
 	Bool isShowing := false { internal set }
-	
+
 	** Callback when this panel is shown.
 	virtual Void onShow() {}
 

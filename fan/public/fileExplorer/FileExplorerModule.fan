@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+// FIXME: Move to a RefluxExplorer pod
 @NoDoc
 class FileExplorerModule {
 
@@ -30,6 +31,8 @@ class FileExplorerModule {
 	@Contribute { serviceType=DefaultResourceViews# }
 	static Void contributeDefaultResourceViews(Configuration config) {
 		config[FolderResource#]	= FolderView#
+
+		config[FileResource#]	= TextEditorView#
 	}
 
 	@Contribute { serviceType=DefaultFileViews# }
@@ -41,6 +44,10 @@ class FileExplorerModule {
 
 		config["htm"]	= HtmlView#
 		config["html"]	= HtmlView#
+
+		// TODO: Have file actions and DEFAULT file actions
+		config["txt"]	= TextEditorView#
+		config["xml"]	= TextEditorView#
 	}
 
 	// ---- Reflux Tool Bar -----------------------------------------------------------------------

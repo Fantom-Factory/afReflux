@@ -13,7 +13,7 @@ abstract class View : Panel {
 			_reflux.loadResource(_resource)
 	}
 
-	virtual Void update(Resource resource) {
+	virtual Void load(Resource resource) {
 		super.icon = resource.icon
 		super.name = resource.name
 	}

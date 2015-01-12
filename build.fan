@@ -19,6 +19,9 @@ class Build : BuildPod {
 			"sys        1.0", 
 			"gfx        1.0",
 			"fwt        1.0",
+			"syntax     1.0",
+//			"flux       1.0",
+//			"fluxText   1.0",
 			"concurrent 1.0",	// for Actor.sleep when loading images
 			
 			// ---- Core ------------------------
@@ -29,7 +32,7 @@ class Build : BuildPod {
 			"afIocConfig  1.0"
 		]
 
-		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/fileExplorer/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`]
+		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/fileExplorer/`, `fan/public/fileExplorer/text/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`]
 		resDirs = [`res/icons-eclipse/`, `res/icons-file/`]
 		
 		javaDirs = [`java/`]

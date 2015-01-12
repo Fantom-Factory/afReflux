@@ -25,15 +25,15 @@ class FolderView : View, RefluxEvents, FileExplorerEvents {
 		}
 	}
 	
-	override Void update(Resource resource) {
-		super.update(resource)
+	override Void load(Resource resource) {
+		super.load(resource)
 		fileResource = (FolderResource) resource
 		model.fileRes = fileResource.file.listDirs.addAll(fileResource.file.listFiles).exclude { fileExplorer.preferences.shouldHide(it) }.map { fileResolver.resolve(it.uri) }
 		table.refreshAll
 	}
 	
 	override Void onShowHiddenFiles(Bool show) {
-		update(fileResource)
+		load(fileResource)
 	}
 
 	internal Void onPopup(Event event) {
