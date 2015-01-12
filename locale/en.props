@@ -1,0 +1,11 @@
+
+// ---- Global Commands ----
+
+afReflux.cmdAbout.name				= About
+afReflux.cmdExit.name				= Exit
+afReflux.cmdParent.name				= Up Folder
+afReflux.cmdRefresh.name			= Refresh
+
+
+#afReflux.cmdAbout.icon				= 
+#afReflux.cmdAbout.accelerator		= 

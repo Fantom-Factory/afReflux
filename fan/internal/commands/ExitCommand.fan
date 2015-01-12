@@ -2,12 +2,12 @@ using afIoc
 using gfx
 using fwt
 
-internal class ExitCommand : RefluxCommand {
+internal class ExitCommand : GlobalCommand {
 	@Inject	private Reflux reflux
 	
-	new make(|This|in) : super.make(in) { }
+	new make(|This|in) : super.make("afReflux.cmdExit", in) { }
 
-	override Void invoked(Event? event) {
+	override Void onInvoke(Event? event) {
 //		dirty := frame.views.findAll |View v->Bool| { return v.dirty }
 //		if (dirty.size > 0) {
 //			grid := GridPane { Label { text=Flux.locale("saveChanges"); font=Desktop.sysFont.toBold },}

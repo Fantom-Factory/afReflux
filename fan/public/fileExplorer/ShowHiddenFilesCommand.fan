@@ -8,6 +8,7 @@ internal class ShowHiddenFilesCommand : RefluxCommand, FileExplorerEvents {
 
 	new make(EventHub eventHub, |This|in) : super.make(in) {
 		eventHub.register(this)
+		this.name = "Show Hidden Files"
 		this.mode = CommandMode.toggle
 		this.selected = fileExplorer.preferences.showHiddenFiles
 	}

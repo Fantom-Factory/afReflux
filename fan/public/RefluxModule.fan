@@ -20,6 +20,8 @@ class RefluxModule {
 		defs.add(UriResolvers#)
 		defs.add(LocaleFormat#)
 		defs.add(RefluxIcons#, EclipseIcons#)
+
+		defs.add(GlobalCommands#)
 	}
 	
 	@Contribute { serviceType=Panels# }
@@ -36,6 +38,14 @@ class RefluxModule {
 	static Void contributeDependencyProviders(Configuration config) {
 		eventProvider := config.autobuild(EventProvider#)
 		config.set("afReflux.eventProvider", eventProvider).before("afIoc.serviceProvider")
+	}
+
+	@Contribute { serviceType=GlobalCommands# }
+	static Void contributeGlobalCommands(Configuration config) {
+		config["afReflux.cmdAbout"]		= config.autobuild(AboutCommand#)
+		config["afReflux.cmdExit"]		= config.autobuild(ExitCommand#)
+		config["afReflux.cmdParent"]	= config.autobuild(ParentCommand#)
+		config["afReflux.cmdRefresh"]	= config.autobuild(RefreshCommand#)
 	}
 
 	@Contribute { serviceType=FactoryDefaults# }
@@ -102,13 +112,13 @@ class RefluxModule {
 	}
 
 	@Contribute { serviceId="afReflux.fileMenu" }
-	static Void contributeFileMenu(Configuration config) {
-		config["afReflux.exit"]		= menuCommand(config, ExitCommand#)
+	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
+		config["afReflux.exit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
 	}
 
 	@Contribute { serviceId="afReflux.helpMenu" }
-	static Void contributeHelpMenu(Configuration config) {
-		config["afReflux.about"]	= menuCommand(config, AboutCommand#)
+	static Void contributeHelpMenu(Configuration config, GlobalCommands globalCmds) {
+		config["afReflux.about"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
 	}
 
 	
@@ -121,10 +131,10 @@ class RefluxModule {
 	}
 
 	@Contribute { serviceId="afReflux.toolBar" }
-	static Void contributeToolBar(Configuration config) {
-		config["afReflux.refresh"]		= toolBarCommand(config, RefreshCommand#)
+	static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
+		config["afReflux.refresh"]		= toolBarCommand(globalCmds["afReflux.cmdRefresh"].command)
 		config["afReflux.uriWidget"]	= config.autobuild(UriWidget#)
-		config["afReflux.parent"]		= toolBarCommand(config, ParentCommand#)
+		config["afReflux.parent"]		= toolBarCommand(globalCmds["afReflux.cmdParent"].command)
 	}
 	
 	
@@ -141,12 +151,12 @@ class RefluxModule {
 		}
 	}
 
+	@Deprecated
 	private static MenuItem menuCommand(Configuration config, Type cmdType) {
 		MenuItem.makeCommand(config.autobuild(cmdType))
 	}
 
-	private static Button toolBarCommand(Configuration config, Type cmdType) {
-		command	:= (Command) config.autobuild(cmdType)
+	private static Button toolBarCommand(Command command) {
 	    button  := Button.makeCommand(command)
 	    if (command.icon != null)
 	    	button.text = ""

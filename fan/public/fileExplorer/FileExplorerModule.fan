@@ -46,8 +46,16 @@ class FileExplorerModule {
 		config["html"]	= HtmlView#
 
 		// TODO: Have file actions and DEFAULT file actions
-		config["txt"]	= TextEditorView#
-		config["xml"]	= TextEditorView#
+//		config["htm"]		= TextEditorView#
+//		config["html"]		= TextEditorView#
+		config["fan"]		= TextEditorView#
+		config["fog"]		= TextEditorView#
+		config["fdoc"]		= TextEditorView#
+		config["fandoc"]	= TextEditorView#
+		config["js"]		= TextEditorView#
+		config["md"]		= TextEditorView#
+		config["txt"]		= TextEditorView#
+		config["xml"]		= TextEditorView#
 	}
 
 	// ---- Reflux Tool Bar -----------------------------------------------------------------------

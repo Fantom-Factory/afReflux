@@ -2,19 +2,13 @@ using afIoc
 using gfx
 using fwt
 
-internal class RefreshCommand : RefluxCommand, RefluxEvents {
+internal class RefreshCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux reflux
 	
-	new make(EventHub eventHub, |This|in) : super.make(in) {
-		eventHub.register(this)
-		enabled = false
+	new make(|This|in) : super.make("afReflux.cmdRefresh", in) {
 	}
 	
-	override Void invoked(Event? event) {
+	override Void onInvoke(Event? event) {
 		reflux.refresh
-	}
-	
-	override Void onLoad(Resource resource)	{
-		enabled = true
 	}
 }
