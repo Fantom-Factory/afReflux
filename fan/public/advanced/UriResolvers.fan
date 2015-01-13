@@ -1,4 +1,3 @@
-using afBeanUtils
 
 @NoDoc
 mixin UriResolvers {
