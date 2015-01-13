@@ -6,6 +6,8 @@ afReflux.cmdExit.name				= Exit
 afReflux.cmdParent.name				= Up Folder
 afReflux.cmdRefresh.name			= Refresh
 
+afReflux.cmdFind.name				= Find
+afReflux.cmdFind.accelerator		= Ctrl+F
 
 #afReflux.cmdAbout.icon				= 
 #afReflux.cmdAbout.accelerator		= 

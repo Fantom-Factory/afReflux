@@ -15,9 +15,23 @@ using fwt
 **
 internal class FindBar : ContentPane, TextEditorSupport {
 
-//////////////////////////////////////////////////////////////////////////
-// Constructor
-//////////////////////////////////////////////////////////////////////////
+	override TextEditorView editor { private set }
+	private Int caretPos
+
+	private Widget findPane
+	private Widget replacePane
+	private Combo findText
+	private Combo replaceText
+	private Button matchCase
+	private Int total
+	private Label msg := Label()
+	private Bool ignore := false
+
+	private Command cmdNext			:= Command("Find Prev",   Image("fan://icons/x16/arrowLeft.png"))	{ prev }
+	private Command cmdPrev			:= Command("Find Next",   Image("fan://icons/x16/arrowRight.png"))	{ next }
+	private Command cmdHide			:= Command("Hide Find",   Image("fan://icons/x16/close.png"))		{ hide }
+	private Command cmdReplace		:= Command("Replace", 	  null)										{ replace }
+	private Command cmdReplaceAll	:= Command("Replace All", null)										{ replaceAll }
 
 	new make(TextEditorView editor) {
 	
@@ -27,19 +41,16 @@ internal class FindBar : ContentPane, TextEditorSupport {
 		findText = Combo() { editable = true }
 		findText.items = history.find
 		findText.onFocus.add	|->| { caretPos = richText.selectStart }
-		findText.onBlur.add	 |->| { updateHistory }
-		findText.onModify.add |->| { find(null, true, true) }
-		findText.onKeyDown.add |e| {
-		
-			switch (e.key)
-			{
+		findText.onBlur.add		|->| { updateHistory }
+		findText.onModify.add	|->| { find(null, true, true) }
+		findText.onKeyDown.add	| e| {
+			switch (e.key) {
 				case Key.esc:	 hide; editor.richText.focus
 				case Key.enter: next
 			}
 		}
 
 		matchCase = Button {
-		
 			mode = ButtonMode.check
 			text = "Match Case"
 			onAction.add |->| { updateHistory; find(null, true, true) }
@@ -47,7 +58,6 @@ internal class FindBar : ContentPane, TextEditorSupport {
 		}
 
 		findPane = InsetPane(4,4,4,4) {
-		
 			EdgePane {
 				center = GridPane {
 					numCols = 5
@@ -76,16 +86,12 @@ internal class FindBar : ContentPane, TextEditorSupport {
 		}
 
 		replacePane = InsetPane(0,4,4,4) {
-		
-			GridPane
-			{
+			GridPane {
 				numCols = 3
 				ConstraintPane { minw=50; maxw=50; Label { text = "Replace" }, },
 				ConstraintPane { minw=200; maxw=200; it.add(replaceText) },
-				InsetPane(0,0,0,8)
-				{
-					GridPane
-					{
+				InsetPane(0,0,0,8) {
+					GridPane {
 						numCols = 2
 						Button { command = cmdReplace;		image = null },
 						Button { command = cmdReplaceAll; image = null },
@@ -95,13 +101,10 @@ internal class FindBar : ContentPane, TextEditorSupport {
 		}
 
 		content = EdgePane {
-		
-			it.top = BorderPane
-			{
+			it.top = BorderPane {
 				it.border = Border("1,0,1 $Desktop.sysNormShadow,#000,$Desktop.sysHighlightShadow")
 			}
-			it.center = EdgePane
-			{
+			it.center = EdgePane {
 				it.top		= findPane
 				it.bottom = replacePane
 			}
@@ -115,26 +118,19 @@ internal class FindBar : ContentPane, TextEditorSupport {
 // Methods
 //////////////////////////////////////////////////////////////////////////
 
-	**
 	** Show the FindBar with find only in the parent widget.
-	**
 	Void showFind() {
-	
 		show(false)
 		find(null, true, true)
 	}
 
-	**
 	** Show the FindBar with find and replace in the parent widget.
-	**
 	Void showFindReplace() {
-	
 		show(true)
 		find(null, true, true)
 	}
 
 	private Void show(Bool showReplace := false) {
-	
 		Actor.locals["fluxTest.findBar.show"] = true
 		Actor.locals["fluxTest.findBar.showReplace"] = showReplace
 
@@ -142,19 +138,18 @@ internal class FindBar : ContentPane, TextEditorSupport {
 		oldVisible := visible
 		visible = true
 		replacePane.visible = showReplace
-		parent?.parent?.parent?.relayout
+		parent?.parent?.relayout
 
 		// use current selection if it exists
 		cur := richText.selectText
 		if (cur.size > 0) findText.text = cur
 
-		// make sure text is focued and selected
+		// make sure text is focused and selected
 		findText.focus
 		//findText.selectAll
 
 		// if text empty, make sure prev/next disabled
 		if (findText.text.size == 0) {
-		
 			cmdPrev.enabled = false
 			cmdNext.enabled = false
 		}
@@ -168,17 +163,15 @@ internal class FindBar : ContentPane, TextEditorSupport {
 	** Hide the FindBar in the parent widget.
 	**
 	Void hide() {
-	
 		Actor.locals["fluxTest.findBar.show"] = false
 		visible = false
-		parent?.parent?.parent?.relayout
+		parent?.parent?.relayout
 	}
 
 //////////////////////////////////////////////////////////////////////////
 // Support
 //////////////////////////////////////////////////////////////////////////
 
-	**
 	** Find the current query string in the text document,
 	** starting at the given caret pos.	If pos is null,
 	** the caretPos recorded when the FindBar was focued
@@ -186,16 +179,13 @@ internal class FindBar : ContentPane, TextEditorSupport {
 	** is searched backwards starting at pos.	If calcTotal
 	** is true, the document is searched for the total
 	** number of occurances of the query string.
-	**
 	internal Void find(Int? fromPos, Bool forward := true, Bool calcTotal := false) {
-	
 		if (!visible || ignore) return
 		enabled := false
 		try {
 		
 			q := findText.text
-			if (q.size == 0)
-			{
+			if (q.size == 0) {
 				setMsg("")
 				return
 			}
@@ -208,8 +198,7 @@ internal class FindBar : ContentPane, TextEditorSupport {
 				doc.findPrev(q, pos-q.size-1, match)
 
 			// find total matches
-			if (calcTotal)
-			{
+			if (calcTotal) {
 				total = 0
 				Int? temp := 0
 				while ((temp = doc.findNext(q, temp, match)) != null) { total++; temp++ }
@@ -217,19 +206,16 @@ internal class FindBar : ContentPane, TextEditorSupport {
 			matchStr := msgTotal
 
 			// if found select next occurance
-			if (off != null)
-			{
+			if (off != null) {
 				richText.select(off, q.size)
 				setMsg(matchStr)
 				return
 			}
 
 			// if not found, try from beginning of file
-			if (pos > 0 && forward)
-			{
+			if (pos > 0 && forward) {
 				off = doc.findNext(q, 0, match)
-				if (off != null)
-				{
+				if (off != null) {
 					richText.select(off, q.size)
 					setMsg("$matchStr - Wrapped to top")
 					return
@@ -237,11 +223,9 @@ internal class FindBar : ContentPane, TextEditorSupport {
 			}
 
 			// if not found, try from end of file
-			if (pos < doc.size && !forward)
-			{
+			if (pos < doc.size && !forward) {
 				off = doc.findPrev(q, doc.size, match)
-				if (off != null)
-				{
+				if (off != null) {
 					richText.select(off, q.size)
 					setMsg("$matchStr - Wrapped to bottom")
 					return
@@ -252,14 +236,13 @@ internal class FindBar : ContentPane, TextEditorSupport {
 			richText.selectClear
 			setMsg("Not Found")
 			enabled = false
-		}
-		finally {
-		
+
+		} finally {
 			replaceEnabled := enabled && replaceText.text.size > 0
-			cmdPrev.enabled			 = enabled
-			cmdNext.enabled			 = enabled
+			cmdPrev.enabled			= enabled
+			cmdNext.enabled			= enabled
 			cmdReplace.enabled		= replaceEnabled
-			cmdReplaceAll.enabled = replaceEnabled
+			cmdReplaceAll.enabled	= replaceEnabled
 		}
 	}
 
@@ -268,7 +251,6 @@ internal class FindBar : ContentPane, TextEditorSupport {
 	** at the current caretPos.
 	**
 	internal Void next() {
-	
 		updateHistory
 		if (!visible) show
 		find(richText.caretOffset)
@@ -279,7 +261,6 @@ internal class FindBar : ContentPane, TextEditorSupport {
 	** at the current caretPos.
 	**
 	internal Void prev() {
-	
 		updateHistory
 		if (!visible) show
 		find(richText.caretOffset, false)
@@ -289,7 +270,6 @@ internal class FindBar : ContentPane, TextEditorSupport {
 	** Replace the current query string with the replace string.
 	**
 	internal Void replace() {
-	
 		updateHistory
 		newText := replaceText.text
 		start	 := richText.selectStart
@@ -299,11 +279,10 @@ internal class FindBar : ContentPane, TextEditorSupport {
 		total--
 		if (total > 0) setMsg(msgTotal)
 		else {
-		
-			cmdPrev.enabled			 = false
-			cmdNext.enabled			 = false
+			cmdPrev.enabled			= false
+			cmdNext.enabled			= false
 			cmdReplace.enabled		= false
-			cmdReplaceAll.enabled = false
+			cmdReplaceAll.enabled	= false
 			setMsg("Not Found")
 		}
  }
@@ -313,7 +292,6 @@ internal class FindBar : ContentPane, TextEditorSupport {
 	** the replace string.
 	**
 	internal Void replaceAll() {
-	
 		updateHistory
 		query	 := findText.text
 		replace := replaceText.text
@@ -328,28 +306,25 @@ internal class FindBar : ContentPane, TextEditorSupport {
 			off = doc.findNext(query, pos, match)
 		}
 
-		cmdPrev.enabled			 = false
-		cmdNext.enabled			 = false
+		cmdPrev.enabled			= false
+		cmdNext.enabled			= false
 		cmdReplace.enabled		= false
-		cmdReplaceAll.enabled = false
+		cmdReplaceAll.enabled	= false
 		setMsg("Not Found")
 	}
 
 	private Void setMsg(Str text) {
-	
 		msg.text = text
 		msg.parent.relayout
 	}
 
 	private Str msgTotal() {
-	
 		return total == 1
 			? "1 match"
 			: "$total matches"
 	}
 
 	private Void updateHistory() {
-	
 		// save history
 		history := FindHistory.load
 		if (replacePane.visible)
@@ -364,7 +339,6 @@ internal class FindBar : ContentPane, TextEditorSupport {
 	}
 
 	private Void updateCombo(Combo c) {
-	
 		text := c.text
 		if (text.size == 0) return
 		if (text == c.items.first) return
@@ -380,26 +354,4 @@ internal class FindBar : ContentPane, TextEditorSupport {
 		c.text = text	// set items nukes text, so reset
 		ignore = false
 	}
-
-//////////////////////////////////////////////////////////////////////////
-// Fields
-//////////////////////////////////////////////////////////////////////////
-
-	override TextEditorView editor { private set }
-	private Int caretPos
-
-	private Widget findPane
-	private Widget replacePane
-	private Combo findText
-	private Combo replaceText
-	private Button matchCase
-	private Int total
-	private Label msg := Label()
-	private Bool ignore := false
-
-	private Command cmdNext			:= Command("Find Prev",   Image("fan://icons/x16/arrowLeft.png"))	{ prev }
-	private Command cmdPrev			:= Command("Find Next",   Image("fan://icons/x16/arrowRight.png"))	{ next }
-	private Command cmdHide			:= Command("Hide Find",   Image("fan://icons/x16/close.png"))		{ hide }
-	private Command cmdReplace		:= Command("Replace", 	  null)										{ replace }
-	private Command cmdReplaceAll	:= Command("Replace All", null)										{ replaceAll }
 }

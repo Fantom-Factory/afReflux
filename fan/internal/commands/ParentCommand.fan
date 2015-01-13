@@ -7,6 +7,7 @@ internal class ParentCommand : GlobalCommand, RefluxEvents {
 	
 	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdParent", in) {
 		eventHub.register(this)
+		addEnabler("adReflux.cmdParent", |->Bool| { true } )
 	}
 	
 	override Void onInvoke(Event? event) {

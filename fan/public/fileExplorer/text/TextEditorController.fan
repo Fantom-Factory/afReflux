@@ -26,11 +26,11 @@ internal class TextEditorController : TextEditorSupport {
 //////////////////////////////////////////////////////////////////////////
 
 	Void register() {
-		richText.onVerifyKey.add { onVerifyKey(it) }
-		richText.onVerify.add { onVerify(it) }
-		richText.onModify.add { onModified(it) }
-		richText.onCaret.add { onCaret(it) }
-		richText.onFocus.add {onFocus(it) }
+		richText.onVerifyKey.add	{ onVerifyKey(it) }
+		richText.onVerify.add		{ onVerify(it) }
+		richText.onModify.add		{ onModified(it) }
+		richText.onCaret.add		{ onCaret(it) }
+		richText.onFocus.add		{ onFocus(it) }
 	}
 
 	Void onVerifyKey(Event event) {
@@ -248,10 +248,11 @@ internal class TextEditorController : TextEditorSupport {
 // Commands
 //////////////////////////////////////////////////////////////////////////
 
-	Void onFind(Event event)		{ editor.find.showFind }
-	Void onFindNext(Event event)	{ editor.find.next }
-	Void onFindPrev(Event event)	{ editor.find.prev }
-	Void onReplace(Event event)		{ editor.find.showFindReplace }
+	// not needed
+//	Void onFind(Event event)		{ editor.find.showFind }
+//	Void onFindNext(Event event)	{ editor.find.next }
+//	Void onFindPrev(Event event)	{ editor.find.prev }
+//	Void onReplace(Event event)		{ editor.find.showFindReplace }
 
 	Void onGoto(Event event) {
 	
