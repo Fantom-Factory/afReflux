@@ -28,8 +28,6 @@ abstract class Resource {
 		return menu 
 	}
 
-//	virtual ToolBar populateToolBar(ToolBar toolBar) { toolBar }
-//
 	virtual Void doAction() {
 		_reflux.load(uri)
 	} 

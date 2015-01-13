@@ -28,6 +28,8 @@ How to open extensions -> associate laucnch prog and icon
  - assoc edit
  
 Can views manipulate the menu / toolbar?
+	-> NO! Menus are defined at app startup.
+	-> GlobalCommands, however, maybe enabled / disabled  
 
 
 
