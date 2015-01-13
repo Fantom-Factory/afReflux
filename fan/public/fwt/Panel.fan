@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+** Panels maybe created at application startup. Instances are cached / reused.
 abstract class Panel {
 
 	@Inject private Log				_log
@@ -24,11 +25,11 @@ abstract class Panel {
 	Obj prefAlign := Halign.left
 
 	Str name := "" {
-		set { &name = it; if (_tab != null) _tab.text = it; showHideCommand.update }
+		set { &name = it; if (_tab != null) _tab.text = it; this->onModify }
 	}
 
 	Image? icon {
-		set { &icon = it; if (_tab != null) _tab.image = it; showHideCommand.update }
+		set { &icon = it; if (_tab != null) _tab.image = it; this->onModify }
 	}
 	
 	new make(|This| in) {
@@ -55,10 +56,10 @@ abstract class Panel {
 	** Is the panel currently showing in the frame?
 	Bool isShowing := false { internal set }
 
-	** Callback when this panel is shown.
+	** Callback when this panel is created.
 	virtual Void onShow() {}
 
-	** Callback when this panel is hidden.
+	** Callback when this panel is closed.
 	virtual Void onHide() {}
 	
 	** Callback when this panel is selected as the active tab.
@@ -66,27 +67,16 @@ abstract class Panel {
 
 	** Callback when this panel is unselected as the active tab.
 	virtual Void onDeactivate() {}
+
+	** Callback when panel details are modified, such as the name or icon. 
+	virtual Void onModify() {}
 	
 	override Obj? trap(Str name, Obj?[]? args := null) {
-		if (this is View)
-			switch (name) {
-				case #onShow.name		: _events.onShowView(this)
-				case #onHide.name		: _events.onHideView(this)
-				case #onActivate.name	: _events.onActivateView(this)
-				case #onDeactivate.name	: _events.onDeactivateView(this)
-			}
-		else
-			switch (name) {
-				case #onShow.name		: _events.onShowPanel(this)
-				case #onHide.name		: _events.onHidePanel(this)
-				case #onActivate.name	: _events.onActivatePanel(this)
-				case #onDeactivate.name	: _events.onDeactivatePanel(this)
-			}
-		
 		if (name.startsWith("on"))
 			_log.debug("${name} - $this")
 
-		try return super.trap(name, args)
+		retVal := null
+		try retVal = super.trap(name, args)
 		catch(Err err) {
 			if (name.startsWith("on") && typeof.method(name, false)?.returns == Void#) {
 				_errors.add(err)
@@ -94,6 +84,24 @@ abstract class Panel {
 			}
 			else throw err
 		}
+
+		if (this is View)
+			switch (name) {
+				case #onShow.name		: _events.onViewShown(this)
+				case #onHide.name		: _events.onViewHidden(this)
+				case #onActivate.name	: _events.onViewActivated(this)
+				case #onDeactivate.name	: _events.onViewDeactivated(this)
+				case #onModify.name		: _events.onViewModified(this)
+			}
+		else
+			switch (name) {
+				case #onShow.name		: _events.onPanelShown(this)
+				case #onHide.name		: _events.onPanelHidden(this)
+				case #onActivate.name	: _events.onPanelActivated(this)
+				case #onModify.name		: _events.onPanelModified(this)
+			}
+		
+		return retVal
 	}
 
 	internal ShowHidePanelCommand showHideCommand() {

@@ -47,9 +47,9 @@ class RefluxModule {
 		config["afReflux.cmdParent"]	= config.autobuild(ParentCommand#)
 		config["afReflux.cmdRefresh"]	= config.autobuild(RefreshCommand#)
 
-		config["afReflux.cmdSave"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSave"])
+		config["afReflux.cmdSave"]		= config.autobuild(SaveCommand#)
 //		config["afReflux.cmdSaveAs"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
-		config["afReflux.cmdSaveAll"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
+//		config["afReflux.cmdSaveAll"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
 //		config["afReflux.cmdCut"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
 //		config["afReflux.cmdCopy"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
 //		config["afReflux.cmdPaste"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
@@ -134,7 +134,6 @@ class RefluxModule {
 	@Contribute { serviceId="afReflux.fileMenu" }
 	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
 		config["afReflux.save"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
-		config["afReflux.saveAll"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSaveAll"].command)
 		config.add(MenuItem { it.mode = MenuItemMode.sep })
 		config["afReflux.exit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
 	}

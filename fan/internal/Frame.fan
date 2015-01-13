@@ -57,12 +57,12 @@ internal class Frame : Window, RefluxEvents {
 	
 	Void showPanel(Panel panel) {
 		panelTabs[prefAlign(panel)].addTab(panel).activate(panel)
-		refluxEvents.onShowPanel(panel)
+		refluxEvents.onPanelShown(panel)
 	}
 	
 	Void hidePanel(Panel panel) {
 		panelTabs[prefAlign(panel)].activate(null).removeTab(panel)
-		refluxEvents.onHidePanel(panel)
+		refluxEvents.onPanelHidden(panel)
 	}
 	
 	Void closeView(View view) {
@@ -70,7 +70,22 @@ internal class Frame : Window, RefluxEvents {
 	}
 
 	override Void onLoad(Resource resource) {
-		this.title = "${appTitle} - ${resource.name}" 
+		update(resource, false)
+	}
+	
+	override Void onViewActivated(View view) {
+		update(view.resource, view.dirty)
+	}
+	
+	override Void onViewModified(View view) {
+		update(view.resource, view.dirty)
+	}
+	
+	private Void update(Resource? resource, Bool dirty) {
+		if (resource == null) return
+		this.title = "${appTitle} - ${resource.name}"
+		if (dirty)
+			title += " *"
 	}
 	
 	Obj prefAlign(Panel panel) {

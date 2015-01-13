@@ -13,7 +13,7 @@ class FoldersPanel : Panel, RefluxEvents, FileExplorerEvents {
 	@Inject		private FileExplorer		fileExplorer
 	@Autobuild	private FoldersTreeModel	model
 	
-	private Combo	combo	:= Combo() { it.onModify.add |e| { this->onModify(e) } }
+	private Combo	combo	:= Combo() { it.onModify.add |e| { this->onComboModify(e) } }
 	private Str:Uri	favourites
 	private Int		lastComboIndex
 	private Tree	tree
@@ -53,7 +53,7 @@ class FoldersPanel : Panel, RefluxEvents, FileExplorerEvents {
 		onRefresh(fileResource)
 	}
 
-	private Void onModify(Event event)	{
+	private Void onComboModify(Event event)	{
 		if (isActive && combo.selectedIndex >= 0) {
 			// this event fires when we switch tabs - then errs when we're not attached! Grr...
 			if (lastComboIndex != combo.selectedIndex) {
