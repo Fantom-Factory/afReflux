@@ -12,6 +12,7 @@ mixin FileExplorer {
 	abstract Void newFolder(File containingFolder)
 	abstract Void openFile(File file)
 	abstract Image fileToIcon(File f)
+	abstract Image urlToIcon(Uri url)
 	abstract FileExplorerPrefs preferences()
 
 	static Void main() {
@@ -122,6 +123,28 @@ internal class FileExplorerImpl : FileExplorer {
 		}
 
 		return fileIcon("file.png", hidden)
+	}
+	
+	override Image urlToIcon(Uri url) {
+
+		// look for explicit match based off ext
+		if (url.ext != null) {
+			icon := fileIcon("file${url.ext.capitalize}.png", false)
+			if (icon != null) return icon
+		}
+		
+		mimeType := url.mimeType?.noParams
+		if (mimeType != null) {
+			mime := mimeType.mediaType.fromDisplayName.capitalize + mimeType.subType.fromDisplayName.capitalize
+			icon := fileIcon("file${mime}.png", false)
+			if (icon != null) return icon
+
+			mime = mimeType.mediaType.fromDisplayName.capitalize
+			icon = fileIcon("file${mime}.png", false)
+			if (icon != null) return icon
+		}
+
+		return fileIcon("fileTextHtml.png", false)
 	}
 
 	override once FileExplorerPrefs preferences() {

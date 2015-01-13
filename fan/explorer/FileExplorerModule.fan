@@ -16,6 +16,7 @@ class FileExplorerModule {
 	@Contribute { serviceType=UriResolvers# }
 	internal static Void contributeUriResolvers(Configuration config) {
 		config["file"] = config.autobuild(FileResolver#)
+		config["http"] = config.autobuild(HttpResolver#)
 	}
 
 	@Contribute { serviceType=Panels# }
@@ -31,8 +32,8 @@ class FileExplorerModule {
 	@Contribute { serviceType=DefaultResourceViews# }
 	static Void contributeDefaultResourceViews(Configuration config) {
 		config[FolderResource#]	= FolderView#
-
 		config[FileResource#]	= TextEditorView#
+		config[HttpResource#]	= HtmlView#
 	}
 
 	@Contribute { serviceType=DefaultFileViews# }

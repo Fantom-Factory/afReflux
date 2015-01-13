@@ -21,11 +21,10 @@ class HtmlView : View {
 			it.border  = Border("0,0,0,1 $Desktop.sysNormShadow")
 		}
 		
-//		if (resource is InternetResource) { 
-//			log.info(" - displaying Internet -> $resource.uri")
-//			// see http://fantom.org/sidewalk/topic/2069
-//			browser.load(resource.uri.plusQuery(["dodgyLink":"true"]))
-//		}
+		if (resource is HttpResource) { 
+			// see http://fantom.org/sidewalk/topic/2069
+			browser.load(resource.uri.plusQuery(["dodgyLink":"true"]))
+		}
 		
 		if (resource is FileResource) {
 			file	:= (resource as FileResource).file
