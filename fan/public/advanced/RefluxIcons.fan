@@ -43,6 +43,9 @@ class EclipseIcons : RefluxIcons {
 		"cmdSave"				: `save_edit.gif`,
 		"cmdSaveAs"				: `saveas_edit.gif`,
 		"cmdSaveAll"			: `saveall_edit.gif`,
+
+		"cmdFindPrev"			: `nav_backward.gif`,
+		"cmdFindNext"			: `nav_forward.gif`,
 		
 		"icoErrorsPanel"		: `error_log.gif`,
 		

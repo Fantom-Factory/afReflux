@@ -13,15 +13,13 @@ using syntax
 **
 ** TextDoc is the model for text edited in a `TextEditor`
 **
-internal class TextDoc : RichTextModel
-{
+internal class TextDoc : RichTextModel {
 
 //////////////////////////////////////////////////////////////////////////
 // Construction
 //////////////////////////////////////////////////////////////////////////
 
 	new make(TextEditorOptions options, SyntaxRules rules) {
-	
 		lines.add(Line { it.offset=0; it.text="" })
 		this.options	 = options
 		this.rules		 = rules
@@ -34,7 +32,6 @@ internal class TextDoc : RichTextModel
 //////////////////////////////////////////////////////////////////////////
 
 	override Str text {
-	
 		get { return lines.join(delimiter) |Line line->Str| { return line.text } }
 		set { modify(0, size, it) }
 	}
@@ -48,7 +45,6 @@ internal class TextDoc : RichTextModel
 	override Int offsetAtLine(Int lineIndex) { return lines[lineIndex].offset }
 
 	override Int lineAtOffset(Int offset) {
-	
 		// binary search by offset, returns '-insertationPoint-1'
 		key := Line { it.offset = offset }
 		line := lines.binarySearch(key) |Line a, Line b->Int| { return a.offset <=> b.offset }
@@ -58,7 +54,6 @@ internal class TextDoc : RichTextModel
 	}
 
 	override Void modify(Int startOffset, Int len, Str newText) {
-	
 		// compute the lines being replaced
 		endOffset			:= startOffset + len
 		startLineIndex := lineAtOffset(startOffset)
@@ -115,7 +110,6 @@ internal class TextDoc : RichTextModel
 	**	 - compute style override for multiline strings
 	**
 	private Void updateLines(Line[] lines) {
-	
 		n := 0
 		lastIndex := lines.size-1
 		delimiterSize := delimiter.size
@@ -166,9 +160,7 @@ internal class TextDoc : RichTextModel
 	}
 
 	override Obj[]? lineStyling(Int lineIndex) {
-	
 		try {
-		
 			// get configured styling
 			line := lines[lineIndex]
 			styling := line.stylingOverride ?: line.styling
@@ -181,17 +173,12 @@ internal class TextDoc : RichTextModel
 				if (lineIndex == bracketLine1) insertBracketMatch(styling, bracketCol1, lineLen)
 				if (lineIndex == bracketLine2) insertBracketMatch(styling, bracketCol2, lineLen)
 			}
-
 			return styling
-		}
-		catch {
-		
+		} catch
 			return null
-		}
 	}
 
 	override Color? lineBackground(Int lineIndex) {
-	
 		if (lineIndex == caretLine)
 			return options.highlightCurLine
 		else
@@ -210,7 +197,6 @@ internal class TextDoc : RichTextModel
 	**		 ^
 	**
 	private Void insertBracketMatch(Obj[] styling, Int offset, Int lineLen) {
-	
 		// find insert point in styling list;
 		i := 0; Int iOffset := 0; RichTextStyle iStyle := styling[1]
 		for (; i<styling.size; i+=2) {
@@ -264,7 +250,6 @@ internal class TextDoc : RichTextModel
 	** Load fresh document already parsed into lines.
 	**
 	internal Void load(Str[] strLines) {
-	
 		lines = Line[,] { capacity = strLines.size + 100 }
 		strLines.each |Str str| {
 		
@@ -279,7 +264,6 @@ internal class TextDoc : RichTextModel
 	** is already configured).
 	**
 	internal Void save(OutStream out) {
-	
 		stripws := options.stripTrailingWhitespace
 		delimiter := this.delimiter
 		lastLine := lines.size-1
@@ -303,7 +287,6 @@ internal class TextDoc : RichTextModel
 	** support searching across multiple lines.
 	**
 	Int? findNext(Str s, Int offset, Bool matchCase) {
-	
 		offset = offset.max(0).min(size)
 		lineIndex := lineAtOffset(offset)
 		offsetInLine := offset - lines[lineIndex].offset
@@ -329,7 +312,6 @@ internal class TextDoc : RichTextModel
 	** support searching across multiple lines.
 	**
 	Int? findPrev(Str s, Int offset, Bool matchCase) {
-	
 		offset = offset.max(0).min(size)
 		lineIndex := lineAtOffset(offset)
 		offsetInLine := offset - lines[lineIndex].offset
@@ -356,7 +338,6 @@ internal class TextDoc : RichTextModel
 	** Return null if no match.
 	**
 	internal Int? matchBracket(Int offset) {
-	
 		lineIndex := lineAtOffset(offset)
 		line := lines[lineIndex]
 		offsetInLine := offset-line.offset
@@ -406,13 +387,11 @@ internal class TextDoc : RichTextModel
 	** caller to repaint the dirty lines.
 	**
 	internal Void setBracketMatch(Int line1, Int col1, Int line2, Int col2) {
-	
 		if (line1 < line2 || col1 < col2) {
 		
 			bracketLine1 = line1; bracketCol1 = col1
 			bracketLine2 = line2; bracketCol2 = col2
-		}
-		else {
+		} else {
 		
 			bracketLine1 = line2; bracketCol1 = col2
 			bracketLine2 = line1; bracketCol2 = col1
@@ -438,7 +417,6 @@ internal class TextDoc : RichTextModel
 	** Debug dump of the document model.
 	**
 	Void dump(OutStream out := Env.cur.out) {
-	
 		out.printLine("")
 		out.printLine("==== Doc.dump ===")
 		out.printLine("size=$size")
@@ -478,8 +456,7 @@ internal class TextDoc : RichTextModel
 **
 ** Line models one text line of a Doc
 **
-internal class Line
-{
+internal class Line {
 	** Return 'text'.
 	override Str toStr() { return text }
 
@@ -521,8 +498,7 @@ internal class Line
 ** information.	We use a subclass to avoid the extra memory
 ** overhead on lines which don't need these extra fields.
 **
-internal class FatLine : Line
-{
+internal class FatLine : Line {
 	** Opens n comments if > 0 or closes n comments if < 0
 	override Int commentNesting := 0
 
@@ -563,8 +539,7 @@ internal class FatLine : Line
 ** Blocks model multiple line syntax constructs: block comments
 ** and multi-line strings.
 **
-internal abstract class Block
-{
+internal abstract class Block {
 	** Which style override should be used inside the block?
 	abstract Obj[]? stylingOverride()
 

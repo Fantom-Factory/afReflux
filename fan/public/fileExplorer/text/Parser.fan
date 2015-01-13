@@ -22,7 +22,6 @@ internal class Parser {
 	** Construct with source line.
 	**
 	new make(TextDoc doc) {
-	
 		options	= doc.options
 		rules		= doc.rules
 		brackets = rules.brackets
@@ -66,7 +65,6 @@ internal class Parser {
 	** multi-line block.
 	**
 	Line parseLine(Str text, BlockClose? close := null) {
-	
 		try {
 		
 			if (options.convertTabsToSpaces)
@@ -94,14 +92,12 @@ internal class Parser {
 			}
 		}
 		catch (Err e) {
-		
 			e.trace
 			return Line { it.text = text; it.styling = [0, options.text] }
 		}
 	}
 
 	internal static Str convertTabsToSpaces(Str text, Int ts) {
-	
 		if (!text.contains("\t")) return text
 		s := StrBuf()
 		text.each |Int ch, Int i| {
@@ -115,9 +111,7 @@ internal class Parser {
 	}
 
 	private Void parseStyling(Obj[] styling) {
-	
 		while (cur != 0) {
-		
 			p := pos
 			tok := next
 			switch (tok) {
@@ -132,13 +126,11 @@ internal class Parser {
 	}
 
 	private Void addStyle(Obj[] styling, Int pos, RichTextStyle style) {
-	
 		if (styling.last === style) return
 		styling.add(pos).add(style)
 	}
 
 	private Bool needFatLine() {
-	
 		return commentNesting != 0 || opens != null || closes != null
 	}
 
@@ -150,7 +142,6 @@ internal class Parser {
 	** Return the next token.
 	**
 	private Token next() {
-	
 		// check for end-of-line comments
 		for (i:=0; i<comments.size; ++i) {
 		
@@ -215,7 +206,6 @@ internal class Parser {
 	**	 2.5sec
 	**
 	private Token number() {
-	
 		while (true) {
 		
 			if (cur.isAlphaNum ||	cur == '_') { consume; continue }
@@ -230,7 +220,6 @@ internal class Parser {
 	** Parse str literal
 	**
 	private Token strLiteral(StrMatch s) {
-	
 		s.start.consume
 		while (cur != 0) {
 		
@@ -249,7 +238,6 @@ internal class Parser {
 	** Count the number of escape chars preceeding the current char.
 	**
 	private Int countEscapes(Int esc) {
-	
 		n := 0
 		while (text[pos-n-1] == esc) n++
 		return n
@@ -260,7 +248,6 @@ internal class Parser {
 	** keep track of nesting.
 	**
 	Token blockComment() {
-	
 		thisNesting := 0
 		while (cur != 0) {
 		
@@ -290,9 +277,7 @@ internal class Parser {
 //////////////////////////////////////////////////////////////////////////
 
 	StrMatch toStrMatch(SyntaxStr s) {
-	
 		return StrMatch {
-		
 			start		 = toMatcher(s.delimiter, s.escape)
 			end			 = toMatcher(s.delimiterEnd ?: s.delimiter, s.escape)
 			escape		= s.escape
@@ -302,7 +287,6 @@ internal class Parser {
 	}
 
 	Matcher toMatcher(Str? tok, Int esc := 0) {
-	
 		tok = tok?.trim ?: ""
 		switch (tok.size) {
 		
@@ -355,7 +339,6 @@ internal class Parser {
 	** Initialize state to parse specified line.
 	**
 	private Void init(Str text) {
-	
 		this.text = text
 		cur = peek = ' '
 		if (text.size > 0) cur	= text[0]
@@ -371,7 +354,6 @@ internal class Parser {
 	** in buffer and update cur/peek fields.
 	**
 	private Void consume() {
-	
 		cur = peek
 		pos++
 		if (pos+1 < text.size)
@@ -385,14 +367,12 @@ internal class Parser {
 	** Consume n characters
 	**
 	Void consumeN(Int n) {
-	
 		n.times { consume }
 	}
 	**
 	** Consume remaining characters
 	**
 	Void consumeRest() {
-	
 		consumeN(text.size-pos)
 	}
 
@@ -401,7 +381,6 @@ internal class Parser {
 	** multi-line blocks.	If so add it to our closes list
 	**
 	private Void checkCloses() {
-	
 		strs.each |StrMatch m| {
 		
 			if (m.multiLine && m.end.isMatch) {
@@ -450,8 +429,7 @@ internal class Parser {
 **************************************************************************
 
 ** Token represents a string of color coded chars
-internal enum class Token
-{
+internal enum class Token {
 	text,
 	bracket,
 	keyword,
@@ -466,8 +444,7 @@ internal enum class Token
 
 ** Matcher is used to match a specific token
 ** against the current character
-internal class Matcher
-{
+internal class Matcher {
 	new make(Int sz, |->Bool| m, |->| c) { size = sz; matchFunc = m; consumeFunc = c }
 	Bool isMatch() { return matchFunc.call }
 	Void consume() { consumeFunc.call }
@@ -482,8 +459,7 @@ internal class Matcher
 
 ** StrMatch handles matching the start and end
 ** delimiter and managing multi-line string blocks
-internal class StrMatch
-{
+internal class StrMatch {
 	Matcher? start
 	Matcher? end
 	Int escape
@@ -499,8 +475,7 @@ internal class StrMatch
 ** that a block comment or multi-line string is opened.	BlockOpens
 ** are reused by the entire parser (see commentOpen and StrMatch).
 ** They are paired with BlockCloses.
-internal class BlockOpen : Block
-{
+internal class BlockOpen : Block {
 	new make(Parser p, Str? n, Obj[] s) { parser = p; name = n; stylingOverride = s }
 
 	override Line? closes(Line line, Block open) { throw Err("illegal state") }
@@ -520,8 +495,7 @@ internal class BlockOpen : Block
 ** closing token for a block comment or multi-line string.	Each
 ** instance is allocated per line to cache the re-parse.	But we
 ** pair with the open block to efficiently manage memory.
-internal class BlockClose : Block
-{
+internal class BlockClose : Block {
 	new make(BlockOpen open, Int pos) { this.open = open; this.pos = pos }
 
 	override Obj[]? stylingOverride() { return open.stylingOverride }
