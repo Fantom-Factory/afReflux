@@ -5,7 +5,9 @@ using fwt
 internal class ExitCommand : GlobalCommand {
 	@Inject	private Reflux reflux
 	
-	new make(|This|in) : super.make("afReflux.cmdExit", in) { }
+	new make(|This|in) : super.make("afReflux.cmdExit", in) {
+		addEnabler("adReflux.cmdExit", |->Bool| { true } )
+	}
 
 	override Void onInvoke(Event? event) {
 //		dirty := frame.views.findAll |View v->Bool| { return v.dirty }

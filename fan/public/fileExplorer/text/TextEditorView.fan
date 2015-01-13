@@ -1,4 +1,4 @@
-using concurrent
+using afIoc
 using syntax
 using gfx
 using fwt
@@ -6,30 +6,40 @@ using fwt
 ** TextEditor provides a syntax color coded editor for working with text files.
 class TextEditorView : View {
 	
-	File? file
-	TextEditorOptions options := TextEditorOptions.load
-	Charset charset := options.charset
-	SyntaxRules? rules
-	RichText? richText
-	internal TextDoc? doc
+	File? 				file
+	TextEditorOptions	options := TextEditorOptions.load
+	Charset 			charset := options.charset
+	SyntaxRules? 		rules
+	RichText? 			richText
+	internal TextDoc? 	doc
 
-	internal TextEditorController? controller
-	internal FindBar? find
-	internal DateTime? fileTimeAtLoad
-	internal Label caretField := Label()
-	internal Label charsetField := Label()
+	internal TextEditorController?	controller
+	internal FindBar				find
+	internal DateTime? 				fileTimeAtLoad
+	internal Label 					caretField		:= Label()
+	internal Label 					charsetField	:= Label()
+	
+	@Inject private GlobalCommands	globalCommands
+			private	EdgePane		edgePane
 	
 	protected new make(|This| in) : super(in) {
-		
+		find = FindBar(this)
+		content = edgePane = EdgePane {
+			it.top = buildToolBar
+			it.bottom = buildStatusBar
+		}
 	}
 	
-	override Void onShow() {
-		super.onShow
+	override Void onActivate() {
+		super.onActivate
 		
-//		frame.command(CommandId.find).enabled = true
+		globalCommands["afReflux.cmdFind"		].addInvoker("afReflux.textEditor", |Event? e|	{ find.showFind } )
+		globalCommands["afReflux.cmdFind"		].addEnabler("afReflux.textEditor", |  ->Bool| 	{ true } )
+		globalCommands["afReflux.cmdReplace"	].addInvoker("afReflux.textEditor", |Event? e|	{ find.showFindReplace } )
+		globalCommands["afReflux.cmdReplace"	].addEnabler("afReflux.textEditor", |  ->Bool| 	{ true } )
+
 //		frame.command(CommandId.findNext).enabled = true
 //		frame.command(CommandId.findPrev).enabled = true
-//		frame.command(CommandId.replace).enabled = true
 //		frame.command(CommandId.goto).enabled = true
 
 		// restore viewport and caret position
@@ -40,9 +50,14 @@ class TextEditorView : View {
 		richText?.focus
 	}
 	
-	override Void onHide() {
-		super.onHide
+	override Void onDeactivate() {
+		super.onDeactivate
 		
+		globalCommands["afReflux.cmdFind"		].removeInvoker("afReflux.textEditor")
+		globalCommands["afReflux.cmdFind"		].removeEnabler("afReflux.textEditor")
+		globalCommands["afReflux.cmdReplace"	].removeInvoker("afReflux.textEditor")
+		globalCommands["afReflux.cmdReplace"	].removeEnabler("afReflux.textEditor")
+
 		// save viewport and caret position
 //		Actor.locals["fluxText.caretOffset.$resource.uri"] = richText.caretOffset
 //		Actor.locals["fluxText.topLine.$resource.uri"] = richText.topLine
@@ -52,7 +67,7 @@ class TextEditorView : View {
 		super.load(resource)
 
 		// init
-		file = resource->file
+		file = (resource as FileResource).file
 
 		// load the document into memory
 		loadDoc
@@ -67,13 +82,14 @@ class TextEditorView : View {
 		// initialize controller
 		controller = TextEditorController(this)
 		controller.register
+		controller.updateCaretStatus
 
 		// update ui
-		find = FindBar(this)
-		content = BorderPane {
+		edgePane.center = BorderPane {
 			it.content	= richText
 			it.border	 = Border("1,0,1,1 $Desktop.sysNormShadow")
 		}
+		edgePane.relayout
 		richText.focus
 	}
 
@@ -122,35 +138,32 @@ class TextEditorView : View {
 //		fileTimeAtLoad = file.modified
 //	}
 
-
-//	override Widget? buildToolBar() {
-//		return EdgePane {
-//			top = InsetPane(4,4,5,4) {
-//				ToolBar {
-//					addCommand(frame.command(CommandId.save))
-//					addSep
+	private Widget buildToolBar() {
+		return EdgePane {
+			top = InsetPane(4,4,5,4) {
+				ToolBar {
+					addCommand(globalCommands["afReflux.cmdSave"].command)
+					addSep
 //					addCommand(frame.command(CommandId.cut))
 //					addCommand(frame.command(CommandId.copy))
 //					addCommand(frame.command(CommandId.paste))
 //					addSep
 //					addCommand(frame.command(CommandId.undo))
 //					addCommand(frame.command(CommandId.redo))
-//				},
-//			}
-//			bottom = find
-//		}
-//	}
-//
-//	FIXME: status bar
-//	override Widget? buildStatusBar() {
-//		controller.updateCaretStatus()
-//		return GridPane {
-//			it.numCols = 2
-//			it.hgap = 10
-//			it.halignPane = Halign.right
-//			it.add(caretField)
-//			it.add(charsetField)
-//		}
-//	}
+				},
+			}
+			bottom = find
+		}
+	}
+
+	private Widget buildStatusBar() {
+		return GridPane {
+			it.numCols = 2
+			it.hgap = 10
+			it.halignPane = Halign.right
+			it.add(caretField)
+			it.add(charsetField)
+		}
+	}
 	
 }

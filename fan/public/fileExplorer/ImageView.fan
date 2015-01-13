@@ -128,11 +128,13 @@ internal class ImageViewWidget : Canvas {
 }
 
 internal class ImageFitToWindowCommand : RefluxCommand {
-	private ImageView	imageView
+			private ImageView	imageView
+	@Inject private RefluxIcons	icons
 
 	new make(ImageView imageView, |This|in) : super.make(in) {
 		this.imageView = imageView
 		this.name = "Fit to Window"
+		this.icon = icons["cmdImageFitToWindow"]
 	}
 
 	override Void invoked(Event? event) {
@@ -141,11 +143,13 @@ internal class ImageFitToWindowCommand : RefluxCommand {
 }
 
 internal class ImageFullSizeCommand : RefluxCommand {
-	private ImageView	imageView
+			private ImageView	imageView
+	@Inject private RefluxIcons	icons
 
 	new make(ImageView imageView, |This|in) : super.make(in) {
 		this.imageView = imageView
 		this.name = "Zoom to 100%"
+		this.icon = icons["cmdImageFullSize"]
 	}
 
 	override Void invoked(Event? event) {

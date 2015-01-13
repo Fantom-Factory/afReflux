@@ -39,7 +39,10 @@ class EclipseIcons : RefluxIcons {
 		"cmdAbout"				: `fan://icons/x16/flux.png`,
 		"cmdRefresh"			: `nav_refresh.gif`,
 		"cmdParent"				: `up_nav.gif`,
-//		"cmdReflux"				: ``,	// the default img -> should always be null
+
+		"cmdSave"				: `save_edit.gif`,
+		"cmdSaveAs"				: `saveas_edit.gif`,
+		"cmdSaveAll"			: `saveall_edit.gif`,
 		
 		"icoErrorsPanel"		: `error_log.gif`,
 		

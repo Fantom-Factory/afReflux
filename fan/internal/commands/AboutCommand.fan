@@ -4,7 +4,9 @@ using fwt
 
 internal class AboutCommand : GlobalCommand {
 	
-	new make(|This|in) : super.make("afReflux.cmdAbout", in) { }
+	new make(|This|in) : super.make("afReflux.cmdAbout", in) {
+		addEnabler("adReflux.cmdAbout", |->Bool| { true } )
+	}
 	
 	override Void onInvoke(Event? event) {
 		icon	:= Pod.find("icons").file(`/x48/flux.png`)

@@ -46,6 +46,21 @@ class RefluxModule {
 		config["afReflux.cmdExit"]		= config.autobuild(ExitCommand#)
 		config["afReflux.cmdParent"]	= config.autobuild(ParentCommand#)
 		config["afReflux.cmdRefresh"]	= config.autobuild(RefreshCommand#)
+
+		config["afReflux.cmdSave"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSave"])
+//		config["afReflux.cmdSaveAs"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
+//		config["afReflux.cmdSaveAll"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
+//		config["afReflux.cmdCut"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
+//		config["afReflux.cmdCopy"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
+//		config["afReflux.cmdPaste"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
+//		config["afReflux.cmdUndo"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdUndo"])
+//		config["afReflux.cmdRedo"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdRedo"])
+
+		config["afReflux.cmdFind"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdFind"])
+//		config["afReflux.cmdFindNext"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdFindNext"])
+//		config["afReflux.cmdFindPrev"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdFindPrev"])
+		config["afReflux.cmdReplace"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdReplace"])
+//		config["afReflux.cmdGoto"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdGoto"])
 	}
 
 	@Contribute { serviceType=FactoryDefaults# }
@@ -74,6 +89,11 @@ class RefluxModule {
 	@Build { serviceId="afReflux.fileMenu" }
 	static Menu buildFileMenu(MenuItem[] menuItems) {
 		menu("afReflux.fileMenu").addAll(menuItems)
+	}
+
+	@Build { serviceId="afReflux.editMenu" }
+	static Menu buildEditMenu(MenuItem[] menuItems) {
+		menu("afReflux.editMenu").addAll(menuItems)
 	}
 
 	@Build { serviceId="afReflux.optionsMenu" }
@@ -105,7 +125,7 @@ class RefluxModule {
 	static Void contributeMenuBar(Configuration config, Registry reg) {
 		// TODO: only add menus if they have children
 		config["afReflux.fileMenu"]		= reg.serviceById("afReflux.fileMenu")
-//		config["editMenu"]	= reg.serviceById("afReflux.editMenu")
+		config["afReflux.editMenu"]		= reg.serviceById("afReflux.editMenu")
 		config["afReflux.optionsMenu"]	= reg.serviceById("afReflux.optionsMenu")
 		config["afReflux.panelMenu"]	= reg.serviceById("afReflux.panelMenu")
 		config["afReflux.helpMenu"]		= reg.serviceById("afReflux.helpMenu")
@@ -114,6 +134,11 @@ class RefluxModule {
 	@Contribute { serviceId="afReflux.fileMenu" }
 	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
 		config["afReflux.exit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
+	}
+
+	@Contribute { serviceId="afReflux.editMenu" }
+	static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
+		config["afReflux.find"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdFind"].command)
 	}
 
 	@Contribute { serviceId="afReflux.helpMenu" }
