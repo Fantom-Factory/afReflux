@@ -32,7 +32,7 @@ class Build : BuildPod {
 			"afIocConfig  1.0"
 		]
 
-		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/fileExplorer/`, `fan/public/fileExplorer/text/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`]
+		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`, `fan/explorer/`, `fan/explorer/textEditor/`, `fan/explorer/other/`]
 		resDirs = [`locale/`, `res/icons-eclipse/`, `res/icons-file/`]
 		
 		javaDirs = [`java/`]

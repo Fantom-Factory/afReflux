@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+// TODO: convert to GlobalCommand
 internal class ShowHiddenFilesCommand : RefluxCommand, FileExplorerEvents {
 	@Inject	private FileExplorer	fileExplorer
 	@Inject	private Reflux			reflux

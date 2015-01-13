@@ -23,8 +23,8 @@ internal class TextDoc : RichTextModel {
 		lines.add(Line { it.offset=0; it.text="" })
 		this.options	 = options
 		this.rules		 = rules
-		this.parser		= Parser(this)
-		this.delimiter = options.lineDelimiter
+		this.parser		= TextParser(this)
+		this.delimiter	= options.lineDelimiter
 	}
 
 //////////////////////////////////////////////////////////////////////////
@@ -437,16 +437,16 @@ internal class TextDoc : RichTextModel {
 	** Syntax rules for current document
 	SyntaxRules rules { private set }
 
-	internal Int size := 0						 // total char count
-	internal Line[] lines := Line[,]	 // lines
-	internal Str delimiter						 // line delimiter
-	internal Parser parser						 // to parse lines into styled segments
+	internal Int size := 0					// total char count
+	internal Line[] lines := Line[,]	 	// lines
+	internal Str delimiter					// line delimiter
+	internal TextParser parser				// to parse lines into styled segments
 
-	internal Int caretLine						 // current line for highlighting
-	internal Int? bracketLine1				 // matched bracket 1 line index
-	internal Int? bracketLine2				 // matched bracket 2 line index
-	internal Int? bracketCol1					// matched bracket 1 offset in line
-	internal Int? bracketCol2					// matched bracket 2 offset in line
+	internal Int caretLine					// current line for highlighting
+	internal Int? bracketLine1				// matched bracket 1 line index
+	internal Int? bracketLine2				// matched bracket 2 line index
+	internal Int? bracketCol1				// matched bracket 1 offset in line
+	internal Int? bracketCol2				// matched bracket 2 offset in line
 }
 
 **************************************************************************

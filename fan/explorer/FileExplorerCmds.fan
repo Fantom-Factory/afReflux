@@ -21,6 +21,7 @@ class FileExplorerCmds {
 	Command renameFileCmd(File file) {
 		command("RenameFile") {
 			it.name = "Rename"
+			it.accelerator = Key("F2")
 			it.onInvoke.add {
 				fileExplorer.rename(file)
 			}

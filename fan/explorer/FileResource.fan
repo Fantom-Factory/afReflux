@@ -45,7 +45,6 @@ class FileResource : Resource {
 			menu.addSep
 		}		
 
-		// TODO: F2 accel
 		addCmd(menu, fileCmds.renameFileCmd(file))
 		addCmd(menu, fileCmds.deleteFileCmd(file))
 
