@@ -13,7 +13,7 @@ class HtmlView : View {
 		super.load(resource)
 
 		browser = WebBrowser() {
-			it.onHyperlink.add |e| { this.onHyperlink(e) }	
+			it.onHyperlink.add |e| { this->onHyperlink(e) }	
 		}
 
 		content = BorderPane {

@@ -13,7 +13,7 @@ using syntax
 ** Parser is responsible for tokenizing a document line
 ** into syntax color coding.
 **
-internal class Parser {
+internal class TextParser {
 //////////////////////////////////////////////////////////////////////////
 // Constructor
 //////////////////////////////////////////////////////////////////////////
@@ -476,14 +476,14 @@ internal class StrMatch {
 ** are reused by the entire parser (see commentOpen and StrMatch).
 ** They are paired with BlockCloses.
 internal class BlockOpen : Block {
-	new make(Parser p, Str? n, Obj[] s) { parser = p; name = n; stylingOverride = s }
+	new make(TextParser p, Str? n, Obj[] s) { parser = p; name = n; stylingOverride = s }
 
 	override Line? closes(Line line, Block open) { throw Err("illegal state") }
 
 	override Str toStr() { return name }
 
 	override Obj[]? stylingOverride
-	Parser parser { private set }
+	TextParser parser { private set }
 	const Str? name
 }
 
