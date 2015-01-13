@@ -23,8 +23,7 @@ class GlobalCommand {
 		
 		command = _registry.autobuild(RefluxCommand#, [name, icon, |Event? event| { onInvoke(event) } ])
 		command.localise(this.typeof.pod, baseName)
-
-		command.enabled = enabled	// usually false
+		update
 	}
 
 	virtual Void onInvoke(Event? event) { }
@@ -41,16 +40,20 @@ class GlobalCommand {
 
 	Void addEnabler(Str listenerId, |->Bool| listener) {
 		_enablers[listenerId] = listener
-		command.enabled = enabled
+		update
 	}
 
 	Void removeEnabler(Str listenerId) {
 		listener := _enablers.remove(listenerId)
-		command.enabled = enabled
+		update
 	}
 	
 	Bool enabled {
 		get { _enablers.any { it.call() } }
 		private set { }
+	}
+	
+	Void update() {
+		command.enabled = enabled
 	}
 }

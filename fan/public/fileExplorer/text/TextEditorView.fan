@@ -102,6 +102,15 @@ class TextEditorView : View {
 	}
 
 	
+	override Void save() {	
+		out := file.out { it.charset = this.charset }
+		try		doc.save(out)
+		finally	out.close
+		fileTimeAtLoad = file.modified
+
+		super.save
+	}
+	
 	
 	internal Void loadDoc() {
 		// read document into memory, if we fail with the
@@ -131,20 +140,6 @@ class TextEditorView : View {
 		catch	return null
 		finally	in.close
 	}
-
-//////////////////////////////////////////////////////////////////////////
-// Saving
-//////////////////////////////////////////////////////////////////////////
-
-//	override Void onSave() {
-//	
-//		out := file.out { it.charset = this.charset }
-//		try
-//			doc.save(out)
-//		finally
-//			out.close
-//		fileTimeAtLoad = file.modified
-//	}
 
 	private Widget buildToolBar() {
 		return EdgePane {

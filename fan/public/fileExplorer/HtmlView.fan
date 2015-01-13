@@ -6,13 +6,11 @@ using fwt
 class HtmlView : View {
 	@Inject private Reflux	 	reflux
 			private WebBrowser?	browser
-			private Resource?	resource
 
 	protected new make(|This| in) : super(in) { }
 
 	override Void load(Resource resource) {
 		super.load(resource)
-		this.resource = resource
 
 		browser = WebBrowser() {
 			it.onHyperlink.add |e| { this.onHyperlink(e) }	

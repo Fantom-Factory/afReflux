@@ -5,7 +5,7 @@ using fwt
 internal class PanelTabPane : ContentPane {
 	CTabPane		tabPane		:= CTabPane() { it.onSelect.add |e| { this->onSelect(e) }; it.onClose.add |e| { this->onClose(e) } }
 	PanelTabTuple[]	panelTabs	:= PanelTabTuple[,]	// 'cos I can't use non-const Panel as a key
-	Bool			alwaysShowTabs	// TODO: alwaysShowTabs
+	Bool			alwaysShowTabs	// TODO: implement alwaysShowTabs
 	
 	new make(Bool visible, Bool alwaysShowTabs, |This|in) {
 		in(this)
@@ -44,7 +44,7 @@ internal class PanelTabPane : ContentPane {
 
 		panel.isShowing = true
 		panel->onShow
-		panel.showHideCommand.update
+		panel->onModify
 
 		return this
 	}
@@ -57,7 +57,7 @@ internal class PanelTabPane : ContentPane {
 		activate(null)	// deactivate it if its showing
 		panel.isShowing = false
 		panel->onHide
-		panel.showHideCommand.update
+		panel->onModify
 
 		panelTabs.removeSame(tuple)
 
