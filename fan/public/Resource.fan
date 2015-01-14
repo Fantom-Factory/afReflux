@@ -5,9 +5,8 @@ using fwt
 ** Resources are navigatable objects that may be represented by an URI, such as files and URLs.
 abstract class Resource {
 
-	@Inject private const Registry				_registry
-	@Inject private const DefaultResourceViews	_defaultViews
-	@Inject private Reflux						_reflux
+	@Inject private Registry	_registry
+	@Inject private Reflux		_reflux
 	
 	new make(|This|in) { in(this) }
 	
@@ -34,7 +33,7 @@ abstract class Resource {
 	} 
 	
 	virtual Type? defaultView() {
-		_defaultViews[this.typeof]
+		null
 	}
 	
 	@NoDoc
