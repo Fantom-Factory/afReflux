@@ -7,7 +7,13 @@ internal class ParentCommand : GlobalCommand, RefluxEvents {
 	
 	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdParent", in) {
 		eventHub.register(this)
-		addEnabler("adReflux.cmdParent", |->Bool| { true } )
+		ignore := true
+		addEnabler("adReflux.cmdParent", |->Bool| {
+			if (ignore) return false
+			parent := reflux.resource.uri.parent
+			return parent != null && parent.pathOnly != `/`
+		} )
+		ignore = false
 	}
 	
 	override Void onInvoke(Event? event) {
@@ -17,7 +23,6 @@ internal class ParentCommand : GlobalCommand, RefluxEvents {
 	}
 	
 	override Void onLoad(Resource resource)	{
-		parent := resource.uri.parent
-		command.enabled = (parent != null && parent.pathOnly != `/`)
+		update
 	}
 }
