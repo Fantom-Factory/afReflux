@@ -32,7 +32,7 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 			view = pots.first.panel
 		
 		// create a new View
-		if (view == null) {
+		if (view == null || ctx.newTab) {
 			view = registry.autobuild(viewType)			
 			super.addTab(view)
 		}

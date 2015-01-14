@@ -74,10 +74,17 @@ internal class RefluxImpl : Reflux {
 
 	override Void load(Uri uri, LoadCtx? ctx := null) {
 		ctx = ctx ?: LoadCtx()
+
 		if (uri.query.containsKey("view")) {
 			ctx.viewType = Type.find(uri.query["view"])
 			uri = removeQuery(uri, "view", uri.query["view"])
 		}
+
+		if (uri.query.containsKey("newTab")) {
+			ctx.newTab = uri.query["newTab"].toBool(false) ?: false
+			uri = removeQuery(uri, "newTab", uri.query["newTab"])
+		}
+
 		resource = uriResolvers.resolve(uri)
 		refluxEvents.onLoad(resource, ctx)
 	}
@@ -91,11 +98,11 @@ internal class RefluxImpl : Reflux {
 		if (resource != null)
 			refluxEvents.onRefresh(resource)
 	}
-	
+
 	override Void closeView(View view) {
 		frame.closeView(view)
 	}
-	
+
 	@Inject private Panels		panels
 	override Panel getPanel(Type panelType) {
 		panels.panelMap[panelType]
@@ -150,7 +157,13 @@ internal class RefluxImpl : Reflux {
 	}
 }
 
+** Contextual data for loading 'Resources'. 
 class LoadCtx {
-	Type? viewType
+	** If 'true' then the resource is opened in a new View tab.
+	Bool	newTab
 	
+	** The 'View' the resource should be opened in. 
+	Type?	viewType
+
+//	Bool	addToHistory
 }

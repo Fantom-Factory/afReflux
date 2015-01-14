@@ -17,7 +17,8 @@ class GlobalCommand {
 		in(this)
 		this._baseName = baseName
 
-		base := baseName.startsWith("afReflux.") ? baseName["afReflux.".size..-1] : baseName
+		podd := this.typeof.pod.name + "."
+		base := baseName.startsWith(podd) ? baseName[podd.size..-1] : baseName
 		name := (base.startsWith("cmd") ? base["cmd".size..-1] : base).toDisplayName
 		icon := _refluxIcons[base]
 		
