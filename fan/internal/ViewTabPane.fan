@@ -5,6 +5,7 @@ using fwt
 
 internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	@Inject	Registry	registry
+	@Inject	Reflux		reflux
 	
 	new make(Reflux reflux, |This|in) : super(false, false, in) {
 		this.tabPane.tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
@@ -28,8 +29,14 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		view := (View?) pots.find { ((View) it.panel).resource == resource }?.panel
 		
 		// find any view of the correct type and check for re-use
-		if (view == null && !pots.isEmpty && ((View) pots.first.panel).reuseView)
-			view = pots.first.panel
+		if (view == null && !pots.isEmpty) {
+			
+			if (pots.any { it.panel == reflux.activeView } && reflux.activeView.reuseView)
+				view = reflux.activeView
+			else
+				if (((View) pots.first.panel).reuseView)
+					view = pots.first.panel
+		}
 		
 		// create a new View
 		if (view == null || ctx.newTab) {
