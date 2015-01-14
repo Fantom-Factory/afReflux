@@ -4,8 +4,8 @@ using fwt
 
 ** Extends the standard 'fwt Command' to ensure errors incurred when invoked are added to the 'ErrorsView'.  
 class RefluxCommand : Command {
-	@Inject private Errors		_errors
-	@Inject private ImageSource	_imgSrc
+	@Inject private Errors	_errors
+	@Inject private Images	_images
 	
 	
 	** For subclasses
@@ -56,7 +56,7 @@ class RefluxCommand : Command {
 			locIcon = pod.locale("${keyBase}.icon", null)
 		if (locIcon != null)
 			try {
-				this.icon = (locIcon.trimToNull == null) ? null : _imgSrc.get(locIcon.toUri, false)
+				this.icon = (locIcon.trimToNull == null) ? null : _images.get(locIcon.toUri, false)
 			} catch (Err err)
 				_errors.add(Err("Command: cannot load '${keyBase}.icon' => $locIcon", err))
 		

@@ -1,5 +1,6 @@
 using afBeanUtils
 
+@NoDoc	// Don't overwhelm the masses!!!
 const class DefaultResourceViews {
 	
 	private const TypeLookup viewLookup

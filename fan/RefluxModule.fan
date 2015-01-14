@@ -10,7 +10,7 @@ class RefluxModule {
 		defs.add(Reflux#).withProxy
 		defs.add(Errors#).withProxy
 
-		defs.add(ImageSource#)
+		defs.add(Images#)
 		defs.add(Preferences#)
 		defs.add(EventHub#)
 		defs.add(EventTypes#)
@@ -18,7 +18,6 @@ class RefluxModule {
 		defs.add(UriResolvers#)
 		defs.add(LocaleFormat#)
 		defs.add(RefluxIcons#)
-
 		defs.add(GlobalCommands#)
 	}
 	
@@ -77,7 +76,7 @@ class RefluxModule {
 	@Contribute { serviceType=RegistryShutdown# }
 	internal static Void contributeRegistryShutdown(Configuration config, Registry registry) {
 		config["afReflux.disposeOfImages"] = |->| {
-			imgSrc := (ImageSource) registry.dependencyByType(ImageSource#)
+			imgSrc := (Images) registry.dependencyByType(Images#)
 			imgSrc.disposeOfImages
 		}
 	}
