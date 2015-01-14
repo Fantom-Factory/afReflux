@@ -1,8 +1,9 @@
 using afIoc
 using afIocConfig
 
-class PrefsCache {
-			private static const Log 	log 	:= PrefsCache#.pod.log
+** Use to load and save preference / config objects.
+class Preferences {
+			private static const Log 	log 	:= Preferences#.pod.log
 			private Type:CachedPrefs	cache	:= Type:CachedPrefs[:]
 	@Inject private Registry			registry
 	@Inject @Config private Str			appTitle

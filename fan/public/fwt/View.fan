@@ -1,15 +1,22 @@
 using afIoc
 
+** Views are 'Panels' that are associated with an (editable) resource.
+** Views are always displayed in the centre of the Window.
 abstract class View : Panel {
-	
+
 	@Inject private	Reflux		_reflux
 	
 	** The resource associated with this view.
 	** Set via 'load()'. 
 					Resource?	resource
 
+	** Subclasses should define the following ctor:
+	**  
+	**   new make(|This| in) : super(in) { ... }
 	protected new make(|This| in) : super(in) { }
 
+	** Returns 'true' if the resource has unsaved change. 
+	** 'Views' are responsible for setting this themselves.
 	Bool dirty {
 		set {
 			if (&dirty == it) return
@@ -24,18 +31,18 @@ abstract class View : Panel {
 		}
 	}
 
-	** Called to instruct the View to load the given resource.
+	** Called when the 'View' should load the given resource.
 	**  
-	** By default this sets the name and icon of the tab to that of the resource.
+	** This implementation just sets the resource, name and icon.
 	virtual Void load(Resource resource) {
 		this.resource	= resource
 		super.icon 		= resource.icon
 		super.name 		= resource.name
 	}
 
-	** Called to instruct the View to save it's resource
+	** Called when the View should save its resource.
 	**  
-	** By default this clears the dirty flag
+	** This implementation just clears the dirty flag.
 	virtual Void save() {
 		dirty = false
 	}

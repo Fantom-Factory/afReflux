@@ -4,6 +4,8 @@ using fwt
 
 // TODO: have 'Show stack trace in Console' command
 // TODO: have 'Clear' command
+** (Panel) -
+** Displays the list of 'Errs' added to the 'Errors' service.
 internal class ErrorsPanel : Panel, RefluxEvents {
 
 	@Inject private Registry		registry

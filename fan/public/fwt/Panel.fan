@@ -2,7 +2,8 @@ using afIoc
 using gfx
 using fwt
 
-** Panels maybe created at application startup. Instances are cached / reused.
+// maybe created at application startup. Instances are cached / reused.
+** Panels are displayed in the main Window. 
 abstract class Panel {
 
 	@Inject private Log				_log
@@ -10,28 +11,33 @@ abstract class Panel {
 	@Inject private Errors 			_errors
 	@Inject private RefluxIcons		_icons
 	@Inject private RefluxEvents	_events
-			private RefluxCommand?	_showHideCommand
 			internal CTab?			_tab
 
+	** The content displayed in the panel. May be set / re-set at any time.
 	Widget? content {
 		set { _tab?.remove(&content); _tab?.add(it); &content = it }
 	}
 	
 	** Return this sidebar's preferred alignment which is used to
 	** determine its default position.  Valid values are:
-	**   - Halign.left (default)
-	**   - Halign.right
-	**   - Valign.bottom
+	**   - 'Halign.left' (default)
+	**   - 'Halign.right'
+	**   - 'Valign.bottom'
 	Obj prefAlign := Halign.left
 
+	** As displayed in the panel's tab.
 	Str name := "" {
 		set { &name = it; if (_tab != null) _tab.text = it; this->onModify }
 	}
 
+	** As displayed in the panel's tab.
 	Image? icon {
 		set { &icon = it; if (_tab != null) _tab.image = it; this->onModify }
 	}
 	
+	** Subclasses should define the following ctor:
+	**  
+	**   new make(|This| in) : super(in) { ... }
 	new make(|This| in) {
 		in(this)
 		
@@ -71,6 +77,7 @@ abstract class Panel {
 	** Callback when panel details are modified, such as the name or icon. 
 	virtual Void onModify() {}
 	
+	// TODO: explain how to use!
 	override Obj? trap(Str name, Obj?[]? args := null) {
 		if (name.startsWith("on"))
 			_log.debug("${name} - $this")
@@ -104,10 +111,4 @@ abstract class Panel {
 		return retVal
 	}
 
-	internal ShowHidePanelCommand showHideCommand() {
-		if (_showHideCommand != null)
-			return _showHideCommand
-		_showHideCommand = _registry.autobuild(ShowHidePanelCommand#, [this])
-		return _showHideCommand
-	}
 }

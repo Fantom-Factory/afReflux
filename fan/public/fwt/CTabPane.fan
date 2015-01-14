@@ -2,6 +2,22 @@ using gfx
 using fwt
 
 // TODO: maybe add showMinimised / showMaximised and associated events - but there's no EventId for it.
+** (Widget) - 
+** A container for 'CTabs' and a replacement for FWT [Tabs]`fwt:Tabs`. 
+** 
+** 'CTabs' follow Eclipse's *Custom* range of widgets. They are similar to normal tabs, except they:
+** 
+**  - have close buttons
+**  - may be curved
+**  - may be aligned on the bottom 
+** 
+** ![CTabs]`doc/afReflux.ctabs.png`
+** 
+** ![CTabs]`http://www.javalobby.org/images/postings/rj/fancy_tabs/5.gif`
+** 
+** See the [Fancy SWT Tabs]`http://www.javalobby.org/java/forums/t16488.html` article for details.
+** 
+** See [CTabFolder]`http://help.eclipse.org/indigo/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/swt/custom/CTabFolder.html` SWT Widget.
 @Serializable { collection = true }
 class CTabPane : Pane {
 
@@ -9,13 +25,13 @@ class CTabPane : Pane {
 	Bool simpleTabs	:= false
 	
 	** Where the tabs should be placed. Allowed values:
-	**  - Valign.top
-	**  - Valign.bottom
+	**  - 'Valign.top'
+	**  - 'Valign.bottom'
 	Valign tabsValign	:= Valign.top {
 		set { if (it != Valign.top && it != Valign.bottom) throw ArgErr("Only Valign.top and Valign.bottom allowed - $it"); &tabsValign = it }
 	}
 	
-	** Callback when the new tab is selected.
+	** Callback when a tab is selected.
 	**
 	** Event id fired:
 	**	 - `EventId.select`

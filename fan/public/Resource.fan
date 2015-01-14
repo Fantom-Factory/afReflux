@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+** Resources are navigatable objects that may be represented by an URI, such as files and URLs.
 abstract class Resource {
 
 	@Inject private const Registry				_registry
