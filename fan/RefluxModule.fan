@@ -11,7 +11,7 @@ class RefluxModule {
 		defs.add(Errors#).withProxy
 
 		defs.add(ImageSource#)
-		defs.add(PrefsCache#)
+		defs.add(Preferences#)
 		defs.add(EventHub#)
 		defs.add(EventTypes#)
 		defs.add(Panels#)
@@ -107,11 +107,12 @@ class RefluxModule {
 	}
 
 	@Build { serviceId="afReflux.panelMenu" }
-	static Menu buildPanelMenu(MenuItem[] menuItems, Panels panels) {
+	static Menu buildPanelMenu(Registry reg, MenuItem[] menuItems, Panels panels) {
 		menu := menu("afReflux.panelMenu")
 		
-		panels.panels.each { 
-			menu.add(MenuItem.makeCommand(it.showHideCommand))
+		panels.panels.each {
+			cmd := reg.autobuild(ShowHidePanelCommand#, [it])
+			menu.add(MenuItem.makeCommand(cmd))
 		}
 		
 		if (!menuItems.isEmpty) {

@@ -1,8 +1,12 @@
 using afIoc
 
 ** (Service) - 
+** Holds a list of errors incurred by the application.
+** These are *not* persisted and are only held in memory. 
 mixin Errors {
 	abstract Error[]	errors()
+	
+	** Adds the given 'Err' to the 'ErrorsPanel'.
 	abstract Void 		add(Err err)
 }
 

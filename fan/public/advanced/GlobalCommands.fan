@@ -1,5 +1,6 @@
 using afBeanUtils
 
+@NoDoc	// Don't overwhelm the masses!
 class GlobalCommands {
 	
 	Str:GlobalCommand cmds

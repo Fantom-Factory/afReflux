@@ -50,7 +50,7 @@ mixin Reflux {
 internal class RefluxImpl : Reflux {
 	@Inject private UriResolvers	uriResolvers
 	@Inject private RefluxEvents	refluxEvents
-	@Inject private PrefsCache		prefsCache
+	@Inject private Preferences		prefsCache
 	@Inject private Errors			errors
 	@Inject override Registry		registry
 			override Resource?		resource
