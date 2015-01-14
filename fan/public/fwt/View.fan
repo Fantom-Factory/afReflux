@@ -15,6 +15,9 @@ abstract class View : Panel {
 	**   new make(|This| in) : super(in) { ... }
 	protected new make(|This| in) : super(in) { }
 
+	** Set to 'true' if the View should re-used for multiple resources.
+	Bool reuseView := false
+	
 	** Returns 'true' if the resource has unsaved change. 
 	** 'Views' are responsible for setting this themselves.
 	Bool dirty {

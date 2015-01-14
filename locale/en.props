@@ -6,15 +6,6 @@ afReflux.cmdExit.name				= Exit
 afReflux.cmdParent.name				= Up Folder
 afReflux.cmdRefresh.name			= Refresh
 
-afReflux.cmdFind.name				= Find...
-afReflux.cmdFind.accelerator		= Ctrl+F
-afReflux.cmdFindNext.name			= Find Next
-afReflux.cmdFindPrev.name			= Find Prev
-afReflux.cmdReplace.name			= Replace...
-afReflux.cmdReplace.accelerator		= Ctrl+H
-afReflux.cmdGoto.name				= Goto Line
-afReflux.cmdGoto.accelerator		= Ctrl+G
-
 afReflux.cmdSave.name				= Save
 afReflux.cmdSave.accelerator		= Ctrl+S
 

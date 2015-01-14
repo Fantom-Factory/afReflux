@@ -67,7 +67,7 @@ internal class UriWidget : Canvas, RefluxEvents {
 		text.bounds = Rect(tx, ty, tw, th)
 	}
 	
-	override Void onLoad(Resource resource) {
+	override Void onLoad(Resource resource, LoadCtx ctx) {
 		update(resource)
 	}
 	

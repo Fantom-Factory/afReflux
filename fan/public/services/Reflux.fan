@@ -12,8 +12,8 @@ mixin Reflux {
 	abstract RefluxPrefs preferences()
 	
 	abstract Resource? resource()
-	abstract Void load(Uri uri)
-	abstract Void loadResource(Resource resource)
+	abstract Void load(Uri uri, LoadCtx? ctx := null)
+	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
 	abstract Void refresh()
 	
 	abstract Window window()
@@ -72,14 +72,19 @@ internal class RefluxImpl : Reflux {
 		}
 	}
 
-	override Void load(Uri uri) {
-		this.resource = uriResolvers.resolve(uri)
-		refluxEvents.onLoad(resource)
+	override Void load(Uri uri, LoadCtx? ctx := null) {
+		ctx = ctx ?: LoadCtx()
+		if (uri.query.containsKey("view")) {
+			ctx.viewType = Type.find(uri.query["view"])
+			uri = removeQuery(uri, "view", uri.query["view"])
+		}
+		resource = uriResolvers.resolve(uri)
+		refluxEvents.onLoad(resource, ctx)
 	}
 
-	override Void loadResource(Resource resource) {
+	override Void loadResource(Resource resource, LoadCtx? ctx := null) {
 		this.resource = resource
-		refluxEvents.onLoad(resource)
+		refluxEvents.onLoad(resource, ctx ?: LoadCtx())
 	}
 
 	override Void refresh() {
@@ -107,7 +112,7 @@ internal class RefluxImpl : Reflux {
 		// initialise panel with data
 		if (panel is RefluxEvents && resource != null)
 			Desktop.callLater(50ms) |->| {
-				((RefluxEvents) panel).onLoad(resource)
+				((RefluxEvents) panel)->onLoad(resource, LoadCtx())
 			}
 
 		return panel
@@ -136,4 +141,16 @@ internal class RefluxImpl : Reflux {
 	private Frame frame() {
 		window
 	}
+	
+	private static Uri removeQuery(Uri uri, Str key, Str val) {
+		str := uri.toStr.replace("${key}=${val}", "")
+		if (str.endsWith("?"))
+			str = str[0..-2]
+		return str.toUri
+	}
+}
+
+class LoadCtx {
+	Type? viewType
+	
 }
