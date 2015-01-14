@@ -29,7 +29,7 @@ class RefluxModule {
 	@Contribute { serviceType=RefluxIcons# }
 	static Void contributeRefluxIcons(Configuration config) {
 		EclipseIcons.iconMap.each |uri, id| {
-			config[id] = uri.isAbs ? uri : `fan://afReflux/res/icons-eclipse/` + uri
+			config[id] = uri.isAbs || uri.toStr.isEmpty ? uri : `fan://afReflux/res/icons-eclipse/` + uri
 		}
 	}
 
@@ -106,7 +106,7 @@ class RefluxModule {
 	}
 
 	@Build { serviceId="afReflux.panelMenu" }
-	static Menu buildPanelMenu(Registry reg, MenuItem[] menuItems, Panels panels) {
+	static Menu buildPanelMenu(MenuItem[] menuItems, Registry reg, Panels panels) {
 		menu := menu("afReflux.panelMenu")
 		
 		panels.panels.each {
@@ -127,13 +127,18 @@ class RefluxModule {
 	}
 
 	@Contribute { serviceId="afReflux.menuBar" }
-	static Void contributeMenuBar(Configuration config, Registry reg) {
-		// TODO: only add menus if they have children
-		config["afReflux.fileMenu"]		= reg.serviceById("afReflux.fileMenu")
-		config["afReflux.editMenu"]		= reg.serviceById("afReflux.editMenu")
-		config["afReflux.optionsMenu"]	= reg.serviceById("afReflux.optionsMenu")
-		config["afReflux.panelMenu"]	= reg.serviceById("afReflux.panelMenu")
-		config["afReflux.helpMenu"]		= reg.serviceById("afReflux.helpMenu")
+	static Void contributeMenuBar(Configuration config) {
+		addNonEmptyMenu(config, "afReflux.fileMenu")
+		addNonEmptyMenu(config, "afReflux.editMenu")
+		addNonEmptyMenu(config, "afReflux.optionsMenu")
+		addNonEmptyMenu(config, "afReflux.panelMenu")
+		addNonEmptyMenu(config, "afReflux.helpMenu")
+	}
+	
+	static Void addNonEmptyMenu(Configuration config, Str menuId) {
+		menu := (Menu) config.registry.serviceById(menuId)
+		if (!menu.children.isEmpty)
+			config[menuId] = menu
 	}
 
 	@Contribute { serviceId="afReflux.fileMenu" }
