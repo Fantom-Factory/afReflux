@@ -46,12 +46,6 @@ internal class EclipseIcons {
 		"cmdSave"				: `save_edit.gif`,
 		"cmdSaveAs"				: `saveas_edit.gif`,
 		"cmdSaveAll"			: `saveall_edit.gif`,
-
-		"cmdFind"				: ``,
-		"cmdFindPrev"			: `nav_backward.gif`,
-		"cmdFindNext"			: `nav_forward.gif`,
-		"cmdReplace"			: ``,
-		"cmdGoto"				: ``,
 		
 		"icoErrorsPanel"		: `error_log.gif`
 	]
