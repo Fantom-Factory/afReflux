@@ -15,6 +15,7 @@ mixin Reflux {
 	abstract Void load(Uri uri, LoadCtx? ctx := null)
 	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
 	abstract Void refresh()
+	abstract View? activeView()
 	
 	abstract Window window()
 	abstract Panel showPanel(Type panelType)
@@ -44,17 +45,19 @@ mixin Reflux {
 	}
 }
 
-internal class RefluxImpl : Reflux {
+internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private UriResolvers	uriResolvers
 	@Inject private RefluxEvents	refluxEvents
 	@Inject private Preferences		prefsCache
 	@Inject private Errors			errors
 	@Inject override Registry		registry
 			override Resource?		resource
+			override View?			activeView
 //	@Autobuild { implType=Frame# }
 			override Window			window
 
-	new make(|This| in) { in(this)
+	new make(EventHub eventHub, |This| in) { in(this)
+		eventHub.register(this)
 		// FIXME: IoC Err - autobuild builds twice
 		window = registry.autobuild(Frame#, [this])
 	}
@@ -143,6 +146,14 @@ internal class RefluxImpl : Reflux {
 	
 	override Void copyToClipboard(Str text) {
 		Desktop.clipboard.setText(text)
+	}
+	
+	override Void onViewActivated(View view) {
+		activeView = view
+	}
+
+	override Void onViewDeactivated(View view) {
+		activeView = null
 	}
 
 	private Frame frame() {

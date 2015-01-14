@@ -4,26 +4,21 @@ using fwt
 
 internal class SaveCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
-			private View?	view
 	
 	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdSave", in) {
 		eventHub.register(this)
 	}
 	
 	override Void onInvoke(Event? event) {
-		view.save
+		reflux.activeView.save
 	}
 	
 	override Void onViewActivated(View view) {
-		this.view = view
-		addEnabler("afReflux.cmdSave", |->Bool| { view.dirty } )
+		addEnabler("afReflux.cmdSave", |->Bool| { reflux.activeView?.dirty ?: false} )
 	}
 
 	override Void onViewDeactivated(View view) {
-		if (this.view == view) {
-			this.view = null
-			removeEnabler("afReflux.cmdSave")
-		}
+		removeEnabler("afReflux.cmdSave")
 	}
 	
 	override Void onViewModified(View view) {
