@@ -1,7 +1,19 @@
 using afIoc
 using fwt
 
-class EventHub {
+** (Service) - 
+** An eventing strategy.
+mixin EventHub {
+
+	abstract Void register(Obj eventSink)
+
+	abstract Void fireEvent(Method method, Obj?[]? args := null)
+	
+	abstract Void fireEventIn(Duration delay, Method method, Obj?[]? args := null)
+
+}
+
+internal class EventHubImpl : EventHub {
 	@Inject private Errors	errors
 			private Obj[]	eventSinks	:= [,]
 	
@@ -10,11 +22,11 @@ class EventHub {
 	}
 
 	// TODO: save into map of sinks, for optomidation
-	Void register(Obj eventSink) {
+	override Void register(Obj eventSink) {
 		eventSinks.add(eventSink)
 	}
 
-	Void fireEvent(Method method, Obj?[]? args := null) {
+	override Void fireEvent(Method method, Obj?[]? args := null) {
 		sinks := eventSinks.findAll { it.typeof.fits(method.parent) }
 		
 		sinks.each {
@@ -24,7 +36,7 @@ class EventHub {
 		}
 	}
 	
-	Void fireEventIn(Duration delay, Method method, Obj?[]? args := null) {
+	override Void fireEventIn(Duration delay, Method method, Obj?[]? args := null) {
 		Desktop.callLater(delay) |->| { fireEvent(method, args) }
 	}
 }

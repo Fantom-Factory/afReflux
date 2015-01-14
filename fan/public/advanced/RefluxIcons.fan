@@ -4,7 +4,7 @@ using gfx
 @NoDoc	// Advanced use only!
 class RefluxIcons {
 	@Inject private const Log	log
-	@Inject private ImageSource imgSrc
+	@Inject private Images		images
 			private Str:Uri		iconMap
 	
 	new make(Str:Uri iconMap, |This| in) {
@@ -27,11 +27,11 @@ class RefluxIcons {
 		if (uri.toStr.isEmpty)
 			return null
 
-		return imgSrc.get(uri, faded)
+		return images.get(uri, faded)
 	}
 	
 	Image? fromUri(Uri? icoUri, Bool faded := false, Bool checked := true) {
-		imgSrc.get(icoUri, faded, checked)
+		images.get(icoUri, faded, checked)
 	}
 }
 
@@ -47,8 +47,11 @@ internal class EclipseIcons {
 		"cmdSaveAs"				: `saveas_edit.gif`,
 		"cmdSaveAll"			: `saveall_edit.gif`,
 
+		"cmdFind"				: ``,
 		"cmdFindPrev"			: `nav_backward.gif`,
 		"cmdFindNext"			: `nav_forward.gif`,
+		"cmdReplace"			: ``,
+		"cmdGoto"				: ``,
 		
 		"icoErrorsPanel"		: `error_log.gif`
 	]

@@ -20,7 +20,7 @@ internal class Frame : Window, RefluxEvents {
 		in(this)
 		this.reflux = reflux	// need to pass this in, 'cos it's created in Reflux's ctor
 
-		imageSource	:= (ImageSource) registry.serviceById(ImageSource#.qname)
+		imageSource	:= (Images) registry.serviceById(Images#.qname)
 		this.title	= appTitle
 		this.icon	= imageSource.get(appIcon, false)
 		this.size	= Size(640, 480)

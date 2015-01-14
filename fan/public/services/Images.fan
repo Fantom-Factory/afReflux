@@ -1,8 +1,8 @@
 using afIoc
 using gfx::Image
 
-** (Service) - Creates and caches images; disposes them on registry shutdown. 
-mixin ImageSource {
+** (Service) - Hold images created by Reflux, disposes them on registry shutdown. 
+mixin Images {
 	
 	abstract internal Void disposeOfImages()
 	
@@ -11,7 +11,7 @@ mixin ImageSource {
 	abstract Image? get(Uri? icoUri, Bool faded, Bool checked := true)
 }
 
-internal class ImageSourceImpl : ImageSource {
+internal class ImagesImpl : Images {
 	@Inject private Log			log
 			private Uri:Image	images		:= Uri:Image[:]
 			private Uri:Image	fadedImages	:= Uri:Image[:]

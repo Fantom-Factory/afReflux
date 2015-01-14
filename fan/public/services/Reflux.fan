@@ -3,7 +3,7 @@ using afIocConfig
 using gfx
 using fwt
 
-** (Service) - 
+** (Service) - The main API for managing a Reflux application.
 mixin Reflux {
 	
 	abstract Registry registry()
@@ -15,7 +15,6 @@ mixin Reflux {
 	abstract Void load(Uri uri)
 	abstract Void loadResource(Resource resource)
 	abstract Void refresh()
-	abstract Bool loadParent()
 	
 	abstract Window window()
 	abstract Panel showPanel(Type panelType)
@@ -26,8 +25,6 @@ mixin Reflux {
 	abstract Void exit()
 	
 	abstract Void copyToClipboard(Str text)
-	
-//	abstract internal Void startup()
 	
 	static Void start(Type[] modules, |Reflux| onOpen) {
 		registry := RegistryBuilder().addModules([RefluxModule#, ConfigModule#]).addModules(modules).build.startup
@@ -88,15 +85,6 @@ internal class RefluxImpl : Reflux {
 	override Void refresh() {
 		if (resource != null)
 			refluxEvents.onRefresh(resource)
-	}
-	
-	override Bool loadParent() {
-		parent := resource?.uri?.parent
-		if (parent != null && parent.pathOnly != `/`) {
-			load(parent)
-			return true
-		}
-		return false
 	}
 	
 	override Void closeView(View view) {

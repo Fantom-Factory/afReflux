@@ -11,11 +11,13 @@ internal class ParentCommand : GlobalCommand, RefluxEvents {
 	}
 	
 	override Void onInvoke(Event? event) {
-		reflux.loadParent
+		parent := reflux.resource?.uri?.parent
+		if (parent != null && parent.pathOnly != `/`)
+			reflux.load(parent)
 	}
 	
 	override Void onLoad(Resource resource)	{
 		parent := resource.uri.parent
-		command.enabled = parent != null && parent.pathOnly != `/`
+		command.enabled = (parent != null && parent.pathOnly != `/`)
 	}
 }
