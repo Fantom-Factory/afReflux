@@ -59,12 +59,6 @@ class RefluxModule {
 //		config["afReflux.cmdPaste"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
 //		config["afReflux.cmdUndo"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdUndo"])
 //		config["afReflux.cmdRedo"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdRedo"])
-
-		config["afReflux.cmdFind"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdFind"])
-		config["afReflux.cmdFindNext"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdFindNext"])
-		config["afReflux.cmdFindPrev"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdFindPrev"])
-		config["afReflux.cmdReplace"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdReplace"])
-		config["afReflux.cmdGoto"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdGoto"])
 	}
 
 	@Contribute { serviceType=FactoryDefaults# }
@@ -146,17 +140,6 @@ class RefluxModule {
 		config["afReflux.save"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
 		config.add(MenuItem { it.mode = MenuItemMode.sep })
 		config["afReflux.exit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
-	}
-
-	@Contribute { serviceId="afReflux.editMenu" }
-	static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.find"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdFind"].command)
-		config["afReflux.findNext"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdFindNext"].command)
-		config["afReflux.findPrev"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdFindPrev"].command)
-		config.add(MenuItem { it.mode = MenuItemMode.sep })
-		config["afReflux.replace"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdReplace"].command)
-		config.add(MenuItem { it.mode = MenuItemMode.sep })
-		config["afReflux.goto"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdGoto"].command)
 	}
 
 	@Contribute { serviceId="afReflux.helpMenu" }

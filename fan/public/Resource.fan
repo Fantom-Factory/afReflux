@@ -27,8 +27,8 @@ abstract class Resource {
 		_reflux.load(uri)
 	} 
 	
-	virtual Type? defaultView() {
-		null
+	virtual Type[] viewTypes() {
+		[,]
 	}
 	
 	@NoDoc

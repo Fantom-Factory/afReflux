@@ -22,7 +22,7 @@ internal class ParentCommand : GlobalCommand, RefluxEvents {
 			reflux.load(parent)
 	}
 	
-	override Void onLoad(Resource resource)	{
+	override Void onLoad(Resource resource, LoadCtx ctx) {
 		update
 	}
 }

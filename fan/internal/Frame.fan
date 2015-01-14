@@ -68,7 +68,7 @@ internal class Frame : Window, RefluxEvents {
 		viewTabs.removeTab(view)
 	}
 
-	override Void onLoad(Resource resource) {
+	override Void onLoad(Resource resource, LoadCtx ctx) {
 		update(resource, false)
 	}
 	

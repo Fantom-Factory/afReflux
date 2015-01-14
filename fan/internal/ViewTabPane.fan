@@ -15,15 +15,23 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		eventHub.register(this)
 	}
 
-	override Void onLoad(Resource resource) {
-		viewType := resource.defaultView
+	override Void onLoad(Resource resource, LoadCtx ctx) {
+		viewType := ctx.viewType ?: resource.viewTypes.first
 		
-		// TODO: what to do when no view?
-		if (viewType == null)
+		if (viewType == null) {
+			this.typeof.pod.log.warn("Resource `${resource.uri}` has no default view")
 			return
+		}
 
-		view := (View?) panelTabs.find { it.panel.typeof.fits(viewType) }?.panel
+		// if the resource is already loaded in the correct viewtype, just activate it 
+		pots := panelTabs.findAll { it.panel.typeof.fits(viewType) }
+		view := (View?) pots.find { ((View) it.panel).resource == resource }?.panel
 		
+		// find any view of the correct type and check for re-use
+		if (view == null && !pots.isEmpty && ((View) pots.first.panel).reuseView)
+			view = pots.first.panel
+		
+		// create a new View
 		if (view == null) {
 			view = registry.autobuild(viewType)			
 			super.addTab(view)
