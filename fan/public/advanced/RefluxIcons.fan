@@ -2,11 +2,15 @@ using afIoc
 using gfx
 
 @NoDoc	// Advanced use only!
-abstract class RefluxIcons {
+class RefluxIcons {
 	@Inject private const Log	log
 	@Inject private ImageSource imgSrc
+			private Str:Uri		iconMap
 	
-	new make(|This| in) { in(this) }
+	new make(Str:Uri iconMap, |This| in) {
+		in(this)
+		this.iconMap = iconMap
+	}
 	
 	@Operator
 	virtual Image? get(Str name) {
@@ -14,27 +18,26 @@ abstract class RefluxIcons {
 	}
 	
 	Image? icon(Str name, Bool faded) {
-		uri := iconUri(name)
-		if (uri == null) {
+		if (!iconMap.containsKey(name)) {
 			log.warn("No icon for : $name")
 			return null
 		}
+
+		uri := iconMap[name]
 		if (uri.toStr.isEmpty)
 			return null
+
 		return imgSrc.get(uri, faded)
 	}
-	
-	abstract Uri? iconUri(Str name)
 	
 	Image? fromUri(Uri? icoUri, Bool faded := false, Bool checked := true) {
 		imgSrc.get(icoUri, faded, checked)
 	}
-
 }
 
 @NoDoc
-class EclipseIcons : RefluxIcons {
-	const Str:Uri iconMap := [
+internal class EclipseIcons {
+	static const Str:Uri iconMap := [
 		"cmdExit"				: ``,
 		"cmdAbout"				: `fan://icons/x16/flux.png`,
 		"cmdRefresh"			: `nav_refresh.gif`,
@@ -47,58 +50,6 @@ class EclipseIcons : RefluxIcons {
 		"cmdFindPrev"			: `nav_backward.gif`,
 		"cmdFindNext"			: `nav_forward.gif`,
 		
-		"icoErrorsPanel"		: `error_log.gif`,
-		
-		
-		// ---- File Explorer -------------------
-		"icoFoldersPanel"		: `filenav_nav.gif`,
-		"icoFolderView"			: `fldr_obj.gif`,
-		"icoImageView"			: `image_obj.gif`,
-		"icoTextEditorView"		: `file_obj.gif`,
-		
-		"cmdOpenFile"			: ``,
-		"cmdActionFile"			: ``,
-		"cmdRenameFile"			: ``,
-		"cmdDeleteFile"			: `delete_obj.gif`,
-		"cmdCutFile"			: `cut_edit.gif`,
-		"cmdCopyFile"			: `copy_edit.gif`,
-		"cmdPasteFile"			: `paste_edit.gif`,
-		"cmdNewFile"			: `new_untitled_text_file.gif`,
-		"cmdNewFolder"			: `newfolder_wiz.gif`,
-		"cmdCopyFileName"		: ``,
-		"cmdCopyFilePath"		: ``,
-		"cmdCopyFileUri"		: ``,
-
-		"icoFile"				: `file_obj.gif`,
-		"icoFileImage"			: `image_obj.gif`,
-		"icoFolder"				: `fldr_obj.gif`,
-		"icoFolderRoot"			: `prj_obj.gif`,
-		
-		// ---- Image View ----------------------
-		"icoImageNotFound"		: `delete_obj.gif`,
-		"cmdImageFitToWindow"	: `collapseall.gif`,
-		"cmdImageFullSize"		: `image_obj.gif`,
-
-		
-		// ---- Html View -----------------------
-		"icoHtmlView"			: `fan://afReflux/res/icons-file/fileTextHtml.png`,
-
-		
-		// ignore
-		"cmdExPanel"			: ``,
-		"cmdErr"				: ``,
-		"":``
+		"icoErrorsPanel"		: `error_log.gif`
 	]
-
-	new make(|This| in) : super(in) { }
-	
-	override Uri? iconUri(Str name) {
-		if (!iconMap.containsKey(name))
-			return null
-		
-		uri := iconMap[name]
-		if (uri.toStr.isEmpty)
-			return uri
-		return uri.isAbs ? uri : `fan://afReflux/res/icons-eclipse/` + uri
-	}
 }
