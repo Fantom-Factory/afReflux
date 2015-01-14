@@ -1,6 +1,7 @@
-#Reflux v0.0.1
+#Reflux v0.0.0
 ---
-[![Made for: Fantom](http://img.shields.io/badge/made%20for-Fantom-lightgray.svg)](http://fantom.org/)
+[![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom.org/)
+[![pod: v0.0.0](http://img.shields.io/badge/pod-v0.0.0-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
 ![Licence: MIT](http://img.shields.io/badge/licence-MIT-blue.svg)
 
 ## Overview

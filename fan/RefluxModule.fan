@@ -17,7 +17,7 @@ class RefluxModule {
 		defs.add(Panels#)
 		defs.add(UriResolvers#)
 		defs.add(LocaleFormat#)
-		defs.add(RefluxIcons#, EclipseIcons#)
+		defs.add(RefluxIcons#)
 
 		defs.add(GlobalCommands#)
 	}
@@ -25,6 +25,13 @@ class RefluxModule {
 	@Contribute { serviceType=Panels# }
 	static Void contributePanels(Configuration config) {
 		config.add(config.autobuild(ErrorsPanel#))
+	}
+
+	@Contribute { serviceType=RefluxIcons# }
+	static Void contributeRefluxIcons(Configuration config) {
+		EclipseIcons.iconMap.each |uri, id| {
+			config[id] = uri.isAbs ? uri : `fan://afReflux/res/icons-eclipse/` + uri
+		}
 	}
 
 	@Contribute { serviceType=EventTypes# }
