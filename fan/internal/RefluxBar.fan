@@ -17,11 +17,13 @@ internal class RefluxBar : EdgePane {
 			// ToolBars can only show Buttons, so split it up into L and R toolbars
 			i := toolBar.children.indexSame(uriBar)
 			content = EdgePane {
-				l := ToolBar()
-				toolBar.children[0..<i].each { toolBar.remove(it); l.add(it) }
-				r := ToolBar()
-				toolBar.children[i..-1].each { toolBar.remove(it); r.add(it) }
-				toolBar.remove(uriBar)
+				lKids := toolBar.children[0..<i]
+				rKids := toolBar.children[i+1..-1]
+
+				toolBar.children.each { toolBar.remove(it) }
+				
+				l := ToolBar().addAll(lKids)
+				r := ToolBar().addAll(rKids)
 				
 				it.left	  = l
 				it.center = uriBar

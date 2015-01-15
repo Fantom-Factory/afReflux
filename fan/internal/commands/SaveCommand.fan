@@ -14,7 +14,7 @@ internal class SaveCommand : GlobalCommand, RefluxEvents {
 	}
 	
 	override Void onViewActivated(View view) {
-		addEnabler("afReflux.cmdSave", |->Bool| { reflux.activeView?.dirty ?: false} )
+		addEnabler("afReflux.cmdSave", |->Bool| { reflux.activeView?.isDirty ?: false} )
 	}
 
 	override Void onViewDeactivated(View view) {

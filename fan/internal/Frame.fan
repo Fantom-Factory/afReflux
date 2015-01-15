@@ -64,6 +64,10 @@ internal class Frame : Window, RefluxEvents {
 		refluxEvents.onPanelHidden(panel)
 	}
 	
+	Void replaceView(View view, Type viewType) {
+		viewTabs.replaceView(view, viewType)
+	}
+	
 	Void closeView(View view) {
 		viewTabs.removeTab(view)
 	}
@@ -73,17 +77,17 @@ internal class Frame : Window, RefluxEvents {
 	}
 	
 	override Void onViewActivated(View view) {
-		update(view.resource, view.dirty)
+		update(view.resource, view.isDirty)
 	}
 	
 	override Void onViewModified(View view) {
-		update(view.resource, view.dirty)
+		update(view.resource, view.isDirty)
 	}
 	
-	private Void update(Resource? resource, Bool dirty) {
+	private Void update(Resource? resource, Bool isDirty) {
 		if (resource == null) return
 		this.title = "${appTitle} - ${resource.name}"
-		if (dirty)
+		if (isDirty)
 			title += " *"
 	}
 	

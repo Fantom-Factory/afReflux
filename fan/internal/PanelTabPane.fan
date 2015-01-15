@@ -127,7 +127,7 @@ internal class PanelTabPane : ContentPane {
 internal class PanelTabTuple {
 	CTab?	tab
 	Panel?	panel
-	
+
 	This addTab(CTabPane tabPane) {
 		tab	= CTab()
 		tab.add(panel.content)
@@ -139,10 +139,22 @@ internal class PanelTabTuple {
 	}
 
 	This removeTab(CTabPane tabPane) {
-		tab.remove(panel.content)
 		tabPane.remove(tab)
 		tab = null
 		panel._tab = null
+		return this
+	}
+	
+	This swapPanel(Panel newPanel) {
+		tab.remove(panel.content)
+		panel._tab = null
+		
+		tab.add(newPanel.content)
+		tab.text  = newPanel.name
+		tab.image = newPanel.icon
+		newPanel._tab = tab
+		
+		panel = newPanel
 		return this
 	}
 }

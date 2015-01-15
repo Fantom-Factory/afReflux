@@ -20,10 +20,10 @@ abstract class View : Panel {
 	
 	** Returns 'true' if the resource has unsaved change. 
 	** 'Views' are responsible for setting this themselves.
-	Bool dirty {
+	Bool isDirty {
 		set {
-			if (&dirty == it) return
-			&dirty = it
+			if (&isDirty == it) return
+			&isDirty = it
 			if (it) {
 				name = "* ${name}"
 			} else {
@@ -47,6 +47,6 @@ abstract class View : Panel {
 	**  
 	** This implementation just clears the dirty flag.
 	virtual Void save() {
-		dirty = false
+		isDirty = false
 	}
 }
