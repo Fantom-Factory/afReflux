@@ -1,7 +1,7 @@
 using afIoc
+using afBeanUtils
 using gfx
 using fwt
-
 
 internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	@Inject	Registry	registry
@@ -16,6 +16,27 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		eventHub.register(this)
 	}
 
+	Void replaceView(View view, Type viewType) {
+		tuple := panelTabs.find { it.panel === view }
+		if (tuple == null)
+			throw ArgNotFoundErr("View '${view} not found", panelTabs.map { it.panel })
+
+		activate(null)	// deactivate it if its showing
+		tuple.panel.isShowing = false
+		tuple.panel->onHide
+		tuple.panel->onModify
+
+		newView := registry.autobuild(viewType) 
+		tuple.swapPanel(newView)
+		
+		tuple.panel.isShowing = true
+		tuple.panel->onShow
+		tuple.panel->onModify
+
+		super.parent.relayout
+		super.activate(tuple.panel)
+	}
+	
 	override Void onLoad(Resource resource, LoadCtx ctx) {
 		viewType := ctx.viewType ?: resource.viewTypes.first
 		

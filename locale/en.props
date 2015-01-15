@@ -9,5 +9,5 @@ afReflux.cmdRefresh.name			= Refresh
 afReflux.cmdSave.name				= Save
 afReflux.cmdSave.accelerator		= Ctrl+S
 
-#afReflux.cmdAbout.icon				= 
-#afReflux.cmdAbout.accelerator		= 
+afReflux.cmdToggleView.name			= Toggle View
+afReflux.cmdToggleView.accelerator	= F12

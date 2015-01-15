@@ -11,22 +11,24 @@ mixin Reflux {
 
 	abstract RefluxPrefs preferences()
 	
-	abstract Resource? resource()
+	abstract Void refresh()
+	abstract Window window()
+	abstract Void exit()
+	
 	abstract Void load(Uri uri, LoadCtx? ctx := null)
 	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
-	abstract Void refresh()
 	abstract View? activeView()
+	abstract Void closeView(View view)					// currently, only activeView is available, need views()
+	abstract Void replaceView(View view, Type viewType)	// currently, only activeView is available, need views()
 	
-	abstract Window window()
 	abstract Panel showPanel(Type panelType)
 	abstract Panel hidePanel(Type panelType)
 	abstract Panel getPanel(Type panelType)
 	
-	abstract Void closeView(View view)
-	abstract Void exit()
-	
 	abstract Void copyToClipboard(Str text)
-	
+
+
+
 	static Void start(Type[] modules, |Reflux| onOpen) {
 		registry := RegistryBuilder().addModules([RefluxModule#, ConfigModule#]).addModules(modules).build.startup
 		reflux	 := (Reflux) registry.serviceById(Reflux#.qname)
@@ -51,7 +53,6 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private Preferences		prefsCache
 	@Inject private Errors			errors
 	@Inject override Registry		registry
-			override Resource?		resource
 			override View?			activeView
 //	@Autobuild { implType=Frame# }
 			override Window			window
@@ -88,20 +89,23 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 			uri = removeQuery(uri, "newTab", uri.query["newTab"])
 		}
 
-		resource = uriResolvers.resolve(uri)
+		resource := uriResolvers.resolve(uri)
 		refluxEvents.onLoad(resource, ctx)
 	}
 
 	override Void loadResource(Resource resource, LoadCtx? ctx := null) {
-		this.resource = resource
 		refluxEvents.onLoad(resource, ctx ?: LoadCtx())
 	}
 
 	override Void refresh() {
-		if (resource != null)
-			refluxEvents.onRefresh(resource)
+		if (activeView.resource != null)
+			refluxEvents.onRefresh(activeView.resource)
 	}
 
+	override Void replaceView(View view, Type viewType) {
+		frame.replaceView(view, viewType)
+	}
+	
 	override Void closeView(View view) {
 		frame.closeView(view)
 	}
@@ -120,9 +124,9 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		frame.showPanel(panel)
 
 		// initialise panel with data
-		if (panel is RefluxEvents && resource != null)
+		if (panel is RefluxEvents && activeView?.resource != null)
 			Desktop.callLater(50ms) |->| {
-				((RefluxEvents) panel)->onLoad(resource, LoadCtx())
+				((RefluxEvents) panel)->onLoad(activeView.resource, LoadCtx())
 			}
 
 		return panel
