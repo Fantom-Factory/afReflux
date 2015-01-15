@@ -19,5 +19,5 @@ mixin RefluxEvents {
 	virtual Void onViewHidden		(View view) { }
 	virtual Void onViewActivated	(View view) { }
 	virtual Void onViewDeactivated	(View view) { }	// when tab 
-	virtual Void onViewModified		(View view) { }		// usually when the name / icon / dirty has changed
+	virtual Void onViewModified		(View view) { }	// usually when the name / icon / dirty has changed
 }
