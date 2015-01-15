@@ -7,7 +7,7 @@ internal class ParentCommand : GlobalCommand, RefluxEvents {
 	
 	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdParent", in) {
 		eventHub.register(this)
-		ignore := true
+		ignore := true	// recursion err when we use the reflux service 
 		addEnabler("adReflux.cmdParent", |->Bool| {
 			if (ignore) return false
 			parent := reflux.activeView?.resource?.uri?.parent
@@ -22,7 +22,6 @@ internal class ParentCommand : GlobalCommand, RefluxEvents {
 			reflux.load(parent)
 	}
 	
-	override Void onLoad(Resource resource, LoadCtx ctx) {
-		update
-	}
+	override Void onLoad(Resource resource, LoadCtx ctx) { update }
+	override Void onViewModified(View view) { update }
 }

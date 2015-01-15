@@ -139,6 +139,7 @@ internal class PanelTabTuple {
 	}
 
 	This removeTab(CTabPane tabPane) {
+		tab.remove(panel.content)
 		tabPane.remove(tab)
 		tab = null
 		panel._tab = null
@@ -148,6 +149,8 @@ internal class PanelTabTuple {
 	This swapPanel(Panel newPanel) {
 		tab.remove(panel.content)
 		panel._tab = null
+		panel.content = null
+		panel = null
 		
 		tab.add(newPanel.content)
 		tab.text  = newPanel.name
