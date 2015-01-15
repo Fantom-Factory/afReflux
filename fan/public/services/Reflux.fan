@@ -103,7 +103,13 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	}
 
 	override Void replaceView(View view, Type viewType) {
+		resource := view.resource
+
+		if (view.isDirty)
+			view.save
+		
 		frame.replaceView(view, viewType)
+		activeView.load(resource)
 	}
 	
 	override Void closeView(View view) {
