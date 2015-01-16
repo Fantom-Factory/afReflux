@@ -52,6 +52,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private RefluxEvents	refluxEvents
 	@Inject private Preferences		prefsCache
 	@Inject private Errors			errors
+	@Inject private Panels			panels
 	@Inject override Registry		registry
 			override View?			activeView
 //	@Autobuild { implType=Frame# }
@@ -98,8 +99,12 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	}
 
 	override Void refresh() {
-		if (activeView.resource != null)
-			refluxEvents.onRefresh(activeView.resource)
+		activeView.refresh
+
+		panels.panels.each {
+			if (it.isActive)
+				it.refresh
+		}
 	}
 
 	override Void replaceView(View view, Type viewType) {
@@ -116,7 +121,6 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		frame.closeView(view)
 	}
 
-	@Inject private Panels		panels
 	override Panel getPanel(Type panelType) {
 		panels.panelMap[panelType]
 	}

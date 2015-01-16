@@ -2,10 +2,6 @@
 mixin RefluxEvents {
 
 	virtual Void onLoad(Resource resource, LoadCtx ctx)	{ }
-
-	virtual Void onRefresh(Resource resource) {
-		onLoad(resource, LoadCtx())
-	}
 	
 	virtual Void onError(Error error)	{ }
 

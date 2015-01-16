@@ -30,12 +30,14 @@ internal class PanelTabPane : ContentPane {
 		    
 			case 1:
 				this.content = tabPane
-				panelTabs.first.addToTabPane()
-				panelTabs.first.panel.content.relayout
-				tuple.addToTabPane()
+				panelTabs.first.addToTabPane
+				tuple.addToTabPane
+
+				// fudge for HtmlView which need to be refreshed when moved into a tab
+				panelTabs.first.panel.refresh
 		
 			default:
-				tuple.addToTabPane()
+				tuple.addToTabPane
 		}
 		
 		this.parent.relayout
@@ -66,15 +68,18 @@ internal class PanelTabPane : ContentPane {
 				this.visible = false
 		    
 			case 1:
-				tuple.removeFromTabPane()
-				panelTabs.first.removeFromTabPane()
+				tuple.removeFromTabPane
+				panelTabs.first.removeFromTabPane
 				this.content = panelTabs.first.panel.content
 
 				// need to activate this ourselves because there's no TabPane select event
 				activate(panelTabs.first.panel)
-		
+
+				// fudge for HtmlView which need to be refreshed when moved out from a tab
+				panelTabs.first.panel.refresh
+
 			default:
-				tuple.removeFromTabPane()
+				tuple.removeFromTabPane
 		}
 
 		this.parent.relayout
