@@ -41,7 +41,11 @@ internal class EclipseIcons {
 		"cmdExit"				: ``,
 		"cmdAbout"				: `fan://icons/x16/flux.png`,
 		"cmdRefresh"			: `nav_refresh.gif`,
-		"cmdParent"				: `up_nav.gif`,
+
+		"cmdNavUp"				: `up_nav.gif`,
+		"cmdNavHome"			: `nav_home.gif`,
+		"cmdNavBackward"		: `nav_backward.gif`,
+		"cmdNavForward"			: `nav_forward.gif`,
 
 		"cmdSave"				: `save_edit.gif`,
 		"cmdSaveAs"				: `saveas_edit.gif`,

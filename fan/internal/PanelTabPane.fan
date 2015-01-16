@@ -123,10 +123,17 @@ internal class PanelTabPane : ContentPane {
 	Void onClose(Event? event)	{
 		tuple := panelTabs.find { it.tab === event.data }
 		if (tuple?.panel != null) {
-			removeTab(tuple.panel)
 			
-			// don't consume the event, so SWT fires a select event
-			// event.consume
+			if (tuple.panel is View && this is ViewTabPane) {
+				
+				if (((ViewTabPane) this).closeView(tuple.panel, false) == false)
+					event.consume
+
+			} else {
+				removeTab(tuple.panel)
+				// don't consume the event, so SWT fires a select event
+				// event.consume
+			}
 		}
 	}
 }

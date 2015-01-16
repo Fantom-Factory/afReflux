@@ -3,7 +3,7 @@ using fwt
 
 // TODO: maybe add showMinimised / showMaximised and associated events - but there's no EventId for it.
 ** (Widget) - 
-** A container for 'CTabs' and a replacement for FWT [Tabs]`fwt:Tabs`. 
+** A container for 'CTabs' and a replacement for FWT [Tabs]`fwt::Tabs`. 
 ** 
 ** 'CTabs' follow Eclipse's *Custom* range of widgets. They are similar to normal tabs, except they:
 ** 

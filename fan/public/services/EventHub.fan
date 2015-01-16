@@ -23,7 +23,11 @@ internal class EventHubImpl : EventHub {
 
 	// TODO: save into map of sinks, for optomidation
 	override Void register(Obj eventSink) {
-		eventSinks.add(eventSink)
+		// it's important that Reflux is notified first, so it can set the activeView
+		if (eventSink is RefluxImpl)
+			eventSinks.insert(0, eventSink)
+		else
+			eventSinks.add(eventSink)
 	}
 
 	override Void fireEvent(Method method, Obj?[]? args := null) {

@@ -40,9 +40,10 @@ class GlobalCommand {
 		command.onInvoke.remove(listener)
 	}
 
-	Void addEnabler(Str listenerId, |->Bool| listener) {
+	Void addEnabler(Str listenerId, |->Bool| listener, Bool update := true) {
 		_enablers[listenerId] = listener
-		update
+		if (update)
+			this.update
 	}
 
 	Void removeEnabler(Str listenerId) {

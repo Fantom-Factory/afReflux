@@ -68,11 +68,12 @@ internal class Frame : Window, RefluxEvents {
 		viewTabs.replaceView(view, viewType)
 	}
 	
-	Void closeView(View view) {
-		viewTabs.removeTab(view)
+	Bool closeView(View view, Bool force) {
+		viewTabs.closeView(view, force)
 	}
 
-	override Void onLoad(Resource resource, LoadCtx ctx) {
+	Void load(Resource resource, LoadCtx ctx) {
+		viewTabs.load(resource, ctx)
 		update(resource, false)
 	}
 	

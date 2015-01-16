@@ -1,14 +1,22 @@
 
 // ---- Global Commands ----
 
-afReflux.cmdAbout.name				= About
+afReflux.cmdSave.name				= Save
+afReflux.cmdSave.accelerator		= Ctrl+S
 afReflux.cmdExit.name				= Exit
-afReflux.cmdParent.name				= Up Folder
+afReflux.cmdAbout.name				= About
+
 afReflux.cmdRefresh.name			= Refresh
 afReflux.cmdRefresh.accelerator		= F5
 
-afReflux.cmdSave.name				= Save
-afReflux.cmdSave.accelerator		= Ctrl+S
+afReflux.cmdNavHome.name			= Home
+afReflux.cmdNavHome.accelerator		= Alt+Home
+afReflux.cmdNavUp.name				= Up Folder
+afReflux.cmdNavUp.accelerator		= Alt+Up
+afReflux.cmdNavBackward.name		= Back
+afReflux.cmdNavBackward.accelerator	= Alt+Left
+afReflux.cmdNavForward.name			= Forward
+afReflux.cmdNavForward.accelerator	= Alt+Right
 
 afReflux.cmdToggleView.name			= Toggle View
 afReflux.cmdToggleView.accelerator	= F12

@@ -2,11 +2,12 @@ using afIoc
 using gfx
 using fwt
 
-internal class ToggleViewCommand : GlobalCommand {
+internal class ToggleViewCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 
 	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdToggleView", in) {
-		addEnabler("afReflux.cmdSave", |->Bool| { true } )
+		eventHub.register(this)
+		addEnabler("afReflux.cmdToggleView", |->Bool| { (reflux.activeView?.resource?.viewTypes?.size ?: 0) > 1 }, false )
 	}
 	
 	override Void onInvoke(Event? event) {
@@ -18,4 +19,8 @@ internal class ToggleViewCommand : GlobalCommand {
 
 		reflux.replaceView(reflux.activeView, viewTypes[i])
 	}
+	
+	override Void onViewActivated	(View view) { update }
+	override Void onViewDeactivated	(View view) { update } 
+	override Void onLoad(Resource resource)		{ update }
 }

@@ -36,7 +36,7 @@ abstract class View : Panel {
 
 	** Callback when the View should load the given resource.
 	**  
-	** By default this just sets the resource, name and icon.
+	** By default this sets the resource, name and icon.
 	virtual Void load(Resource resource) {
 		this.resource	= resource
 		super.icon 		= resource.icon
@@ -45,7 +45,7 @@ abstract class View : Panel {
 
 	** Callback for when the panel should refresh it's contents. 
 	** 
-	** By default this just calls 'load()'. 
+	** By default this calls 'load()'. 
 	override Void refresh() {
 		if (resource != null)
 			load(resource)
@@ -56,5 +56,15 @@ abstract class View : Panel {
 	** By default this just clears the dirty flag.
 	virtual Void save() {
 		isDirty = false
+	}
+	
+	** Callback when the view is being closed. 
+	** Return 'false' if the view should be kept open.
+	** 
+	** Note if 'force' is 'true' then the view **will** close regardless of the return value.
+	** 
+	** By default this returns 'true'.  
+	virtual Bool confirmClose(Bool force) {
+		true
 	}
 }
