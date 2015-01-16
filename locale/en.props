@@ -5,6 +5,7 @@ afReflux.cmdAbout.name				= About
 afReflux.cmdExit.name				= Exit
 afReflux.cmdParent.name				= Up Folder
 afReflux.cmdRefresh.name			= Refresh
+afReflux.cmdRefresh.accelerator		= F5
 
 afReflux.cmdSave.name				= Save
 afReflux.cmdSave.accelerator		= Ctrl+S

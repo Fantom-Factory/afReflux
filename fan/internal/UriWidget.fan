@@ -51,6 +51,9 @@ internal class UriWidget : Canvas, RefluxEvents {
 	}
 
 	Void onViewPopup(Event event) {
+		if ((reflux.activeView?.resource?.viewTypes?.size ?: 0) <= 1)
+			return
+
 		vt := reflux.activeView?.typeof?.name?.toDisplayName ?: "Views"
 		vw := Desktop.sysFont.width(vt) + viewInsets.left + viewInsets.right
 		vx := size.w - vw
@@ -79,20 +82,22 @@ internal class UriWidget : Canvas, RefluxEvents {
 		if (icon != null)
 			g.drawImage(icon, 4, 3)
 
-		vt := reflux.activeView?.typeof?.name?.toDisplayName ?: "Views"
-		vw := Desktop.sysFont.width(vt) + viewInsets.left + viewInsets.right
-		vx := size.w - vw
-		vy := (size.h - Desktop.sysFont.height) / 2
-
-	    g.brush = Desktop.sysFg
-	    g.drawText(vt, vx + viewInsets.left, vy)
+		vw := 0
+		if ((reflux.activeView?.resource?.viewTypes?.size ?: 0) > 1) {
+			vt := reflux.activeView.typeof.name.toDisplayName
+			vw  = Desktop.sysFont.width(vt) + viewInsets.left + viewInsets.right
+			vx := size.w - vw
+			vy := (size.h - Desktop.sysFont.height) / 2
+		    g.brush = Desktop.sysFg
+		    g.drawText(vt, vx + viewInsets.left, vy)
+		}
 
 	    ax := size.w - viewInsets.right + 3
 	    ay := (size.h - 3) / 2
 	    g.drawLine(ax  , ay,   ax+4, ay)
 	    g.drawLine(ax+1, ay+1, ax+3, ay+1)
 	    g.drawLine(ax+2, ay+2, ax+2, ay+2)
-			
+
 		tp := text.prefSize
 		tx := textInsets.left
 		ty := (size.h - text.prefSize.h) / 2
@@ -104,11 +109,11 @@ internal class UriWidget : Canvas, RefluxEvents {
 	override Void onLoad(Resource resource, LoadCtx ctx) {
 		update(resource)
 	}
-	
+
 	override Void onViewActivated(View view) {
 		update(view.resource)
 	}
-	
+
 	override Void onViewModified(View view) {
 		update(view.resource)
 	}

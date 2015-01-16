@@ -3,6 +3,7 @@ using gfx
 using fwt
 
 ** Provides an abstraction layer for reusable commands by de-coupling the creation and invocation.
+** Need to be visible and enabled in main menu to work
 class GlobalCommand {
 	@Inject private RefluxIcons		_refluxIcons
 	@Inject private Registry		_registry
