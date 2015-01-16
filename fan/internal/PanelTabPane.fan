@@ -3,7 +3,10 @@ using gfx
 using fwt
 
 internal class PanelTabPane : ContentPane {
-	CTabPane		tabPane		:= CTabPane() { it.onSelect.add |e| { this->onSelect(e) }; it.onClose.add |e| { this->onClose(e) } }
+	CTabPane		tabPane		:= CTabPane() {
+		it.onSelect.add |e| { this->onSelect(e) } 
+		it.onClose.add  |e| { this->onClose (e) } 
+	}
 	PanelTabTuple[]	panelTabs	:= PanelTabTuple[,]	// 'cos I can't use non-const Panel as a key
 	Bool			alwaysShowTabs	// TODO: implement alwaysShowTabs
 	
@@ -16,29 +19,25 @@ internal class PanelTabPane : ContentPane {
 	This addTab(Panel panel) {
 		if (panelTabs.find { it.panel === panel } != null)
 			return this	// already added
-
-		content := panel.content
-
-		if (panelTabs.isEmpty) {
-			super.content = content
-
-			panelTabs.add(PanelTabTuple() {
-				it.panel	= panel
-			})
-			
-			this.visible = true
-		} else {
-
-			if (panelTabs.size == 1) {
-				super.content = tabPane
-				panelTabs.first.addTab(tabPane)
-			}
-
-			panelTabs.add(PanelTabTuple() {
-				it.panel	= panel
-			}).last.addTab(tabPane)
+		
+		tuple := panelTabs.add(PanelTabTuple(panel, tabPane)).last
+		panel._parentFunc = |->Widget| { tuple.tab ?: this }
+		
+		switch (panelTabs.size-1) {
+			case 0:
+				this.content = panel.content
+				this.visible = true
+		    
+			case 1:
+				this.content = tabPane
+				panelTabs.first.addToTabPane()
+				panelTabs.first.panel.content.relayout
+				tuple.addToTabPane()
+		
+			default:
+				tuple.addToTabPane()
 		}
-
+		
 		this.parent.relayout
 		this.relayout
 
@@ -54,28 +53,32 @@ internal class PanelTabPane : ContentPane {
 		if (tuple == null)
 			return this
 
-		activate(null)	// deactivate it if its showing
+		activate(null)	// deactivate if its showing
 		panel.isShowing = false
 		panel->onHide
 		panel->onModify
 
 		panelTabs.removeSame(tuple)
 
-		if (panelTabs.isEmpty) {
-			super.content = null
-			this.visible = false
-			this.parent.relayout
-			return this
-		}
+		switch (panelTabs.size) {
+			case 0:
+				this.content = null
+				this.visible = false
+		    
+			case 1:
+				tuple.removeFromTabPane()
+				panelTabs.first.removeFromTabPane()
+				this.content = panelTabs.first.panel.content
 
-		tuple.removeTab(tabPane)
-
-		if (panelTabs.size == 1) {
-			this.content = panelTabs.first.removeTab(tabPane).panel.content
-			relayout
+				// need to activate this ourselves because there's no TabPane select event
+				activate(panelTabs.first.panel)
+		
+			default:
+				tuple.removeFromTabPane()
 		}
 
 		this.parent.relayout
+		this.relayout
 		return this
 	}
 	
@@ -115,49 +118,52 @@ internal class PanelTabPane : ContentPane {
 	Void onClose(Event? event)	{
 		tuple := panelTabs.find { it.tab === event.data }
 		if (tuple?.panel != null) {
-//			activate(null)
 			removeTab(tuple.panel)
 			
-			// we've just removed the tab, so SWT doesn't need to
-			event.consume
+			// don't consume the event, so SWT fires a select event
+			// event.consume
 		}
 	}
 }
 
 internal class PanelTabTuple {
-	CTab?	tab
-	Panel?	panel
+	CTabPane	tabPane
+	Panel		panel
+	CTab?		tab
 
-	This addTab(CTabPane tabPane) {
+	new make(Panel panel, CTabPane tabPane) {
+		this.tabPane = tabPane
+		this.panel = panel
+	}
+	
+	This addToTabPane() {
 		tab	= CTab()
 		tab.add(panel.content)
 		tab.text  = panel.name
 		tab.image = panel.icon
 		tabPane.add(tab)
-		panel._tab = tab
 		return this
 	}
 
-	This removeTab(CTabPane tabPane) {
+	This removeFromTabPane() {
 		tab.remove(panel.content)
 		tabPane.remove(tab)
 		tab = null
-		panel._tab = null
 		return this
 	}
 	
 	This swapPanel(Panel newPanel) {
-		tab.remove(panel.content)
-		panel._tab = null
-		panel.content = null
-		panel = null
-		
-		tab.add(newPanel.content)
-		tab.text  = newPanel.name
-		tab.image = newPanel.icon
-		newPanel._tab = tab
-		
+		// there is no tab if it's the only panel
+		tab?.remove(panel.content)
+
 		panel = newPanel
+		
+		if (tab != null) {
+			tab.add(newPanel.content)
+			tab.text  = newPanel.name
+			tab.image = newPanel.icon
+		}
+		
 		return this
 	}
 }
