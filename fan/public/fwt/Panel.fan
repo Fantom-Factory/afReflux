@@ -11,11 +11,21 @@ abstract class Panel {
 	@Inject private Errors 			_errors
 	@Inject private RefluxIcons		_icons
 	@Inject private RefluxEvents	_events
-			internal CTab?			_tab
+	 		internal |->Widget|?	_parentFunc
 
 	** The content displayed in the panel. May be set / re-set at any time.
 	Widget? content {
-		set { _tab?.remove(&content); _tab?.add(it); &content = it }
+		set {
+			_parent := (Widget?) _parentFunc?.call()	// nullable, as content may be set in the ctor
+			if (_parent is ContentPane) {
+				((ContentPane) _parent).content = it
+			} else {
+				_parent?.remove(&content)
+				_parent?.add(it)
+			}
+			&content = it
+			_parent?.relayout
+		}
 	}
 	
 	** Return this sidebar's preferred alignment which is used to
@@ -27,12 +37,12 @@ abstract class Panel {
 
 	** As displayed in the panel's tab.
 	Str name := "" {
-		set { &name = it; if (_tab != null) _tab.text = it; this->onModify }
+		set { &name = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->text = it; this->onModify }
 	}
 
 	** As displayed in the panel's tab.
 	Image? icon {
-		set { &icon = it; if (_tab != null) _tab.image = it; this->onModify }
+		set { &icon = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->image = it; this->onModify }
 	}
 	
 	** Subclasses should define the following ctor:

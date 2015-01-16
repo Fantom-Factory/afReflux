@@ -26,14 +26,20 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		tuple.panel->onHide
 		tuple.panel->onModify
 
-		newView := registry.autobuild(viewType) 
+		newView := (View) registry.autobuild(viewType) 
+		newView._parentFunc = |->Widget| { tuple.tab ?: this }
 		tuple.swapPanel(newView)
+		if (panelTabs.size == 1) {
+			this.content = newView.content
+		}
 		
 		tuple.panel.isShowing = true
 		tuple.panel->onShow
 		tuple.panel->onModify
 
 		super.parent.relayout
+		super.relayout
+
 		super.activate(tuple.panel)
 	}
 	
