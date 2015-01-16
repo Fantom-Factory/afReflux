@@ -108,8 +108,6 @@ class RefluxModule {
 			cmd := reg.autobuild(ShowHidePanelCommand#, [it])
 			menu.add(MenuItem.makeCommand(cmd))
 		}
-		menu.addSep
-		menu.add(MenuItem.makeCommand(globalCmds["afReflux.cmdToggleView"].command))
 		
 		if (!menuItems.isEmpty) {
 			menu.addSep
@@ -145,11 +143,16 @@ class RefluxModule {
 		config["afReflux.exit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)	// separator
 	}
 
+	@Contribute { serviceId="afReflux.panelMenu" }
+	static Void contributePanelMenu(Configuration config, GlobalCommands globalCmds) {
+		config["afReflux.toggleView"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdRefresh"].command)
+		config["afReflux.refresh"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdToggleView"].command)
+	}
+
 	@Contribute { serviceId="afReflux.helpMenu" }
 	static Void contributeHelpMenu(Configuration config, GlobalCommands globalCmds) {
 		config["afReflux.about"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
 	}
-
 	
 	
 	// ---- Reflux Tool Bar -----------------------------------------------------------------------
