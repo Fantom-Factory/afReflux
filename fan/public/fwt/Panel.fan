@@ -72,10 +72,10 @@ abstract class Panel {
 	** Is the panel currently showing in the frame?
 	Bool isShowing := false { internal set }
 
-	** Callback when this panel is created.
+	** Callback when this panel is shown in the tab pane.
 	virtual Void onShow() {}
 
-	** Callback when this panel is closed.
+	** Callback when this panel is removed from the tab pane.
 	virtual Void onHide() {}
 	
 	** Callback when this panel is selected as the active tab.
@@ -87,6 +87,10 @@ abstract class Panel {
 	** Callback when panel details are modified, such as the name or icon. 
 	virtual Void onModify() {}
 	
+	** Callback for when the panel should refresh it's contents. 
+	** Typically all active panels are asked to refresh when the 'refresh' button is clicked. 
+	virtual Void refresh() {} 
+
 	// TODO: explain how to use!
 	override Obj? trap(Str name, Obj?[]? args := null) {
 		if (name.startsWith("on"))

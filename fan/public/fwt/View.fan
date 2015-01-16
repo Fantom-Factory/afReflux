@@ -34,18 +34,26 @@ abstract class View : Panel {
 		}
 	}
 
-	** Called when the 'View' should load the given resource.
+	** Callback when the View should load the given resource.
 	**  
-	** This implementation just sets the resource, name and icon.
+	** By default this just sets the resource, name and icon.
 	virtual Void load(Resource resource) {
 		this.resource	= resource
 		super.icon 		= resource.icon
 		super.name 		= resource.name
 	}
 
-	** Called when the View should save its resource.
+	** Callback for when the panel should refresh it's contents. 
+	** 
+	** By default this just calls 'load()'. 
+	override Void refresh() {
+		if (resource != null)
+			load(resource)
+	} 
+
+	** Callback when the View should save its resource. Only called when 'isDirty' is 'true'.
 	**  
-	** This implementation just clears the dirty flag.
+	** By default this just clears the dirty flag.
 	virtual Void save() {
 		isDirty = false
 	}

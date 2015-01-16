@@ -10,7 +10,9 @@ internal class SaveCommand : GlobalCommand, RefluxEvents {
 	}
 	
 	override Void onInvoke(Event? event) {
-		reflux.activeView.save
+		// should actually on be enabled if dirty, but better safe than sorry
+		if (reflux.activeView.isDirty)
+			reflux.activeView.save
 	}
 	
 	override Void onViewActivated(View view) {
