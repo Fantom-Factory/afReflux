@@ -19,6 +19,7 @@ class RefluxModule {
 		defs.add(LocaleFormat#)
 		defs.add(RefluxIcons#)
 		defs.add(GlobalCommands#)
+		defs.add(History#)
 	}
 	
 	@Contribute { serviceType=Panels# }
@@ -46,13 +47,18 @@ class RefluxModule {
 
 	@Contribute { serviceType=GlobalCommands# }
 	static Void contributeGlobalCommands(Configuration config) {
-		config["afReflux.cmdAbout"]			= config.autobuild(AboutCommand#)
-		config["afReflux.cmdExit"]			= config.autobuild(ExitCommand#)
-		config["afReflux.cmdParent"]		= config.autobuild(ParentCommand#)
-		config["afReflux.cmdRefresh"]		= config.autobuild(RefreshCommand#)
-
 		config["afReflux.cmdSave"]			= config.autobuild(SaveCommand#)
+		config["afReflux.cmdExit"]			= config.autobuild(ExitCommand#)
+		config["afReflux.cmdAbout"]			= config.autobuild(AboutCommand#)
+		config["afReflux.cmdRefresh"]		= config.autobuild(RefreshCommand#)
+		
+		config["afReflux.cmdNavUp"]			= config.autobuild(NavUpCommand#)
+		config["afReflux.cmdNavHome"]		= config.autobuild(NavHomeCommand#)
+		config["afReflux.cmdNavBackward"]	= config.autobuild(NavBackwardCommand#)
+		config["afReflux.cmdNavForward"]	= config.autobuild(NavForwardCommand#)
+
 		config["afReflux.cmdToggleView"]	= config.autobuild(ToggleViewCommand#)
+
 //		config["afReflux.cmdSaveAs"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
 //		config["afReflux.cmdSaveAll"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
 //		config["afReflux.cmdCut"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
@@ -154,7 +160,8 @@ class RefluxModule {
 		config["afReflux.about"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
 	}
 	
-	
+
+
 	// ---- Reflux Tool Bar -----------------------------------------------------------------------
 
 	@Build { serviceId="afReflux.toolBar" }
@@ -164,14 +171,17 @@ class RefluxModule {
 
 	@Contribute { serviceId="afReflux.toolBar" }
 	static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.save"]			= toolBarCommand(globalCmds["afReflux.cmdSave"].command)
-		config["separator.01"]			= Button { mode = ButtonMode.sep }
-		config["afReflux.refresh"]		= toolBarCommand(globalCmds["afReflux.cmdRefresh"].command)
-		config["afReflux.uriWidget"]	= config.autobuild(UriWidget#)
-		config["afReflux.parent"]		= toolBarCommand(globalCmds["afReflux.cmdParent"].command)
+		config["afReflux.cmdSave"]			= toolBarCommand(globalCmds["afReflux.cmdSave"].command)
+		config["separator.01"]				= Button { mode = ButtonMode.sep }
+		config["afReflux.cmdNavBackward"]	= toolBarCommand(globalCmds["afReflux.cmdNavBackward"].command)
+		config["afReflux.cmdNavForward"]	= toolBarCommand(globalCmds["afReflux.cmdNavForward"].command)
+		config["afReflux.cmdRefresh"]		= toolBarCommand(globalCmds["afReflux.cmdRefresh"].command)
+		config["afReflux.uriWidget"]		= config.autobuild(UriWidget#)
+		config["afReflux.cmdNavUp"]			= toolBarCommand(globalCmds["afReflux.cmdNavUp"].command)
+		config["afReflux.cmdNavHome"]		= toolBarCommand(globalCmds["afReflux.cmdNavHome"].command)
 	}
 	
-	
+
 	
 	// ---- Private Methods -----------------------------------------------------------------------
 

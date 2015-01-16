@@ -2,18 +2,15 @@ using afIoc
 using gfx
 using fwt
 
-internal class ParentCommand : GlobalCommand, RefluxEvents {
+internal class NavUpCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux reflux
 	
-	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdParent", in) {
+	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdNavUp", in) {
 		eventHub.register(this)
-		ignore := true	// recursion err when we use the reflux service 
-		addEnabler("adReflux.cmdParent", |->Bool| {
-			if (ignore) return false
+		addEnabler("afReflux.cmdNavUp", |->Bool| {
 			parent := reflux.activeView?.resource?.uri?.parent
 			return parent != null && parent.pathOnly != `/`
-		} )
-		ignore = false
+		}, false)
 	}
 	
 	override Void onInvoke(Event? event) {
@@ -22,6 +19,6 @@ internal class ParentCommand : GlobalCommand, RefluxEvents {
 			reflux.load(parent)
 	}
 	
-	override Void onLoad(Resource resource, LoadCtx ctx) { update }
+	override Void onLoad(Resource resource) { update }
 	override Void onViewModified(View view) { update }
 }

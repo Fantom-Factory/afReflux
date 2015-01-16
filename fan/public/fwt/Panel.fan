@@ -4,6 +4,7 @@ using fwt
 
 // maybe created at application startup. Instances are cached / reused.
 ** Panels are displayed in the main Window. 
+** Views don't die, they're like singleton services - hang around for the duration of the app
 abstract class Panel {
 
 	@Inject private Log				_log

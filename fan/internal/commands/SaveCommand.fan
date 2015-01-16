@@ -7,23 +7,15 @@ internal class SaveCommand : GlobalCommand, RefluxEvents {
 	
 	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdSave", in) {
 		eventHub.register(this)
+		addEnabler("afReflux.cmdSave", |->Bool| { reflux.activeView?.isDirty ?: false }, false )
 	}
 	
 	override Void onInvoke(Event? event) {
-		// should actually on be enabled if dirty, but better safe than sorry
-		if (reflux.activeView.isDirty)
-			reflux.activeView.save
-	}
-	
-	override Void onViewActivated(View view) {
-		addEnabler("afReflux.cmdSave", |->Bool| { reflux.activeView?.isDirty ?: false} )
+		// cmd should only be enabled if dirty
+		reflux.activeView?.save
 	}
 
-	override Void onViewDeactivated(View view) {
-		removeEnabler("afReflux.cmdSave")
-	}
-	
-	override Void onViewModified(View view) {
-		update
-	}
+	override Void onViewActivated	(View view) { update }
+	override Void onViewDeactivated	(View view) { update } 
+	override Void onViewModified	(View view)	{ update }
 }

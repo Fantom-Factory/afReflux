@@ -18,7 +18,7 @@ mixin Reflux {
 	abstract Void load(Uri uri, LoadCtx? ctx := null)
 	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
 	abstract View? activeView()
-	abstract Void closeView(View view)					// currently, only activeView is available, need views()
+	abstract Bool closeView(View view, Bool force)		// currently, only activeView is available, need views()
 	abstract Void replaceView(View view, Type viewType)	// currently, only activeView is available, need views()
 	
 	abstract Panel showPanel(Type panelType)
@@ -91,11 +91,12 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		}
 
 		resource := uriResolvers.resolve(uri)
-		refluxEvents.onLoad(resource, ctx)
+		
+		frame.load(resource, ctx)
 	}
 
 	override Void loadResource(Resource resource, LoadCtx? ctx := null) {
-		refluxEvents.onLoad(resource, ctx ?: LoadCtx())
+		frame.load(resource, ctx ?: LoadCtx())
 	}
 
 	override Void refresh() {
@@ -117,8 +118,8 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		activeView.load(resource)
 	}
 	
-	override Void closeView(View view) {
-		frame.closeView(view)
+	override Bool closeView(View view, Bool force) {
+		frame.closeView(view, force)
 	}
 
 	override Panel getPanel(Type panelType) {
@@ -154,7 +155,10 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	}
 	
 	override Void exit() {
-		// TODO: deactivate and hide all panels...? 
+		while (activeView != null && closeView(activeView, false)) { }
+		if    (activeView != null) return
+		
+		panels.panels.each { hidePanel(it.typeof) }
 		frame.close
 	}
 	

@@ -4,8 +4,10 @@ using gfx
 using fwt
 
 internal class ViewTabPane : PanelTabPane, RefluxEvents {
-	@Inject	Registry	registry
-	@Inject	Reflux		reflux
+	@Inject	private Registry		registry
+	@Inject private Errors			errors
+	@Inject	private Reflux			reflux
+	@Inject private RefluxEvents	events
 	
 	new make(Reflux reflux, |This|in) : super(false, false, in) {
 		this.tabPane.tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
@@ -43,7 +45,15 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		super.activate(tuple.panel)
 	}
 	
-	override Void onLoad(Resource resource, LoadCtx ctx) {
+	Bool closeView(View view, Bool force) {
+		// give the view a chance to stay alive - it may have unsaved changes.
+		confirmClose := view.confirmClose(false)
+		if (confirmClose)
+			removeTab(view)
+		return confirmClose
+	}
+
+	Void load(Resource resource, LoadCtx ctx) {
 		viewType := ctx.viewType ?: resource.viewTypes.first
 		
 		if (viewType == null) {
@@ -72,6 +82,10 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		}
 		
 		super.activate(view)
-		view.load(resource)		
+		
+		try	view.load(resource)
+		catch (Err err)
+			errors.add(err)
+		events.onLoad(resource)
 	}
 }
