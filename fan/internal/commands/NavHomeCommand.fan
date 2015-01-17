@@ -9,7 +9,7 @@ internal class NavHomeCommand : GlobalCommand {
 		addEnabler("afReflux.cmdNavHome") |->Bool| { true }
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		reflux.load(reflux.preferences.homeUri)
 	}
 }

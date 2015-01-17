@@ -10,7 +10,7 @@ internal class ToggleViewCommand : GlobalCommand, RefluxEvents {
 		addEnabler("afReflux.cmdToggleView", |->Bool| { (reflux.activeView?.resource?.viewTypes?.size ?: 0) > 1 }, false )
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		activeView	:= reflux.activeView
 		viewTypes	:= activeView.resource.viewTypes
 

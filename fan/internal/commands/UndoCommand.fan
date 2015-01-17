@@ -9,7 +9,7 @@ internal class UndoCommand : GlobalCommand, RefluxEvents {
 		addEnabler("afReflux.cmdUndo", |->Bool| { !(reflux.activeView?._undoStack?.isEmpty ?: true) }, false )
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		reflux.activeView?.undo
 	}
 

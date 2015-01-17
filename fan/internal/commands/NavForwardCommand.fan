@@ -9,7 +9,7 @@ internal class NavForwardCommand : GlobalCommand, RefluxEvents {
 		addEnabler("afReflux.cmdNavForward", |->Bool| { history.navForwardEnabled }, false )
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		history.navForward
 	}
 	

@@ -13,7 +13,7 @@ internal class NavUpCommand : GlobalCommand, RefluxEvents {
 		}, false)
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		parent := reflux.activeView?.resource?.uri?.parent
 		if (parent != null && parent.pathOnly != `/`)
 			reflux.load(parent)

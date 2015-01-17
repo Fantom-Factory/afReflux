@@ -8,7 +8,7 @@ internal class AboutCommand : GlobalCommand {
 		addEnabler("adReflux.cmdAbout", |->Bool| { true } )
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		icon	:= Pod.find("icons").file(`/x48/flux.png`)
 		big		:= Font { it.name=Desktop.sysFont.name; it.size=Desktop.sysFont.size+(Desktop.isMac ? 2 : 3); it.bold=true }
 		small	:= Font { it.name=Desktop.sysFont.name; it.size=Desktop.sysFont.size-(Desktop.isMac ? 3 : 1) }

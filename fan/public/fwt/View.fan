@@ -69,10 +69,11 @@ abstract class View : Panel {
 		true
 	}
 	
+	** Add a pair of Undo / Redo commands.
 	Void addUndoRedo(|->| undo, |->| redo) {
 		// cap the history at something large but reasonable
-		if (_undoStack.size > 99)
-			_undoStack.size = 99
+		if (_undoStack.size > 999)
+			_undoStack.size = 999
 
 		_undoStack.add(UndoRedo { 
 			it.undo = undo
@@ -84,6 +85,7 @@ abstract class View : Panel {
 		_events.onViewModified(this)
 	}
 	
+	** Undoes the last command.
 	Void undo() {
 		undoRedo := _undoStack.pop
 		if (undoRedo == null) return
@@ -96,6 +98,7 @@ abstract class View : Panel {
 		_events.onViewModified(this)
 	}
 	
+	** Redoes the last command.
 	Void redo() {
 		undoRedo := _redoStack.pop
 		if (undoRedo == null) return

@@ -9,7 +9,7 @@ internal class ExitCommand : GlobalCommand {
 		addEnabler("adReflux.cmdExit", |->Bool| { true } )
 	}
 
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 //		dirty := frame.views.findAll |View v->Bool| { return v.dirty }
 //		if (dirty.size > 0) {
 //			grid := GridPane { Label { text=Flux.locale("saveChanges"); font=Desktop.sysFont.toBold },}

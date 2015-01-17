@@ -23,12 +23,12 @@ class GlobalCommand {
 		name := (base.startsWith("cmd") ? base["cmd".size..-1] : base).toDisplayName
 		icon := _refluxIcons[base]
 		
-		command = _registry.autobuild(RefluxCommand#, [name, icon, |Event? event| { onInvoke(event) } ])
+		command = _registry.autobuild(RefluxCommand#, [name, icon, |Event? event| { doInvoke(event) } ])
 		command.localise(this.typeof.pod, baseName)
 		update
 	}
 
-	virtual Void onInvoke(Event? event) { }
+	virtual Void doInvoke(Event? event) { }
 	
 	Void addInvoker(Str listenerId, |Event?| listener) {
 		_invokers[listenerId] = listener

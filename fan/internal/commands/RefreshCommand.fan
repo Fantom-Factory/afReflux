@@ -9,7 +9,7 @@ internal class RefreshCommand : GlobalCommand, RefluxEvents {
 		addEnabler("adReflux.cmdRefresh", |->Bool| { true } )
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		reflux.refresh
 	}
 }
