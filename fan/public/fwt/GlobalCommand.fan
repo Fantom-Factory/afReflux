@@ -25,7 +25,7 @@ class GlobalCommand {
 		
 		command = _registry.autobuild(RefluxCommand#, [name, icon, |Event? event| { doInvoke(event) } ])
 		command.localise(this.typeof.pod, baseName)
-		update
+		command.enabled = false	// use enablers to switch command on
 	}
 
 	virtual Void doInvoke(Event? event) { }
@@ -56,7 +56,7 @@ class GlobalCommand {
 		private set { }
 	}
 	
-	Void update() {
+	virtual Void update() {
 		command.enabled = enabled
 	}
 }
