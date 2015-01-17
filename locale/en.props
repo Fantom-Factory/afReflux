@@ -18,5 +18,10 @@ afReflux.cmdNavBackward.accelerator	= Alt+Left
 afReflux.cmdNavForward.name			= Forward
 afReflux.cmdNavForward.accelerator	= Alt+Right
 
+afReflux.cmdUndo.name				= Undo
+afReflux.cmdUndo.accelerator		= Ctrl+Z
+afReflux.cmdRedo.name				= Redo
+afReflux.cmdRedo.accelerator		= Ctrl+Y
+
 afReflux.cmdToggleView.name			= Toggle View
 afReflux.cmdToggleView.accelerator	= F12

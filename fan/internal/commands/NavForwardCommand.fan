@@ -6,7 +6,7 @@ internal class NavForwardCommand : GlobalCommand, RefluxEvents {
 	
 	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdNavForward", in) {
 		eventHub.register(this)
-		addEnabler("afReflux.cmdNavForward", |->Bool| { history.canNavForward }, false )
+		addEnabler("afReflux.cmdNavForward", |->Bool| { history.navForwardEnabled }, false )
 	}
 	
 	override Void onInvoke(Event? event) {

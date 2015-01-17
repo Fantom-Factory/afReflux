@@ -1,17 +1,16 @@
 using afIoc
 using fwt
 
-internal class SaveCommand : GlobalCommand, RefluxEvents {
+internal class UndoCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 	
-	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdSave", in) {
+	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdUndo", in) {
 		eventHub.register(this)
-		addEnabler("afReflux.cmdSave", |->Bool| { reflux.activeView?.isDirty ?: false }, false )
+		addEnabler("afReflux.cmdUndo", |->Bool| { !(reflux.activeView?._undoStack?.isEmpty ?: true) }, false )
 	}
 	
 	override Void onInvoke(Event? event) {
-		// cmd should only be enabled if dirty
-		reflux.activeView?.save
+		reflux.activeView?.undo
 	}
 
 	override Void onViewActivated	(View view) { update }

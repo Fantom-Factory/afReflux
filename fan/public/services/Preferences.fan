@@ -1,14 +1,16 @@
 using afIoc
-using afIocConfig
 
 ** Use to load and save preference / config objects.
 class Preferences {
 			private static const Log 	log 	:= Preferences#.pod.log
 			private Type:CachedPrefs	cache	:= Type:CachedPrefs[:]
+			private Str					appName
 	@Inject private Registry			registry
-	@Inject @Config private Str			appTitle
 	
-	new make(|This| in) { in(this) }
+	new make(RegistryMeta regMeta, |This| in) {
+		in(this)
+		this.appName = regMeta["afReflux.appName"]
+	}
 		
 	Obj loadPrefs(Type prefsType, Str name := "${prefsType.name}.fog") {
 		cached	:= loadFromCache(prefsType)
@@ -45,7 +47,7 @@ class Preferences {
 	}
 	
 	File? toFile(Type prefsType, Str name := "${prefsType.name}.fog") {
-		pathUri := `etc/${appTitle}/${name}`
+		pathUri := `etc/${appName}/${name}`
 		if (runtimeIsJs) {
 			log.info("File $pathUri does not exist in JS")
 			return null

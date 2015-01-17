@@ -43,6 +43,8 @@ class RefluxCommand : Command {
 	Void localise(Pod pod, Str keyBase) {
 		plat := Desktop.platform
 
+		// TODO: check for values in an app specific 'en.props' first 
+		
 		// name
 		locName := pod.locale("${keyBase}.name.${plat}", null)
 		if (locName == null)

@@ -1,5 +1,4 @@
 using afIoc
-using afIocConfig
 using gfx
 using fwt
 
@@ -29,8 +28,12 @@ mixin Reflux {
 
 
 
-	static Void start(Type[] modules, |Reflux| onOpen) {
-		registry := RegistryBuilder().addModules([RefluxModule#, ConfigModule#]).addModules(modules).build.startup
+	static Void start(Str appName, Type[] modules, |Reflux, Window| onOpen) {
+		registry := RegistryBuilder()
+			.addModule(RefluxModule#)
+			.addModules(modules)
+			.set("afReflux.appName", appName)
+			.build.startup
 		reflux	 := (Reflux) registry.serviceById(Reflux#.qname)
 		frame	 := (Frame)  reflux.window
 		
@@ -38,7 +41,7 @@ mixin Reflux {
 		frame.onOpen.add {
 			// Give the widgets a chance to display themselves and set defaults
 			Desktop.callLater(50ms) |->| {
-				onOpen.call(reflux)
+				onOpen.call(reflux, frame)
 			}
 		}
 
@@ -135,7 +138,8 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		if (panel.isShowing)
 			return panel
 		
-		frame.showPanel(panel)
+		frame.showPanel(panel, prefAlign(panel))
+		refluxEvents.onPanelShown(panel)
 
 		// initialise panel with data
 		if (panel is RefluxEvents && activeView?.resource != null)
@@ -152,7 +156,8 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		if (!panel.isShowing)
 			return panel
 
-		frame.hidePanel(panel)		
+		frame.hidePanel(panel, prefAlign(panel))		
+		refluxEvents.onPanelHidden(panel)
 
 		return panel
 	}
@@ -182,6 +187,10 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		catch (Err err)
 			errors.add(err)
 		refluxEvents.onLoad(resource)		
+	}
+
+	private Obj prefAlign(Panel panel) {
+		preferences.panelPrefAligns[panel.typeof] ?: panel.prefAlign
 	}
 
 	private Frame frame() {
