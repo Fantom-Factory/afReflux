@@ -2,7 +2,7 @@ using afIoc
 using afPlastic
 using afConcurrent
 
-const class EventProvider : DependencyProvider {
+internal const class EventProvider : DependencyProvider {
 
 	@Inject private const Registry 			registry
 	@Inject private const PlasticCompiler	compiler

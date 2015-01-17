@@ -13,16 +13,17 @@ mixin History {
 	abstract Void navForward()
 	
 	@NoDoc
-	abstract Bool canNavBackward()
+	abstract Bool navBackwardEnabled()
 
 	@NoDoc
-	abstract Bool canNavForward()
+	abstract Bool navForwardEnabled()
 	
 	@NoDoc
 	abstract Void load(Resource resource, LoadCtx ctx)
 }
 
-class HistoryImpl : History {
+internal class HistoryImpl : History {
+			// no point in making this public unless we also make the index public
 			private Uri[]	history	:= [,]
 			private Int?	showing
 	@Inject	private Reflux	reflux
@@ -30,24 +31,24 @@ class HistoryImpl : History {
 	new make(|This|in) { in(this) }
 	
 	override Void navBackward() {
-		if (canNavBackward) {
+		if (navBackwardEnabled) {
 			showing++
 			reflux.load(history[showing], LoadCtx { it.addToHistory = false })
 		}
 	}
 	
 	override Void navForward() {
-		if (canNavForward) {
+		if (navForwardEnabled) {
 			showing--
 			reflux.load(history[showing], LoadCtx { it.addToHistory = false })			
 		}
 	}
 	
-	override Bool canNavBackward() {
+	override Bool navBackwardEnabled() {
 		showing != null && showing < (history.size-1)
 	}
 
-	override Bool canNavForward() {
+	override Bool navForwardEnabled() {
 		showing != null && showing > 0
 	}
 

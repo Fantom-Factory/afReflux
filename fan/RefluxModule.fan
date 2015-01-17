@@ -1,5 +1,4 @@
 using afIoc
-using afIocConfig
 using gfx
 using fwt
 
@@ -59,19 +58,14 @@ class RefluxModule {
 
 		config["afReflux.cmdToggleView"]	= config.autobuild(ToggleViewCommand#)
 
+		config["afReflux.cmdUndo"]			= config.autobuild(UndoCommand#)
+		config["afReflux.cmdRedo"]			= config.autobuild(RedoCommand#)
+
 //		config["afReflux.cmdSaveAs"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
 //		config["afReflux.cmdSaveAll"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
 //		config["afReflux.cmdCut"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
 //		config["afReflux.cmdCopy"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
 //		config["afReflux.cmdPaste"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
-//		config["afReflux.cmdUndo"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdUndo"])
-//		config["afReflux.cmdRedo"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdRedo"])
-	}
-
-	@Contribute { serviceType=FactoryDefaults# }
-	static Void contributeFactoryDefaults(Configuration config) {
-		config[RefluxConfigIds.appTitle]	= "Reflux"
-		config[RefluxConfigIds.appIcon]		= `fan://icons/x32/flux.png`		
 	}
 
 	@Contribute { serviceType=RegistryShutdown# }
@@ -133,28 +127,35 @@ class RefluxModule {
 
 	@Contribute { serviceId="afReflux.fileMenu" }
 	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.save"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
+		config["afReflux.cmdSave"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
 		config["separator.01"]		= MenuItem { it.mode = MenuItemMode.sep }
-		config["afReflux.exit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)	// separator
+		config["afReflux.cmdExit"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)	// separator
+	}
+
+	@Contribute { serviceId="afReflux.editMenu" }
+	static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
+		config["afReflux.cmdUndo"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdUndo"].command)
+		config["afReflux.cmdRedo"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdRedo"].command)
+		config["separator.01"]		= MenuItem { it.mode = MenuItemMode.sep }
 	}
 
 	@Contribute { serviceId="afReflux.viewMenu" }
-	static Void contributePanelMenu(Configuration config, Panels panels, Registry reg, GlobalCommands globalCmds) {
+	static Void contributeViewMenu(Configuration config, Panels panels, Registry reg, GlobalCommands globalCmds) {
 		panelsMenu := menu("afReflux.showPanelMenu")
 		panels.panels.each {
 			cmd := reg.autobuild(ShowHidePanelCommand#, [it])
 			panelsMenu.add(MenuItem.makeCommand(cmd))
 		}
 
-		config["afReflux.panelMenu"]	= panelsMenu
-		config["separator.01"]			= MenuItem { it.mode = MenuItemMode.sep }
-		config["afReflux.toggleView"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdRefresh"].command)
-		config["afReflux.refresh"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdToggleView"].command)
+		config["afReflux.panelMenu"]		= panelsMenu
+		config["separator.01"]				= MenuItem { it.mode = MenuItemMode.sep }
+		config["afReflux.cmdRefresh"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdRefresh"].command)
+		config["afReflux.cmdToggleView"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdToggleView"].command)
 	}
 
 	@Contribute { serviceId="afReflux.helpMenu" }
 	static Void contributeHelpMenu(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.about"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
+		config["afReflux.cmdAbout"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
 	}
 	
 

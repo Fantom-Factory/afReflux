@@ -1,9 +1,13 @@
 using afIoc
 
 ** Views are 'Panels' that are associated with an (editable) resource.
-** Views are always displayed in the centre of the Window.
+** They are displayed in the centre of the Window.
 abstract class View : Panel {
-	@Inject private	Reflux		_reflux
+	@Inject private		Reflux			_reflux
+	@Inject private		Errors			_errors
+	@Inject private 	RefluxEvents	_events
+			internal	UndoRedo[]		_undoStack	:= UndoRedo[,]
+			internal	UndoRedo[]		_redoStack	:= UndoRedo[,]
 	
 	** The resource associated with this view.
 	** Set via 'load()'. 
@@ -64,4 +68,49 @@ abstract class View : Panel {
 	virtual Bool confirmClose() {
 		true
 	}
+	
+	Void addUndoRedo(|->| undo, |->| redo) {
+		// cap the history at something large but reasonable
+		if (_undoStack.size > 99)
+			_undoStack.size = 99
+
+		_undoStack.add(UndoRedo { 
+			it.undo = undo
+			it.redo = redo
+		})
+		
+		// you can't return to the same future once you've changed the past!
+		_redoStack.clear
+		_events.onViewModified(this)
+	}
+	
+	Void undo() {
+		undoRedo := _undoStack.pop
+		if (undoRedo == null) return
+		
+		try	undoRedo.undo.call()
+		catch (Err err)
+			_errors.add(err)
+		
+		_redoStack.push(undoRedo)
+		_events.onViewModified(this)
+	}
+	
+	Void redo() {
+		undoRedo := _redoStack.pop
+		if (undoRedo == null) return
+		
+		try	undoRedo.redo.call()
+		catch (Err err)
+			_errors.add(err)
+		
+		_undoStack.push(undoRedo)		
+		_events.onViewModified(this)
+	}
+}
+
+internal class UndoRedo {
+	|->| undo
+	|->| redo
+	new make(|This|f) { f(this) }
 }

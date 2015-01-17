@@ -5,9 +5,7 @@ using fwt
 
 internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	@Inject	private Registry		registry
-	@Inject private Errors			errors
 	@Inject	private Reflux			reflux
-	@Inject private RefluxEvents	events
 	
 	new make(Reflux reflux, |This|in) : super(false, false, in) {
 		this.tabPane.tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
