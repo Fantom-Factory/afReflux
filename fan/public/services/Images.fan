@@ -9,7 +9,8 @@ mixin Images {
 	
 	abstract Void stash(Image image)
 	
-	abstract Image? get(Uri? icoUri, Bool faded, Bool checked := true)
+	@Operator
+	abstract Image? get(Uri? icoUri, Bool faded := false, Bool checked := true)
 }
 
 internal class ImagesImpl : Images {
@@ -31,9 +32,10 @@ internal class ImagesImpl : Images {
 		extra.add(image)
 	}
 	
-	override Image? get(Uri? icoUri, Bool faded, Bool checked := true) {
+	override Image? get(Uri? icoUri, Bool faded := false, Bool checked := true) {
 		if (icoUri == null)
 			return null
+
 		try {
 			image := images.getOrAdd(icoUri) { Image(icoUri) }
 

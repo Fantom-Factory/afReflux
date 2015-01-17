@@ -9,7 +9,7 @@ internal class RedoCommand : GlobalCommand, RefluxEvents {
 		addEnabler("afReflux.cmdRedo", |->Bool| { !(reflux.activeView?._redoStack?.isEmpty ?: true) }, false )
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		reflux.activeView?.redo
 	}
 

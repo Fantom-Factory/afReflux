@@ -9,7 +9,7 @@ internal class SaveCommand : GlobalCommand, RefluxEvents {
 		addEnabler("afReflux.cmdSave", |->Bool| { reflux.activeView?.isDirty ?: false }, false )
 	}
 	
-	override Void onInvoke(Event? event) {
+	override Void doInvoke(Event? event) {
 		// cmd should only be enabled if dirty
 		reflux.activeView?.save
 	}

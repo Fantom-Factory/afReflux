@@ -13,7 +13,7 @@ internal class ShowHidePanelCommand : RefluxCommand, RefluxEvents {
 		onPanelModified(panel)
 	}
 
-	override Void invoked(Event? event) {
+	override Void doInvoke(Event? event) {
 		if (panel.isShowing) reflux.hidePanel(panel.typeof); else reflux.showPanel(panel.typeof)
 	}
 

@@ -2,7 +2,7 @@ using afIoc
 using gfx
 using fwt
 
-** Extends the standard 'fwt Command' to ensure errors incurred when invoked are added to the 'ErrorsView'.  
+** Extends FWT 'Command' to ensure invocation errors are added to the 'ErrorsView'.  
 class RefluxCommand : Command {
 	@Inject private Errors	_errors
 	@Inject private Images	_images
@@ -11,6 +11,7 @@ class RefluxCommand : Command {
 	** For subclasses
 	new make(|This|in, Str? name := null, Image? icon := null, |Event event|? onInvoke := null) : super.make(name ?: "", icon, onInvoke) {
 		in(this)
+		this.onInvoke.add |e| { doInvoke(e) }
 	}
 
 	** Create an 'RefluxCommand'. Should be done via IoC:
@@ -19,24 +20,27 @@ class RefluxCommand : Command {
 	@Inject
 	new makeViaIoc(Str? name, Image? icon, |Event event|? onInvoke, |This|in) : super.make(name ?: "", icon, onInvoke) {
 		in(this)
+		this.onInvoke.add |e| { doInvoke(e) }
 	}
 	
+	** Callback for you to override. 
+	** By default this does nothing.
+	virtual Void doInvoke(Event? event) { }
+
 	** Logs the err with the 'Errors' service. 
 	override Void onInvokeErr(Event? event, Err err) {
 		_errors.add(err)
 	}
-
+	
+	** Override 'doInvoke()' instead.
 	@NoDoc	// patching an FWT bug - Errs are swallowed in Event.fire() 
-	override Void invoked(Event? event) {
-		if (onInvoke.isEmpty) throw UnsupportedErr("Must set onInvoke or override invoke: $name")
-		try {
-			listeners := (|Event|[]) Slot.findField("fwt::EventListeners.listeners").get(onInvoke)
-			listeners.each |cb| {
-				if (event?.consumed == true) return
-				cb(event)
-			}
-		} catch (Err err)
-			onInvokeErr(event, err)			
+	override final Void invoked(Event? event) {
+		// invoke() does the try / catch for us
+		listeners := (|Event|[]) Slot.findField("fwt::EventListeners.listeners").get(onInvoke)
+		listeners.each |cb| {
+			if (event?.consumed == true) return
+			cb(event)
+		}
 	}
 	
 	** Sets the 'name', 'icon' and 'accelerator' via values in 'en.props'.
