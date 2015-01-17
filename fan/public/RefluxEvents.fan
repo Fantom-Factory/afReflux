@@ -1,4 +1,6 @@
 
+** (Events) -
+** 
 mixin RefluxEvents {
 
 	virtual Void onLoad(Resource resource)	{ }

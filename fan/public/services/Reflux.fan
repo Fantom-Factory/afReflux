@@ -18,7 +18,7 @@ mixin Reflux {
 	abstract Void load(Uri uri, LoadCtx? ctx := null)
 	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
 	abstract View? activeView()
-	abstract Bool closeView(View view, Bool force)		// currently, only activeView is available, need views()
+	abstract Bool closeView(View view)		// currently, only activeView is available, need views()
 	abstract Void replaceView(View view, Type viewType)	// currently, only activeView is available, need views()
 	
 	abstract Panel showPanel(Type panelType)
@@ -53,6 +53,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private Preferences		prefsCache
 	@Inject private Errors			errors
 	@Inject private Panels			panels
+	@Inject private History			history
 	@Inject override Registry		registry
 			override View?			activeView
 //	@Autobuild { implType=Frame# }
@@ -92,11 +93,13 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 
 		resource := uriResolvers.resolve(uri)
 		
-		frame.load(resource, ctx)
+		loadResource(resource, ctx)
 	}
 
 	override Void loadResource(Resource resource, LoadCtx? ctx := null) {
-		frame.load(resource, ctx ?: LoadCtx())
+		history.load(resource, ctx ?: LoadCtx())
+		view := frame.load(resource, ctx ?: LoadCtx())
+		loadIntoView(view, resource)
 	}
 
 	override Void refresh() {
@@ -114,12 +117,12 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		if (view.isDirty)
 			view.save
 		
-		frame.replaceView(view, viewType)
-		activeView.load(resource)
+		newView := frame.replaceView(view, viewType)
+		loadIntoView(newView, resource)
 	}
 	
-	override Bool closeView(View view, Bool force) {
-		frame.closeView(view, force)
+	override Bool closeView(View view) {
+		frame.closeView(view)
 	}
 
 	override Panel getPanel(Type panelType) {
@@ -155,7 +158,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	}
 	
 	override Void exit() {
-		while (activeView != null && closeView(activeView, false)) { }
+		while (activeView != null && closeView(activeView)) { }
 		if    (activeView != null) return
 		
 		panels.panels.each { hidePanel(it.typeof) }
@@ -172,6 +175,13 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 
 	override Void onViewDeactivated(View view) {
 		activeView = null
+	}
+
+	private Void loadIntoView(View? view, Resource resource) {
+		try	view?.load(resource)
+		catch (Err err)
+			errors.add(err)
+		refluxEvents.onLoad(resource)		
 	}
 
 	private Frame frame() {
@@ -194,5 +204,6 @@ class LoadCtx {
 	** The 'View' the resource should be opened in. 
 	Type?	viewType
 
-//	Bool	addToHistory
+	@NoDoc
+	Bool	addToHistory	:= true
 }

@@ -1,7 +1,9 @@
 
 @NoDoc @Serializable
 class RefluxPrefs {
-	Bool 		viewTabsOnTop	:=	true
+//	Uri			homeUri			:= `file:/`	// FIXME: kill me
+	Uri			homeUri			:= `file:/C:/Projects/Fantom-Factory/Reflux/doc/`
+	Bool 		viewTabsOnTop	:= true
 	Type:Obj	panelPrefAligns	:= Type:Obj[:]
 
 	new make(|This|? f := null) {

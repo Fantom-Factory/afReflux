@@ -1,7 +1,7 @@
 using gfx
 using fwt
 
-// TODO: maybe add showMinimised / showMaximised and associated events - but there's no EventId for it.
+// TODO: add showMinimised / showMaximised and associated events - but there's no EventId for it.
 ** (Widget) - 
 ** A container for 'CTabs' and a replacement for FWT [Tabs]`fwt::Tabs`. 
 ** 

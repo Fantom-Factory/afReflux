@@ -1,7 +1,8 @@
 using afIoc
 using gfx::Image
 
-** (Service) - Hold images created by Reflux, disposes them on registry shutdown. 
+** (Service) - 
+** Loads and maintains images, ensuring they get disposed on registry shutdown. 
 mixin Images {
 	
 	abstract internal Void disposeOfImages()

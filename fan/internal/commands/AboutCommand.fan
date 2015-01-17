@@ -27,10 +27,10 @@ internal class AboutCommand : GlobalCommand {
 		content := GridPane	{
 			halignCells = Halign.center
 			Label { image = Image.makeFile(icon) },
-			Label { text = "Flux"; font = big },
+			Label { text = "Reflux"; font = big },
 			versionInfo,
 			Label { font = small; text =
-				"Copyright (c) 2014, Steve Eynon
+				"Copyright (c) 2015, Steve Eynon
 				 Licensed under the MIT Licence"
 			},
 		}
