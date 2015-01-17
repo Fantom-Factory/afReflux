@@ -2,6 +2,10 @@ Overview [#overview]
 ********************
 Flux - Relaoded.
 
+A framework for creating a simple desktop apps 
+
+Tries to use composition over inherietence
+
 
 
 Install [#install]
@@ -26,4 +30,11 @@ Quick Start [#quickStart]
 *************************
 
 
-Tries to use composition over inherietence
+Usage [#usage]
+**************
+
+
+Panels [#Panels]
+================
+To add your own panel 
+

@@ -8,6 +8,10 @@
 
 Flux - Relaoded.
 
+A framework for creating a simple desktop apps
+
+Tries to use composition over inherietence
+
 ## Install
 
 Install `Reflux` with the Fantom Repository Manager ( [fanr](http://fantom.org/doc/docFanr/Tool.html#install) ):
@@ -24,5 +28,9 @@ Full API & fandocs are available on the [Status302 repository](http://repo.statu
 
 ## Quick Start
 
-Tries to use composition over inherietence
+## Usage
+
+### Panels
+
+To add your own panel
 
