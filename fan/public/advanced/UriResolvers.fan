@@ -1,7 +1,7 @@
 
 @NoDoc
 mixin UriResolvers {
-	abstract Resource resolve(Uri uri)
+	abstract Resource resolve(Str uri)
 }
 
 
@@ -12,7 +12,7 @@ internal class UriResolversImpl : UriResolvers {
 		this.resolvers = resolvers
 	}
 	
-	override Resource resolve(Uri uri) {
+	override Resource resolve(Str uri) {
 		resolvers.eachWhile { it.resolve(uri) } ?: throw ArgErr("Could not resolve URI: ${uri}")
 	}
 }

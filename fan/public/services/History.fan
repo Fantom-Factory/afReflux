@@ -33,14 +33,14 @@ internal class HistoryImpl : History {
 	override Void navBackward() {
 		if (navBackwardEnabled) {
 			showing++
-			reflux.load(history[showing], LoadCtx { it.addToHistory = false })
+			reflux.load(history[showing].toStr, LoadCtx { it.addToHistory = false })
 		}
 	}
 	
 	override Void navForward() {
 		if (navForwardEnabled) {
 			showing--
-			reflux.load(history[showing], LoadCtx { it.addToHistory = false })			
+			reflux.load(history[showing].toStr, LoadCtx { it.addToHistory = false })			
 		}
 	}
 	

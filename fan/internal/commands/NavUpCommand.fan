@@ -16,7 +16,7 @@ internal class NavUpCommand : GlobalCommand, RefluxEvents {
 	override Void doInvoke(Event? event) {
 		parent := reflux.activeView?.resource?.uri?.parent
 		if (parent != null && parent.pathOnly != `/`)
-			reflux.load(parent)
+			reflux.load(parent.toStr)
 	}
 	
 	override Void onLoad(Resource resource) { update }
