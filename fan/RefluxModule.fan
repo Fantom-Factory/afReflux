@@ -101,25 +101,14 @@ class RefluxModule {
 		menu("afReflux.editMenu").addAll(menuItems)
 	}
 
-	@Build { serviceId="afReflux.optionsMenu" }
-	static Menu buildOptionsMenu(MenuItem[] menuItems) {
-		menu("afReflux.optionsMenu").addAll(menuItems)
+	@Build { serviceId="afReflux.viewMenu" }
+	static Menu buildViewMenu(MenuItem[] menuItems) {
+		menu("afReflux.viewMenu").addAll(menuItems)		
 	}
 
-	@Build { serviceId="afReflux.panelMenu" }
-	static Menu buildPanelMenu(MenuItem[] menuItems, Registry reg, Panels panels, GlobalCommands globalCmds) {
-		menu := menu("afReflux.panelMenu")
-		
-		panels.panels.each {
-			cmd := reg.autobuild(ShowHidePanelCommand#, [it])
-			menu.add(MenuItem.makeCommand(cmd))
-		}
-		
-		if (!menuItems.isEmpty) {
-			menu.addSep
-			menu.addAll(menuItems)
-		}
-		return menu
+	@Build { serviceId="afReflux.prefsMenu" }
+	static Menu buildPrefsMenu(MenuItem[] menuItems) {
+		menu("afReflux.preferencesMenu").addAll(menuItems)
 	}
 
 	@Build { serviceId="afReflux.helpMenu" }
@@ -131,8 +120,8 @@ class RefluxModule {
 	static Void contributeMenuBar(Configuration config) {
 		addNonEmptyMenu(config, "afReflux.fileMenu")
 		addNonEmptyMenu(config, "afReflux.editMenu")
-		addNonEmptyMenu(config, "afReflux.optionsMenu")
-		addNonEmptyMenu(config, "afReflux.panelMenu")
+		addNonEmptyMenu(config, "afReflux.viewMenu")
+		addNonEmptyMenu(config, "afReflux.prefsMenu")
 		addNonEmptyMenu(config, "afReflux.helpMenu")
 	}
 	
@@ -149,8 +138,16 @@ class RefluxModule {
 		config["afReflux.exit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)	// separator
 	}
 
-	@Contribute { serviceId="afReflux.panelMenu" }
-	static Void contributePanelMenu(Configuration config, GlobalCommands globalCmds) {
+	@Contribute { serviceId="afReflux.viewMenu" }
+	static Void contributePanelMenu(Configuration config, Panels panels, Registry reg, GlobalCommands globalCmds) {
+		panelsMenu := menu("afReflux.showPanelMenu")
+		panels.panels.each {
+			cmd := reg.autobuild(ShowHidePanelCommand#, [it])
+			panelsMenu.add(MenuItem.makeCommand(cmd))
+		}
+
+		config["afReflux.panelMenu"]	= panelsMenu
+		config["separator.01"]			= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.toggleView"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdRefresh"].command)
 		config["afReflux.refresh"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdToggleView"].command)
 	}
@@ -187,6 +184,7 @@ class RefluxModule {
 
 	private static Menu menu(Str menuId) {
 		Menu() {
+			// TODO: localise using id
 			if (menuId.startsWith("afReflux."))
 				menuId = menuId["afReflux.".size..-1]
 			if (menuId.endsWith("Menu"))

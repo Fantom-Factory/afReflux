@@ -9,7 +9,7 @@ class RefluxCommand : Command {
 	
 	
 	** For subclasses
-	protected new make(|This|in, Str? name := null, Image? icon := null, |Event event|? onInvoke := null) : super.make(name ?: "", icon, onInvoke) {
+	new make(|This|in, Str? name := null, Image? icon := null, |Event event|? onInvoke := null) : super.make(name ?: "", icon, onInvoke) {
 		in(this)
 	}
 
@@ -40,7 +40,7 @@ class RefluxCommand : Command {
 	}
 	
 	** Sets the 'name', 'icon' and 'accelerator' via values in 'en.props'.
-	protected Void localise(Pod pod, Str keyBase) {
+	Void localise(Pod pod, Str keyBase) {
 		plat := Desktop.platform
 
 		// name

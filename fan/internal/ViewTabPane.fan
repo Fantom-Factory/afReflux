@@ -18,7 +18,7 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		eventHub.register(this)
 	}
 
-	Void replaceView(View view, Type viewType) {
+	View replaceView(View view, Type viewType) {
 		tuple := panelTabs.find { it.panel === view }
 		if (tuple == null)
 			throw ArgNotFoundErr("View '${view} not found", panelTabs.map { it.panel })
@@ -43,22 +43,24 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		super.relayout
 
 		super.activate(tuple.panel)
+		
+		return tuple.panel
 	}
 	
-	Bool closeView(View view, Bool force) {
+	Bool closeView(View view) {
 		// give the view a chance to stay alive - it may have unsaved changes.
-		confirmClose := view.confirmClose(false)
+		confirmClose := view.confirmClose
 		if (confirmClose)
 			removeTab(view)
 		return confirmClose
 	}
 
-	Void load(Resource resource, LoadCtx ctx) {
+	View? load(Resource resource, LoadCtx ctx) {
 		viewType := ctx.viewType ?: resource.viewTypes.first
 		
 		if (viewType == null) {
 			this.typeof.pod.log.warn("Resource `${resource.uri}` has no default view")
-			return
+			return null
 		}
 
 		// if the resource is already loaded in the correct viewtype, just activate it 
@@ -82,10 +84,6 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		}
 		
 		super.activate(view)
-		
-		try	view.load(resource)
-		catch (Err err)
-			errors.add(err)
-		events.onLoad(resource)
+		return view
 	}
 }

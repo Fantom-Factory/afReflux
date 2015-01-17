@@ -15,6 +15,7 @@ internal class Frame : Window, RefluxEvents {
 			private Reflux				reflux
 			private Obj:PanelTabPane	panelTabs	:= [:]
 			private ViewTabPane			viewTabs
+			private Bool				closing
 
 	internal new make(Reflux reflux, |This|in) : super() {
 		in(this)
@@ -52,6 +53,8 @@ internal class Frame : Window, RefluxEvents {
 				panelTabs[Halign.right],
 			}
 		}
+		
+		this.onClose.add |Event e| { if (!closing) reflux.exit }
 	}
 	
 	Void showPanel(Panel panel) {
@@ -64,17 +67,18 @@ internal class Frame : Window, RefluxEvents {
 		refluxEvents.onPanelHidden(panel)
 	}
 	
-	Void replaceView(View view, Type viewType) {
+	View? replaceView(View view, Type viewType) {
 		viewTabs.replaceView(view, viewType)
 	}
 	
-	Bool closeView(View view, Bool force) {
-		viewTabs.closeView(view, force)
+	Bool closeView(View view) {
+		viewTabs.closeView(view)
 	}
 
-	Void load(Resource resource, LoadCtx ctx) {
-		viewTabs.load(resource, ctx)
+	View? load(Resource resource, LoadCtx ctx) {
+		view := viewTabs.load(resource, ctx)
 		update(resource, false)
+		return view
 	}
 	
 	override Void onViewActivated(View view) {
@@ -83,6 +87,11 @@ internal class Frame : Window, RefluxEvents {
 	
 	override Void onViewModified(View view) {
 		update(view.resource, view.isDirty)
+	}
+	
+	override Void close(Obj? result := null) {
+		this.closing = true
+		super.close(result)
 	}
 	
 	private Void update(Resource? resource, Bool isDirty) {

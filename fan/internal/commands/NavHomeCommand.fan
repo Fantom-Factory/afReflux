@@ -10,7 +10,6 @@ internal class NavHomeCommand : GlobalCommand {
 	}
 	
 	override Void onInvoke(Event? event) {
-		// FIXME: set home in prefs
-		reflux.load(`file:/C:/Projects/`)
+		reflux.load(reflux.preferences.homeUri)
 	}
 }

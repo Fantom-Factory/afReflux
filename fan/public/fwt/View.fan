@@ -3,7 +3,6 @@ using afIoc
 ** Views are 'Panels' that are associated with an (editable) resource.
 ** Views are always displayed in the centre of the Window.
 abstract class View : Panel {
-
 	@Inject private	Reflux		_reflux
 	
 	** The resource associated with this view.
@@ -61,10 +60,8 @@ abstract class View : Panel {
 	** Callback when the view is being closed. 
 	** Return 'false' if the view should be kept open.
 	** 
-	** Note if 'force' is 'true' then the view **will** close regardless of the return value.
-	** 
 	** By default this returns 'true'.  
-	virtual Bool confirmClose(Bool force) {
+	virtual Bool confirmClose() {
 		true
 	}
 }

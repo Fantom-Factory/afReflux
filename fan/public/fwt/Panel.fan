@@ -89,7 +89,7 @@ abstract class Panel {
 	virtual Void onModify() {}
 	
 	** Callback for when the panel should refresh it's contents. 
-	** Typically all active panels are asked to refresh when the 'refresh' button is clicked. 
+	** Typically, active panels are asked to refresh when the 'refresh' button is clicked. 
 	virtual Void refresh() {} 
 
 	// TODO: explain how to use!
