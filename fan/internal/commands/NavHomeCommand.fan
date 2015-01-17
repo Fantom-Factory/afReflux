@@ -10,6 +10,6 @@ internal class NavHomeCommand : GlobalCommand {
 	}
 	
 	override Void doInvoke(Event? event) {
-		reflux.load(reflux.preferences.homeUri)
+		reflux.load(reflux.preferences.homeUri.toStr)
 	}
 }

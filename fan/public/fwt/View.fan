@@ -41,6 +41,8 @@ abstract class View : Panel {
 	**  
 	** By default this sets the resource, name and icon.
 	virtual Void load(Resource resource) {
+		if (isDirty)
+			confirmClose(true)
 		this.resource	= resource
 		super.icon 		= resource.icon
 		super.name 		= resource.name
@@ -64,8 +66,10 @@ abstract class View : Panel {
 	** Callback when the view is being closed. 
 	** Return 'false' if the view should be kept open.
 	** 
+	** Note: If 'force' is 'true' then the view **will** close regardless of the return value.
+	** 
 	** By default this returns 'true'.  
-	virtual Bool confirmClose() {
+	virtual Bool confirmClose(Bool force) {
 		true
 	}
 	

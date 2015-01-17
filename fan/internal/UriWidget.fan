@@ -27,22 +27,7 @@ internal class UriWidget : Canvas, RefluxEvents {
 	}
 	
 	Void onAction(Event event) {
-		uri := (Uri?) null
-		try {
-			file := File.os(text.text).normalize
-			if (file.exists)
-				uri = file.uri
-		} catch { }
-		
-		try {
-			if (uri == null)
-				uri = text.text.toUri
-		} catch { }
-		
-		if (uri != null)
-			reflux.load(uri)
-		else
-			Dialog.openWarn(window, "Not a valid file: ${text.text}")
+		reflux.load(text.text)
 	}
 
 	override Size prefSize(Hints hints := Hints.defVal) {

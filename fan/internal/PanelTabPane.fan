@@ -126,7 +126,7 @@ internal class PanelTabPane : ContentPane {
 			
 			if (tuple.panel is View && this is ViewTabPane) {
 				
-				if (((ViewTabPane) this).closeView(tuple.panel) == false)
+				if (((ViewTabPane) this).closeView(tuple.panel, false) == false)
 					event.consume
 
 			} else {

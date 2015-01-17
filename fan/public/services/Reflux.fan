@@ -14,10 +14,10 @@ mixin Reflux {
 	abstract Window window()
 	abstract Void exit()
 	
-	abstract Void load(Uri uri, LoadCtx? ctx := null)
+	abstract Void load(Str uri, LoadCtx? ctx := null)
 	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
 	abstract View? activeView()
-	abstract Bool closeView(View view)		// currently, only activeView is available, need views()
+	abstract Bool closeView(View view, Bool force)		// currently, only activeView is available, need views()
 	abstract Void replaceView(View view, Type viewType)	// currently, only activeView is available, need views()
 	
 	abstract Panel showPanel(Type panelType)
@@ -29,7 +29,15 @@ mixin Reflux {
 
 
 	static Void start(Str appName, Type[] modules, |Reflux, Window| onOpen) {
-		registry := RegistryBuilder()
+		bob := RegistryBuilder()
+
+		// try to dig out the project name
+		projName := modules.first?.pod?.meta?.get("proj.name")
+		version  := modules.first?.pod?.version
+		if (projName != null && version != null)
+			bob["afIoc.bannerText"] = "$projName v$version"
+		
+		registry := bob
 			.addModule(RefluxModule#)
 			.addModules(modules)
 			.set("afReflux.appName", appName)
@@ -81,22 +89,30 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		}
 	}
 
-	override Void load(Uri uri, LoadCtx? ctx := null) {
+	override Void load(Str uri, LoadCtx? ctx := null) {
 		ctx = ctx ?: LoadCtx()
 
-		if (uri.query.containsKey("view")) {
-			ctx.viewType = Type.find(uri.query["view"])
-			uri = removeQuery(uri, "view", uri.query["view"])
-		}
+		try {
+			u := uri.toUri
+			if (u.query.containsKey("view")) {
+				ctx.viewType = Type.find(u.query["view"])
+				uri = removeQuery(uri, "view", u.query["view"])
+			}
+	
+			u = uri.toUri
+			if (u.query.containsKey("newTab")) {
+				ctx.newTab = u.query["newTab"].toBool(false) ?: false
+				uri = removeQuery(uri, "newTab", u.query["newTab"])
+			}
+			
+		} catch { /* meh */ }
 
-		if (uri.query.containsKey("newTab")) {
-			ctx.newTab = uri.query["newTab"].toBool(false) ?: false
-			uri = removeQuery(uri, "newTab", uri.query["newTab"])
+		try {
+			resource := uriResolvers.resolve(uri)
+			loadResource(resource, ctx)
+		} catch (Err err) {
+			errors.add(err)
 		}
-
-		resource := uriResolvers.resolve(uri)
-		
-		loadResource(resource, ctx)
 	}
 
 	override Void loadResource(Resource resource, LoadCtx? ctx := null) {
@@ -124,8 +140,8 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		loadIntoView(newView, resource)
 	}
 	
-	override Bool closeView(View view) {
-		frame.closeView(view)
+	override Bool closeView(View view, Bool force) {
+		frame.closeView(view, true)
 	}
 
 	override Panel getPanel(Type panelType) {
@@ -163,7 +179,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	}
 	
 	override Void exit() {
-		while (activeView != null && closeView(activeView)) { }
+		while (activeView != null && closeView(activeView, true)) { }
 		if    (activeView != null) return
 		
 		panels.panels.each { hidePanel(it.typeof) }
@@ -197,11 +213,11 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		window
 	}
 	
-	private static Uri removeQuery(Uri uri, Str key, Str val) {
-		str := uri.toStr.replace("${key}=${val}", "")
+	private static Str removeQuery(Str str, Str key, Str val) {
+		str = str.replace("${key}=${val}", "")
 		if (str.endsWith("?"))
 			str = str[0..-2]
-		return str.toUri
+		return str
 	}
 }
 

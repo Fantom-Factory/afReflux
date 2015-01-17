@@ -67,7 +67,7 @@ class RefluxModule {
 //		config["afReflux.cmdCopy"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
 //		config["afReflux.cmdPaste"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
 	}
-
+	
 	@Contribute { serviceType=RegistryShutdown# }
 	internal static Void contributeRegistryShutdown(Configuration config, Registry registry) {
 		config["afReflux.disposeOfImages"] = |->| {

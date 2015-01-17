@@ -45,9 +45,9 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		return tuple.panel
 	}
 	
-	Bool closeView(View view) {
+	Bool closeView(View view, Bool force) {
 		// give the view a chance to stay alive - it may have unsaved changes.
-		confirmClose := view.confirmClose
+		confirmClose := view.confirmClose(force)
 		if (confirmClose)
 			removeTab(view)
 		return confirmClose

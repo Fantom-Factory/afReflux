@@ -58,8 +58,8 @@ internal class Frame : Window, RefluxEvents {
 		viewTabs.replaceView(view, viewType)
 	}
 	
-	Bool closeView(View view) {
-		viewTabs.closeView(view)
+	Bool closeView(View view, Bool force) {
+		viewTabs.closeView(view, force)
 	}
 
 	View? load(Resource resource, LoadCtx ctx) {
