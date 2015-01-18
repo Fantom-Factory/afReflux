@@ -6,10 +6,9 @@ internal class ShowHidePanelCommand : RefluxCommand, RefluxEvents {
 	@Inject private Reflux		reflux
 			private Panel 		panel
 
-	new make(Panel panel, EventHub eventHub, |This|in) : super.make(in) {
+	new make(Panel panel, |This|in) : super.make(in) {
 		this.panel = panel
 		this.mode = CommandMode.toggle
-		eventHub.register(this)
 		onPanelModified(panel)
 	}
 

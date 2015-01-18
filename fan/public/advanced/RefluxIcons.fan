@@ -46,6 +46,7 @@ internal class EclipseIcons {
 		"cmdNavHome"			: `nav_home.gif`,
 		"cmdNavBackward"		: `nav_backward.gif`,
 		"cmdNavForward"			: `nav_forward.gif`,
+		"cmdNavClear"			: `clear.gif`,
 
 		"cmdSave"				: `save_edit.gif`,
 		"cmdSaveAs"				: `saveas_edit.gif`,

@@ -5,7 +5,7 @@ using gfx
 
 class Example {
 	Void main() {
-		Reflux.start([AppModule#]) |Reflux reflux| {
+		Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
 			reflux.showPanel(MyPanel#)
 		}
 	}

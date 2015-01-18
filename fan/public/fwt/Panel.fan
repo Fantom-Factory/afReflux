@@ -5,6 +5,8 @@ using fwt
 // maybe created at application startup. Instances are cached / reused.
 ** Panels are displayed in the main Window. 
 ** Views don't die, they're like singleton services - hang around for the duration of the app
+** 
+** Panels are auto added as event sinks - just implement the interfave!
 abstract class Panel {
 
 	@Inject private Log				_log
@@ -64,7 +66,7 @@ abstract class Panel {
 
 	@PostInjection
 	private Void _setup(EventHub eventHub) {
-		eventHub.register(this)
+		eventHub.register(this, false)
 	}
 	
 	** Is the panel currently the active tab?

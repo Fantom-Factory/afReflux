@@ -4,8 +4,7 @@ using fwt
 internal class RedoCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 	
-	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdRedo", in) {
-		eventHub.register(this)
+	new make(|This|in) : super.make("afReflux.cmdRedo", in) {
 		addEnabler("afReflux.cmdRedo", |->Bool| { !(reflux.activeView?._redoStack?.isEmpty ?: true) }, false )
 	}
 	
