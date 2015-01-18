@@ -19,6 +19,7 @@ class RefluxModule {
 		defs.add(RefluxIcons#)
 		defs.add(GlobalCommands#)
 		defs.add(History#)
+		defs.add(Session#)
 	}
 	
 	@Contribute { serviceType=Panels# }

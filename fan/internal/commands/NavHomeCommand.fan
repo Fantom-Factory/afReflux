@@ -6,7 +6,7 @@ internal class NavHomeCommand : GlobalCommand {
 	@Inject	private Reflux reflux
 	
 	new make(|This|in) : super.make("afReflux.cmdNavHome", in) {
-		addEnabler("afReflux.cmdNavHome") |->Bool| { true }
+		this.command.enabled = true
 	}
 	
 	override Void doInvoke(Event? event) {

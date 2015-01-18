@@ -49,6 +49,11 @@ mixin Reflux {
 		frame.onOpen.add {
 			// Give the widgets a chance to display themselves and set defaults
 			Desktop.callLater(50ms) |->| {
+				// load the session before we start loading URIs and opening tabs
+				session := (Session) registry.serviceById(Session#.qname)
+				session.load
+				
+				// once we've all started up and settled down, load URIs from the command line
 				onOpen.call(reflux, frame)
 			}
 		}
@@ -65,6 +70,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private Errors			errors
 	@Inject private Panels			panels
 	@Inject private History			history
+	@Inject private Session			session
 	@Inject override Registry		registry
 			override View?			activeView
 //	@Autobuild { implType=Frame# }
@@ -179,10 +185,14 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	}
 	
 	override Void exit() {
+		// save the open panels before we close them!
+		session.save
+
 		while (activeView != null && closeView(activeView, true)) { }
 		if    (activeView != null) return
 		
 		panels.panels.each { hidePanel(it.typeof) }
+		
 		frame.close
 	}
 	
@@ -196,6 +206,24 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 
 	override Void onViewDeactivated(View view) {
 		activeView = null
+	}
+	
+	
+	override Void onLoadSession(Str:Obj? session) {
+		frame.size = session["afReflux.frameSize"] ?: frame.size
+
+		// a tiny fudge to show the Folder Panel by defauly
+		panels := (Str[]) session.get("afReflux.openPanels", ["afExplorer::FoldersPanel"])
+		panels.each {
+			panelType := Type.find(it, false)
+			if (panelType != null)
+				showPanel(panelType)
+		}
+	}
+
+	override Void onSaveSession(Str:Obj? session) {
+		session["afReflux.frameSize" ] = frame.size
+		session["afReflux.openPanels"] = panels.panels.findAll { it.isShowing }.map { it.typeof.qname }
 	}
 
 	private Void loadIntoView(View? view, Resource resource) {

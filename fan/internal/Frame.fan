@@ -67,7 +67,7 @@ internal class Frame : Window, RefluxEvents {
 		update(resource, false)
 		return view
 	}
-	
+
 	override Void onViewActivated(View view) {
 		update(view.resource, view.isDirty)
 	}
