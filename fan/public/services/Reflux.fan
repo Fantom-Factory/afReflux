@@ -14,6 +14,9 @@ mixin Reflux {
 	abstract Window window()
 	abstract Void exit()
 	
+	** Resolves the given URI into a 'Resource'.
+	abstract Resource resolve(Str uri)
+
 	abstract Void load(Str uri, LoadCtx? ctx := null)
 	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
 	abstract View? activeView()
@@ -95,6 +98,10 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		}
 	}
 
+	override Resource resolve(Str uri) {
+		uriResolvers.resolve(uri)
+	}
+	
 	override Void load(Str uri, LoadCtx? ctx := null) {
 		ctx = ctx ?: LoadCtx()
 
