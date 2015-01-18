@@ -45,5 +45,39 @@ Full API & fandocs are available on the [Status302 repository](http://repo.statu
 
 [Panels](http://repo.status302.com/doc/afReflux/Panel.html) are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shutsdown.
 
-To create a custom panel, extend [Panel](http://repo.status302.com/doc/afReflux/Panel.html) and contribute it to the `Panels` service:
+To create a custom panel, first create a class that extends [Panel](http://repo.status302.com/doc/afReflux/Panel.html). Our example panel does nothing but set a yellow label as its content:
+
+```
+class MyPanel : Panel {
+    new make(|This| in) : super(in) { 
+        content = Label() {
+            it.text = "Hello Mum!"
+            it.bg   = Color.yellow
+        }
+    }
+}
+```
+
+Then contribute it to the `Panels` service in your `AppModule`:
+
+```
+class AppModule {
+    @Contribute { serviceType=Panels# }
+    static Void contributePanels(Configuration config) {
+        config.add(config.autobuild(MyPanel#))
+    }
+}
+```
+
+Panels are not displayed by default but they are automatically added to the `Panels` menu. Select it in the `View -> Panels` menu to show:
+
+![Screenshot of Panel Example](afReflux.panelExample.png)
+
+Note you can also show the panel progamatically on startup:
+
+Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
+
+    reflux.showPanel(MyPanel#)
+
+}
 

@@ -61,7 +61,7 @@ abstract class Panel {
 			baseName = baseName[0..<-"View".size]
 
 		this.name = baseName.toDisplayName
-		this.icon = _icons["ico${typeof.name}"]
+		this.icon = _icons.icon("ico${typeof.name}", false, false)
 	}
 
 	@PostInjection

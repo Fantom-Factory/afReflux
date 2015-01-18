@@ -23,6 +23,11 @@ class RefluxCommand : Command {
 		this.onInvoke.add |e| { doInvoke(e) }
 	}
 	
+	@PostInjection
+	private Void _setup(EventHub eventHub) {
+		eventHub.register(this, false)
+	}
+	
 	** Callback for you to override. 
 	** By default this does nothing.
 	virtual Void doInvoke(Event? event) { }

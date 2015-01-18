@@ -23,9 +23,9 @@ mixin Reflux {
 	abstract Bool closeView(View view, Bool force)		// currently, only activeView is available, need views()
 	abstract Void replaceView(View view, Type viewType)	// currently, only activeView is available, need views()
 	
+	abstract Panel? getPanel(Type panelType, Bool checked := true)
 	abstract Panel showPanel(Type panelType)
 	abstract Panel hidePanel(Type panelType)
-	abstract Panel getPanel(Type panelType)
 	
 	abstract Void copyToClipboard(Str text)
 
@@ -157,8 +157,8 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		frame.closeView(view, true)
 	}
 
-	override Panel getPanel(Type panelType) {
-		panels.panelMap[panelType]
+	override Panel? getPanel(Type panelType, Bool checked := true) {
+		panels.get(panelType, checked)
 	}
 	
 	override Panel showPanel(Type panelType) {
@@ -222,7 +222,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		panels := (Str[]) session.get("afReflux.openPanels", ["afExplorer::FoldersPanel"])
 		panels.each {
 			panelType := Type.find(it, false)
-			if (panelType != null)
+			if (panelType != null && getPanel(panelType, false) != null)
 				showPanel(panelType)
 		}
 	}

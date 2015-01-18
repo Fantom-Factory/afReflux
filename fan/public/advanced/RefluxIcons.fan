@@ -17,9 +17,10 @@ class RefluxIcons {
 		icon(name, false)
 	}
 	
-	Image? icon(Str name, Bool faded) {
+	Image? icon(Str name, Bool faded, Bool checked := true) {
 		if (!iconMap.containsKey(name)) {
-			log.warn("No icon for : $name")
+			if (checked)
+				log.warn("No icon for : $name")
 			return null
 		}
 
