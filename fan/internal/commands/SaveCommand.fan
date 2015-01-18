@@ -4,8 +4,7 @@ using fwt
 internal class SaveCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 	
-	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdSave", in) {
-		eventHub.register(this)
+	new make(|This|in) : super.make("afReflux.cmdSave", in) {
 		addEnabler("afReflux.cmdSave", |->Bool| { reflux.activeView?.isDirty ?: false }, false )
 	}
 	

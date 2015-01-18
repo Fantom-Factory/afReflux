@@ -17,6 +17,7 @@ afReflux.cmdNavBackward.name		= Back
 afReflux.cmdNavBackward.accelerator	= Alt+Left
 afReflux.cmdNavForward.name			= Forward
 afReflux.cmdNavForward.accelerator	= Alt+Right
+afReflux.cmdNavClear.name			= Clear
 
 afReflux.cmdUndo.name				= Undo
 afReflux.cmdUndo.accelerator		= Ctrl+Z

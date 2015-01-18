@@ -5,8 +5,7 @@ using fwt
 internal class NavUpCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux reflux
 	
-	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdNavUp", in) {
-		eventHub.register(this)
+	new make(|This|in) : super.make("afReflux.cmdNavUp", in) {
 		addEnabler("afReflux.cmdNavUp", |->Bool| {
 			parent := reflux.activeView?.resource?.uri?.parent
 			return parent != null && parent.pathOnly != `/`

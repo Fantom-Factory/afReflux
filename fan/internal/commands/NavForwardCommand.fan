@@ -4,8 +4,7 @@ using fwt
 internal class NavForwardCommand : GlobalCommand, RefluxEvents {
 	@Inject	private History history
 	
-	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdNavForward", in) {
-		eventHub.register(this)
+	new make(|This|in) : super.make("afReflux.cmdNavForward", in) {
 		addEnabler("afReflux.cmdNavForward", |->Bool| { history.navForwardEnabled }, false )
 	}
 	
@@ -13,6 +12,5 @@ internal class NavForwardCommand : GlobalCommand, RefluxEvents {
 		history.navForward
 	}
 	
-	override Void onViewActivated	(View view) { update }
-	override Void onViewDeactivated	(View view) { update } 
+	override Void onLoad(Resource resource) { update }
 }

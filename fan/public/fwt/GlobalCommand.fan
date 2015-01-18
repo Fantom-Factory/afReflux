@@ -4,9 +4,12 @@ using fwt
 
 ** Provides an abstraction layer for reusable commands by de-coupling the creation and invocation.
 ** Need to be visible and enabled in main menu to work
+** 
+** Added to the event hub
 class GlobalCommand {
 	@Inject private RefluxIcons		_refluxIcons
 	@Inject private Registry		_registry
+	@Inject private EventHub		_eventHub
 	
 			private Str:|Event?|	_invokers	:= Str:|Event?|[:]
 			private Str:|->Bool|	_enablers	:= Str:|->Bool|[:]
@@ -16,7 +19,8 @@ class GlobalCommand {
 
 	new make(Str baseName, |This|in) {
 		in(this)
-		this._baseName = baseName
+		_baseName = baseName
+		_eventHub.register(this, false)
 
 		podd := this.typeof.pod.name + "."
 		base := baseName.startsWith(podd) ? baseName[podd.size..-1] : baseName

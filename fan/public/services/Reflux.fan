@@ -208,7 +208,6 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		activeView = null
 	}
 	
-	
 	override Void onLoadSession(Str:Obj? session) {
 		frame.size = session["afReflux.frameSize"] ?: frame.size
 

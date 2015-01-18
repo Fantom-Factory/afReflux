@@ -4,8 +4,7 @@ using fwt
 internal class UndoCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 	
-	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdUndo", in) {
-		eventHub.register(this)
+	new make(|This|in) : super.make("afReflux.cmdUndo", in) {
 		addEnabler("afReflux.cmdUndo", |->Bool| { !(reflux.activeView?._undoStack?.isEmpty ?: true) }, false )
 	}
 	

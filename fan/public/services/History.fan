@@ -1,4 +1,5 @@
 using afIoc
+using fwt
 
 ** (Service) - 
 ** Maintains a history of view URIs.
@@ -12,6 +13,12 @@ mixin History {
 	** Does nothing if there is no next.
 	abstract Void navForward()
 	
+	** Returns a unique list of URIs visited.
+	abstract Resource[] history()
+
+	** Clears the history.
+	abstract Void clear()
+
 	@NoDoc
 	abstract Bool navBackwardEnabled()
 
@@ -22,45 +29,95 @@ mixin History {
 	abstract Void load(Resource resource, LoadCtx ctx)
 }
 
-internal class HistoryImpl : History {
-			// no point in making this public unless we also make the index public
-			private Uri[]	history	:= [,]
-			private Int?	showing
-	@Inject	private Reflux	reflux
+internal class HistoryImpl : History, RefluxEvents {
+			private	Resource[]	backStack		:= Resource[,]
+			private	Resource[]	forwardStack	:= Resource[,]
+			private Resource?	showing
+			override Resource[] history			:= Resource[,]
+	@Inject	private Registry	registry
+	@Inject	private Reflux		reflux
 
-	new make(|This|in) { in(this) }
+	new make(EventHub eventHub, |This|in) {
+		in(this)
+		eventHub.register(this)
+	}
 	
 	override Void navBackward() {
-		if (navBackwardEnabled) {
-			showing++
-			reflux.load(history[showing].toStr, LoadCtx { it.addToHistory = false })
-		}
+		if (!navBackwardEnabled) return
+
+		if (showing != null)
+			forwardStack.push(showing)
+		showing = backStack.pop
+	
+		reflux.loadResource(showing, LoadCtx { it.addToHistory = false })
 	}
 	
 	override Void navForward() {
-		if (navForwardEnabled) {
-			showing--
-			reflux.load(history[showing].toStr, LoadCtx { it.addToHistory = false })			
-		}
+		if (!navForwardEnabled) return
+		
+		if (showing != null)
+			backStack.push(showing)
+		showing = forwardStack.pop
+	
+		reflux.loadResource(showing, LoadCtx { it.addToHistory = false })
 	}
 	
 	override Bool navBackwardEnabled() {
-		showing != null && showing < (history.size-1)
+		!backStack.isEmpty		
 	}
 
 	override Bool navForwardEnabled() {
-		showing != null && showing > 0
+		!forwardStack.isEmpty
 	}
 
-	override Void load(Resource resource, LoadCtx ctx) {
-		if (ctx.addToHistory) {
-			if (history.size > 99)
-				history.size = 99	// keep 100 entries
+	override Void load(Resource resource, LoadCtx ctx) {		
+		if (ctx.addToHistory && resource != showing) {
+			if (showing != null)
+				backStack.push(showing)
+			showing = resource
+			forwardStack.clear	// you can't return to the same future once you've changed the past!
 
-			if (history.first != resource.uri) {
-				history.insert(0, resource.uri)
-				showing = 0
-			}
+			if (backStack.size > 50)
+				backStack.size = 50	// keep 50 entries
 		}
+
+		history.insert(0, resource)
+		history = history.unique
+		if (history.size > 50) history.size = 50
+
+		showHistoryMenu
+	}
+	
+	override Void clear() {
+		backStack.clear
+		forwardStack.clear
+		history.clear
+
+		showHistoryMenu
+	}
+	
+	private Void showHistoryMenu() {
+		historyMenu := (Menu) registry.serviceById("afReflux.historyMenu")		
+		((MenuItem[]) historyMenu.children).each { if (it.command is HistoryCommand) historyMenu.remove(it) }
+		
+		history := history.dup
+		history.insert(0, showing)
+		history = history.unique
+		if (history.size > 10) history.size = 10
+		history.each { historyMenu.add(MenuItem.makeCommand(registry.autobuild(HistoryCommand#, [it]))) }		
+	}
+	
+	override Void onViewActivated(View view) {
+		// treat tabbing the same as loading, so we can nav back.
+		if (view.resource != null)
+			load(view.resource, LoadCtx())
+	}
+}
+
+internal class HistoryCommand : RefluxCommand {
+	new make(Resource resource, Reflux reflux, |This|in) : super.make(in) {
+		this.name = resource.displayName
+		this.icon = resource.icon
+		this.onInvoke.add { reflux.loadResource(resource) }
 	}
 }

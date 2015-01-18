@@ -5,8 +5,7 @@ using fwt
 internal class ToggleViewCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 
-	new make(EventHub eventHub, |This|in) : super.make("afReflux.cmdToggleView", in) {
-		eventHub.register(this)
+	new make(|This|in) : super.make("afReflux.cmdToggleView", in) {
 		addEnabler("afReflux.cmdToggleView", |->Bool| { (reflux.activeView?.resource?.viewTypes?.size ?: 0) > 1 }, false )
 	}
 	

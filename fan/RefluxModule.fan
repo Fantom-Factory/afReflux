@@ -56,6 +56,7 @@ class RefluxModule {
 		config["afReflux.cmdNavHome"]		= config.autobuild(NavHomeCommand#)
 		config["afReflux.cmdNavBackward"]	= config.autobuild(NavBackwardCommand#)
 		config["afReflux.cmdNavForward"]	= config.autobuild(NavForwardCommand#)
+		config["afReflux.cmdNavClear"]		= config.autobuild(NavClearCommand#)
 
 		config["afReflux.cmdToggleView"]	= config.autobuild(ToggleViewCommand#)
 
@@ -101,6 +102,11 @@ class RefluxModule {
 		menu("afReflux.viewMenu").addAll(menuItems)		
 	}
 
+	@Build { serviceId="afReflux.historyMenu" }
+	static Menu buildHistoryMenu(MenuItem[] menuItems) {
+		menu("afReflux.historyMenu").addAll(menuItems)
+	}
+
 	@Build { serviceId="afReflux.prefsMenu" }
 	static Menu buildPrefsMenu(MenuItem[] menuItems) {
 		menu("afReflux.preferencesMenu").addAll(menuItems)
@@ -116,6 +122,7 @@ class RefluxModule {
 		addNonEmptyMenu(config, "afReflux.fileMenu")
 		addNonEmptyMenu(config, "afReflux.editMenu")
 		addNonEmptyMenu(config, "afReflux.viewMenu")
+		addNonEmptyMenu(config, "afReflux.historyMenu")
 		addNonEmptyMenu(config, "afReflux.prefsMenu")
 		addNonEmptyMenu(config, "afReflux.helpMenu")
 	}
@@ -154,9 +161,20 @@ class RefluxModule {
 		config["afReflux.cmdToggleView"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdToggleView"].command)
 	}
 
+	@Contribute { serviceId="afReflux.historyMenu" }
+	static Void contributeHistoryMenu(Configuration config, GlobalCommands globalCmds) {
+		config["afReflux.cmdNavBackward"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdNavBackward"].command)
+		config["afReflux.cmdNavForward"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdNavForward"].command)
+		config["afReflux.cmdNavUp"]			= MenuItem.makeCommand(globalCmds["afReflux.cmdNavUp"].command)
+		config["afReflux.cmdNavHome"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdNavHome"].command)
+		config["separator.01"]				= MenuItem { it.mode = MenuItemMode.sep }
+		config["afReflux.cmdNavClear"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdNavClear"].command)
+		config["separator.02"]				= MenuItem { it.mode = MenuItemMode.sep }
+	}
+
 	@Contribute { serviceId="afReflux.helpMenu" }
 	static Void contributeHelpMenu(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.cmdAbout"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
+		config["afReflux.cmdAbout"]			= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
 	}
 	
 
