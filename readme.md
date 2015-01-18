@@ -32,5 +32,5 @@ Full API & fandocs are available on the [Status302 repository](http://repo.statu
 
 ### Panels
 
-To add your own panel
+[Panels](http://repo.status302.com/doc/afReflux/Panel.html) are widget panes that decorate the edges of the main window. Only one instance of each type may be created. They have a long lifecycle and exist until the application closes.
 

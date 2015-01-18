@@ -6,7 +6,7 @@ internal class ExitCommand : GlobalCommand {
 	@Inject	private Reflux reflux
 	
 	new make(|This|in) : super.make("afReflux.cmdExit", in) {
-		addEnabler("adReflux.cmdExit", |->Bool| { true } )
+		this.command.enabled = true
 	}
 
 	override Void doInvoke(Event? event) {

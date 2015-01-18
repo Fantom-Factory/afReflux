@@ -7,9 +7,9 @@ class Preferences {
 			private Str					appName
 	@Inject private Registry			registry
 	
-	new make(RegistryMeta regMeta, |This| in) {
+	private new make(RegistryMeta regMeta, |This| in) {
 		in(this)
-		this.appName = regMeta["afReflux.appName"]
+		this.appName = regMeta["afReflux.appName"].toStr.fromDisplayName
 	}
 		
 	Obj loadPrefs(Type prefsType, Str name := "${prefsType.name}.fog") {
@@ -20,7 +20,7 @@ class Preferences {
 			return cached
 		}
 
-		file	:= toFile(prefsType, name)
+		file	:= findFile(name)
 		prefs 	:= loadFromFile(file)
 
 		if (prefs == null) {
@@ -38,7 +38,7 @@ class Preferences {
 			log.info("Cannot save $name in JS")
 			return 
 		}
-		file := toFile(prefs.typeof, name)
+		file := findFile(name)
 		file.writeObj(prefs, ["indent":2])
 	}
 	
@@ -46,7 +46,9 @@ class Preferences {
 		((CachedPrefs?) cache[prefsType])?.modified ?: true
 	}
 	
-	File? toFile(Type prefsType, Str name := "${prefsType.name}.fog") {
+	** Finds the named file in the applications 'etc' dir. 
+	** If such a file does not exist, a file in the 'workDir' is returned.  
+	File? findFile(Str name) {
 		pathUri := `etc/${appName}/${name}`
 		if (runtimeIsJs) {
 			log.info("File $pathUri does not exist in JS")

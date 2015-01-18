@@ -5,7 +5,7 @@ using fwt
 internal class AboutCommand : GlobalCommand {
 	
 	new make(|This|in) : super.make("afReflux.cmdAbout", in) {
-		addEnabler("adReflux.cmdAbout", |->Bool| { true } )
+		this.command.enabled = true
 	}
 	
 	override Void doInvoke(Event? event) {

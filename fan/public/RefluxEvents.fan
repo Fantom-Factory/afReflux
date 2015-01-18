@@ -3,6 +3,9 @@
 ** 
 mixin RefluxEvents {
 
+	virtual Void onLoadSession(Str:Obj? session) { }
+	virtual Void onSaveSession(Str:Obj? session) { }
+	
 	virtual Void onLoad(Resource resource)	{ }
 	
 	virtual Void onError(Error error)	{ }

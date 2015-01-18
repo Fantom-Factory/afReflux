@@ -36,5 +36,5 @@ Usage [#usage]
 
 Panels [#Panels]
 ================
-To add your own panel 
+[Panels]`Panel` are widget panes that decorate the edges of the main window. Only one instance of each type may be created. They have a long lifecycle and exist until the application closes. 
 
