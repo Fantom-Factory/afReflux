@@ -8,6 +8,8 @@ internal class Frame : Window, RefluxEvents {
 	private ViewTabPane			viewTabs
 	private Bool				closing
 	private Str					appName
+	private SashPane			sash1
+	private SashPane			sash2
 
 	internal new make(Reflux reflux, Registry registry, RegistryMeta regMeta) : super() {
 		this.appName= regMeta["afReflux.appName"]
@@ -29,11 +31,11 @@ internal class Frame : Window, RefluxEvents {
 		
 		this.content 	= EdgePane {
 			top = navBar
-			center = SashPane {
+			center = sash1 = SashPane {
 				it.orientation = Orientation.horizontal
 				it.weights = [200, 600, 200]
 				panelTabs[Halign.left],
-				SashPane {
+				sash2 = SashPane {
 					it.orientation = Orientation.vertical
 					it.weights = [600, 200]
 					viewTabs,
@@ -74,6 +76,16 @@ internal class Frame : Window, RefluxEvents {
 	
 	override Void onViewModified(View view) {
 		update(view.resource, view.isDirty)
+	}
+	
+	override Void onLoadSession(Str:Obj? session) {
+		sash1.weights = session["afReflux.frame.sash1Weights"] ?: sash1.weights 
+		sash2.weights = session["afReflux.frame.sash2Weights"] ?: sash2.weights 
+	}
+
+	override Void onSaveSession(Str:Obj? session) {
+		session["afReflux.frame.sash1Weights"] = sash1.weights
+		session["afReflux.frame.sash2Weights"] = sash2.weights
 	}
 	
 	override Void close(Obj? result := null) {
