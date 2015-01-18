@@ -35,6 +35,7 @@ internal class HistoryImpl : History, RefluxEvents {
 			private Resource?	showing
 			override Resource[] history			:= Resource[,]
 	@Inject	private Registry	registry
+//	@Inject	private UriResolvers
 	@Inject	private Reflux		reflux
 
 	new make(EventHub eventHub, |This|in) {
@@ -103,7 +104,7 @@ internal class HistoryImpl : History, RefluxEvents {
 		history := history.dup
 		history.insert(0, showing)
 		history = history.unique
-		if (history.size > 10) history.size = 10
+		if (history.size > 13) history.size = 13	// TODO: move to prefs
 		history.each { historyMenu.add(MenuItem.makeCommand(registry.autobuild(HistoryCommand#, [it]))) }		
 	}
 	
@@ -111,6 +112,17 @@ internal class HistoryImpl : History, RefluxEvents {
 		// treat tabbing the same as loading, so we can nav back.
 		if (view.resource != null)
 			load(view.resource, LoadCtx())
+	}
+	
+	override Void onLoadSession(Str:Obj? session) {
+		history = Uri?[,].addAll(session["afReflux.history"] ?: Uri#.emptyList).map |uri->Resource?| {
+			try 	return reflux.resolve(uri.toStr)
+			catch	return null
+		}.exclude { it == null }
+	}
+
+	override Void onSaveSession(Str:Obj? session) {
+		session["afReflux.history"] = history.map { it.uri }
 	}
 }
 
