@@ -75,9 +75,9 @@ Panels are not displayed by default but they are automatically added to the `Pan
 
 Note you can also show the panel progamatically on startup:
 
+```
 Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
-
     reflux.showPanel(MyPanel#)
-
-}
+} 
+```
 

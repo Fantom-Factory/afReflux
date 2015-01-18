@@ -54,20 +54,23 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	}
 
 	View? load(Resource resource, LoadCtx ctx) {
+		// if the resource is already loaded in a view, just activate it 
+		view := (View?) panelTabs.find { ((View) it.panel).resource == resource }?.panel
+		if (view != null) {
+			super.activate(view)
+			// returning the view would re-load the resource - we just want to switch tabs		
+			return null
+		}
+				
 		viewType := ctx.viewType ?: resource.viewTypes.first
-		
 		if (viewType == null) {
 			this.typeof.pod.log.warn("Resource `${resource.uri}` has no default view")
 			return null
 		}
-
-		// if the resource is already loaded in the correct viewtype, just activate it 
-		pots := panelTabs.findAll { it.panel.typeof.fits(viewType) }
-		view := (View?) pots.find { ((View) it.panel).resource == resource }?.panel
 		
 		// find any view of the correct type and check for re-use
-		if (view == null && !pots.isEmpty) {
-			
+		pots := panelTabs.findAll { it.panel.typeof.fits(viewType) }
+		if (!pots.isEmpty) {
 			if (pots.any { it.panel == reflux.activeView } && reflux.activeView.reuseView)
 				view = reflux.activeView
 			else
