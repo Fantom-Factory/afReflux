@@ -49,7 +49,39 @@ Panels [#Panels]
 ================
 [Panels]`Panel` are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shutsdown.
 
-To create a custom panel, extend `Panel` and contribute it to the 'Panels' service:
+To create a custom panel, first create a class that extends `Panel`. Our example panel does nothing but set a yellow label as its content:
 
+pre>
+class MyPanel : Panel {
+    new make(|This| in) : super(in) { 
+        content = Label() {
+            it.text = "Hello Mum!"
+            it.bg   = Color.yellow
+        }
+    }
+}
+<pre
 
+Then contribute it to the 'Panels' service in your 'AppModule':
+
+pre>
+class AppModule {
+    @Contribute { serviceType=Panels# }
+    static Void contributePanels(Configuration config) {
+        config.add(config.autobuild(MyPanel#))
+    }
+}
+<pre
+
+Panels are not displayed by default but they are automatically added to the 'Panels' menu. Select it in the 'View -> Panels' menu to show:   
+
+![Screenshot of Panel Example]`afReflux.panelExample.png`
+
+Note you can also show the panel progamatically on startup:
+
+pre>
+Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
+    reflux.showPanel(MyPanel#)
+} 
+<pre
 

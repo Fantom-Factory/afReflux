@@ -13,7 +13,7 @@ internal class ShowHidePanelCommand : RefluxCommand, RefluxEvents {
 	}
 
 	override Void doInvoke(Event? event) {
-		if (panel.isShowing) reflux.hidePanel(panel.typeof); else reflux.showPanel(panel.typeof)
+		if (this.selected) reflux.showPanel(panel.typeof); else reflux.hidePanel(panel.typeof)
 	}
 
 	override Void onPanelModified(Panel panel) {
@@ -22,5 +22,12 @@ internal class ShowHidePanelCommand : RefluxCommand, RefluxEvents {
 			this.icon		= panel.icon
 			this.selected	= panel.isShowing
 		}
+	}
+	
+	override Void onPanelShown	(Panel panel) { if (panel == this.panel) update }
+	override Void onPanelHidden	(Panel panel) { if (panel == this.panel) update }
+
+	private Void update() {
+		this.selected = panel.isShowing
 	}
 }
