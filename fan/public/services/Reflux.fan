@@ -138,7 +138,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		activeView.refresh
 
 		panels.panels.each {
-			if (it.isActive)
+			if (it.isShowing)
 				it.refresh
 		}
 	}

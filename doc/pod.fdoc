@@ -47,9 +47,9 @@ Usage [#usage]
 
 Panels [#Panels]
 ================
-[Panels]`Panel` are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shutsdown.
+[Panels]`Panel` are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shuts down.
 
-To create a custom panel, first create a class that extends `Panel`. Our example panel does nothing but set a yellow label as its content:
+To create a custom panel, first create a class that extends `Panel`. This example just sets its FWT content to a yellow label: 
 
 pre>
 class MyPanel : Panel {
@@ -62,26 +62,40 @@ class MyPanel : Panel {
 }
 <pre
 
-Then contribute it to the 'Panels' service in your 'AppModule':
+Note that the Panel's ctor must take an 'it-block' parameter and pass it up to the superclass to be executed. This is so IoC can inject all those lovely dependencies. Now contribute an instance of the panel to the 'Panels' service in your 'AppModule':
 
 pre>
 class AppModule {
     @Contribute { serviceType=Panels# }
     static Void contributePanels(Configuration config) {
-        config.add(config.autobuild(MyPanel#))
+    	myPanel := config.autobuild(MyPanel#)
+        config.add(myPanel)
     }
 }
 <pre
 
-Panels are not displayed by default but they are automatically added to the 'Panels' menu. Select it in the 'View -> Panels' menu to show:   
+Panels need to be *autobuilt* so IoC injects all the depdencies (via that it-block ctor parameter). 
+
+Panels are automatically added to the 'View -> Panels' menu; select it to display it:
 
 ![Screenshot of Panel Example]`afReflux.panelExample.png`
 
-Note you can also show the panel progamatically on startup:
+Note that Panels are not displayed by default; but the user's display settings are saved from one session to the next. To force the user to always start with your panel displayed, show it progamatically on application startup: 
 
 pre>
 Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
     reflux.showPanel(MyPanel#)
 } 
 <pre
+
+Panels contain several callback methods that are invoked at different times of its lifecycle. These are:
+
+ - 'onShow()' - called when it's added to the tab pane.
+ - 'onActivate()' - called when it becomes the active tab.
+ - 'onModify()' - called when panel details are modified, such as the name or icon. 
+ - 'onDeactivate()' - called when some other tab becomes active.
+ - 'onHide()' - called when it is removed from the tab pane.
+ - 'refresh()' - called when the panel 'isShowing' and the refresh button is clicked.
+  
+Panels are automatically added to the 'EventHub' - see [Eventing]`#eventing` for details.
 
