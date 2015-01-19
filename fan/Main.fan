@@ -19,7 +19,16 @@ class AppModule {
 }
 
 class MyPanel : Panel {
+	Browser b
     new make(|This| in) : super(in) { 
-        content = Browser()
+        b = content = Browser()
     }
+	
+	override Void onShow() {
+//		b.execute("alert('dude!');")
+		b.html = "Wow!"
+		
+		b.html = null
+		
+	}
 }
