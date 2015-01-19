@@ -58,7 +58,6 @@ public class CTabPanePeer extends WidgetPeer implements SelectionListener {
 		return c;
 	}
 
-	// Int selectedIndex := 0
 	public Long selectedIndex(CTabPane self) { return selectedIndex.get(); }
 	public void selectedIndex(CTabPane self, Long v) { selectedIndex.set(v); }
 	public final Prop.IntProp selectedIndex = new Prop.IntProp(this, 0, true) {

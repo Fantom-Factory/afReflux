@@ -69,10 +69,10 @@ abstract class Panel {
 		eventHub.register(this, false)
 	}
 	
-	** Is the panel currently the active tab?
+	** Is the panel currently the active tab in the tab pane?
 	Bool isActive := false { internal set }
 
-	** Is the panel currently showing in the frame?
+	** Is the panel currently showing in the tab pane?
 	Bool isShowing := false { internal set }
 
 	** Callback when this panel is shown in the tab pane.

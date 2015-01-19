@@ -19,7 +19,7 @@ class CTab : Pane {
 	new make() : super() { }
 	
 	@NoDoc	// required by Pane
-	override Size prefSize(Hints hints := Hints.defVal) { Size(100,100) }
+	override Size prefSize(Hints hints := Hints.defVal) { Size(100, 100) }
 
 	@NoDoc	// required by Pane
 	override Void onLayout() {}

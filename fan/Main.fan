@@ -1,9 +1,8 @@
 using afIoc
-using afReflux
 using fwt
 using gfx
 
-class Example {
+class Main {
     Void main() {
         Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
             reflux.showPanel(MyPanel#)
@@ -21,9 +20,6 @@ class AppModule {
 
 class MyPanel : Panel {
     new make(|This| in) : super(in) { 
-        content = Label() {
-            it.text = "Hello Mum!"
-            it.bg   = Color.yellow
-        }
+        content = Browser()
     }
 }
