@@ -1,6 +1,6 @@
 
 ** (Events) -
-** 
+** Events raised by Reflux.
 mixin RefluxEvents {
 
 	virtual Void onLoadSession(Str:Obj? session) { }
