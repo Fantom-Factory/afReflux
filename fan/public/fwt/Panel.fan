@@ -2,11 +2,17 @@ using afIoc
 using gfx
 using fwt
 
-// maybe created at application startup. Instances are cached / reused.
-** Panels are displayed in the main Window. 
-** Views don't die, they're like singleton services - hang around for the duration of the app
+** Panels are widget panes that decorate the edges of the main window. 
+** Only one instance of each panel type may exist. 
+** They are (typically) created at application startup and live until the application shuts down.
 ** 
-** Panels are auto added as event sinks - just implement the interfave!
+** 'Panel' implementations should be *autobuilt* and contributed to the 'Panels' service:
+** 
+**   @Contribute { serviceType=Panels# }
+**   static Void contributePanels(Configuration config) {
+**     config["myPanel"] = config.autobuild(MyPanel#)
+**   }
+** 
 abstract class Panel {
 
 	@Inject private Log				_log
@@ -31,14 +37,15 @@ abstract class Panel {
 		}
 	}
 	
-	** Return this sidebar's preferred alignment which is used to
+	** Return this panel's preferred alignment which is used to
 	** determine its default position.  Valid values are:
 	**   - 'Halign.left' (default)
 	**   - 'Halign.right'
 	**   - 'Valign.bottom'
 	Obj prefAlign := Halign.left
 
-	** As displayed in the panel's tab.
+	** As displayed in the panel's tab. 
+	** If no name is given, it defaults the the Panel's type, minus any 'Panel' suffix.
 	Str name := "" {
 		set { &name = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->text = it; this->onModify }
 	}
@@ -61,7 +68,7 @@ abstract class Panel {
 			baseName = baseName[0..<-"View".size]
 
 		this.name = baseName.toDisplayName
-		this.icon = _icons.icon("ico${typeof.name}", false, false)
+		this.icon = _icons.get("ico${typeof.name}", false)
 	}
 
 	@PostInjection

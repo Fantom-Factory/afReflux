@@ -3,18 +3,29 @@ using gfx
 using fwt
 
 ** Extends FWT 'Command' to ensure invocation errors are added to the 'ErrorsView'.  
+** 
+** 'RefluxCommands' and their subclasses must be created by IoC to ensure dependency injection:
+** 
+**   registry.autobuild(MyRefluxCommand#, [...ctor args...])
+** 
 class RefluxCommand : Command {
 	@Inject private Errors	_errors
 	@Inject private Images	_images
 	
 	
-	** For subclasses
+	** Convenience ctor with default params for use by subclasses.
+	** 
+	** pre>
+	** class MyRefluxCommand : RefluxCommand {
+	**     new make(|This|in) : super.make(in, "My Command") { ... }
+	** }
+	** <pre
 	new make(|This|in, Str? name := null, Image? icon := null, |Event event|? onInvoke := null) : super.make(name ?: "", icon, onInvoke) {
 		in(this)
 		this.onInvoke.add |e| { doInvoke(e) }
 	}
 
-	** Create an 'RefluxCommand'. Should be done via IoC:
+	** Creates an 'RefluxCommand'. Should be done via IoC:
 	** 
 	**   registry.autobuild(MyCommand#, ["Command Name", cmdImage])
 	@Inject

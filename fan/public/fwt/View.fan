@@ -1,7 +1,8 @@
 using afIoc
 
 ** Views are 'Panels' that are associated with an (editable) resource.
-** They are displayed in the centre of the Window.
+** 
+** For a 'View' to be displayed, a 'Resource' must list it as one of its 'viewTypes()'.
 abstract class View : Panel {
 	@Inject private		Reflux			_reflux
 	@Inject private		Errors			_errors

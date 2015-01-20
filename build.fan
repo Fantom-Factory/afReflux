@@ -19,6 +19,7 @@ class Build : BuildPod {
 			"sys        1.0", 
 			"gfx        1.0",
 			"fwt        1.0",
+			"concurrent 1.0",
 			
 			// ---- Core ------------------------
 			"afBeanUtils  1.0.4  - 1.0", 

@@ -1,6 +1,15 @@
 using afIoc
 
-** Use to load and save preference / config objects.
+** (Service) - 
+** Loads / saves and maintains a cache of preference objects. 
+** Instances are cached until the backing file is updated / modified.  
+** 
+** Because Reflux is application centric, preference files are not associated 
+** with pods, but with the application name supplied at startup:
+** 
+**   %FAN_HOME%/etc/<app-name>/xxx.fog
+** 
+** Preference instances must be serializable. 
 class Preferences {
 			private static const Log 	log 	:= Preferences#.pod.log
 			private Type:CachedPrefs	cache	:= Type:CachedPrefs[:]
@@ -11,10 +20,14 @@ class Preferences {
 		in(this)
 		this.appName = regMeta["afReflux.appName"].toStr.fromDisplayName
 	}
-		
-	Obj loadPrefs(Type prefsType, Str name := "${prefsType.name}.fog") {
+	
+	** Returns an instance of the given preferences object.
+	** 
+	**   preferences.loadPrefs(MyPrefs#, "myPrefs.fog")
+	Obj loadPrefs(Type prefsType, Str? name := null) {
+		name = name ?: "${prefsType.name}.fog"
 		cached	:= loadFromCache(prefsType)
-		
+
 		if (cached != null) {
 			log.debug("Returning cached $prefsType.name $cached")
 			return cached
@@ -33,7 +46,11 @@ class Preferences {
 		return prefs
 	}
 
-	Void savePrefs(Obj prefs, Str name := "${prefs.typeof.name}.fog") {
+	** Saves the given preference instance.
+	** 
+	**   preferences.savePrefs(myPrefs, "myPrefs.fog")
+	Void savePrefs(Obj prefs, Str? name := null) {
+		name = name ?: "${prefs.typeof.name}.fog"
 		if (runtimeIsJs) {
 			log.info("Cannot save $name in JS")
 			return 
@@ -42,6 +59,7 @@ class Preferences {
 		file.writeObj(prefs, ["indent":2])
 	}
 	
+	** Returns 'true' if the preferences file has been updated since it was last read.
 	Bool updated(Type prefsType) {
 		((CachedPrefs?) cache[prefsType])?.modified ?: true
 	}

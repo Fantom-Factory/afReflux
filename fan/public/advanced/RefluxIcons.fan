@@ -13,11 +13,7 @@ class RefluxIcons {
 	}
 	
 	@Operator
-	virtual Image? get(Str name) {
-		icon(name, false)
-	}
-	
-	Image? icon(Str name, Bool faded, Bool checked := true) {
+	virtual Image? get(Str name, Bool checked := true) {
 		if (!iconMap.containsKey(name)) {
 			if (checked)
 				log.warn("No icon for : $name")
@@ -28,11 +24,25 @@ class RefluxIcons {
 		if (uri.toStr.isEmpty)
 			return null
 
-		return images.get(uri, faded)
+		return images.get(uri, checked)
+	}
+
+	virtual Image? getFaded(Str name, Bool checked := true) {
+		if (!iconMap.containsKey(name)) {
+			if (checked)
+				log.warn("No icon for : $name")
+			return null
+		}
+
+		uri := iconMap[name]
+		if (uri.toStr.isEmpty)
+			return null
+
+		return images.getFaded(uri, checked)
 	}
 	
-	Image? fromUri(Uri? icoUri, Bool faded := false, Bool checked := true) {
-		images.get(icoUri, faded, checked)
+	Image? fromUri(Uri uri, Bool checked := true) {
+		images.get(uri, checked)
 	}
 }
 

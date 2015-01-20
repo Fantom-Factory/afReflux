@@ -2,7 +2,7 @@ using afIoc
 using gfx
 using fwt
 
-@NoDoc
+** The IoC Module definition for Reflux.
 class RefluxModule {
 	
 	static Void defineServices(ServiceDefinitions defs) {
@@ -74,7 +74,7 @@ class RefluxModule {
 	internal static Void contributeRegistryShutdown(Configuration config, Registry registry) {
 		config["afReflux.disposeOfImages"] = |->| {
 			imgSrc := (Images) registry.dependencyByType(Images#)
-			imgSrc.disposeOfImages
+			imgSrc.disposeAll
 		}
 	}
 	
@@ -137,7 +137,7 @@ class RefluxModule {
 	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
 		config["afReflux.cmdSave"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
 		config["separator.01"]		= MenuItem { it.mode = MenuItemMode.sep }
-		config["afReflux.cmdExit"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)	// separator
+		config["afReflux.cmdExit"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
 	}
 
 	@Contribute { serviceId="afReflux.editMenu" }
@@ -149,13 +149,23 @@ class RefluxModule {
 
 	@Contribute { serviceId="afReflux.viewMenu" }
 	static Void contributeViewMenu(Configuration config, Panels panels, Registry reg, GlobalCommands globalCmds) {
-		panelsMenu := menu("afReflux.showPanelMenu")
-		panels.panels.each {
-			cmd := reg.autobuild(ShowHidePanelCommand#, [it])
-			panelsMenu.add(MenuItem.makeCommand(cmd))
+		
+		// only stick panels in a sub-menu should there be a few of them
+		if (panels.panels.size > 5) {	
+			panelsMenu := menu("afReflux.showPanelMenu")
+			panels.panels.each {
+				cmd := reg.autobuild(ShowHidePanelCommand#, [it])
+				panelsMenu.add(MenuItem.makeCommand(cmd))
+			}
+			config["afReflux.panelMenu"] = panelsMenu
+
+		} else {
+			panels.panels.each {
+				cmd := reg.autobuild(ShowHidePanelCommand#, [it])
+				config.add(MenuItem.makeCommand(cmd))
+			}			
 		}
 
-		config["afReflux.panelMenu"]		= panelsMenu
 		config["separator.01"]				= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.cmdRefresh"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdRefresh"].command)
 		config["afReflux.cmdToggleView"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdToggleView"].command)
@@ -197,9 +207,9 @@ class RefluxModule {
 		config["afReflux.cmdNavUp"]			= toolBarCommand(globalCmds["afReflux.cmdNavUp"].command)
 		config["afReflux.cmdNavHome"]		= toolBarCommand(globalCmds["afReflux.cmdNavHome"].command)
 	}
-	
 
-	
+
+
 	// ---- Private Methods -----------------------------------------------------------------------
 
 	private static Menu menu(Str menuId) {
@@ -211,11 +221,6 @@ class RefluxModule {
 				menuId = menuId[0..<-"Menu".size]
 			it.text = menuId.toDisplayName
 		}
-	}
-
-	@Deprecated
-	private static MenuItem menuCommand(Configuration config, Type cmdType) {
-		MenuItem.makeCommand(config.autobuild(cmdType))
 	}
 
 	private static Button toolBarCommand(Command command) {

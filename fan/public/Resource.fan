@@ -2,7 +2,8 @@ using afIoc
 using gfx
 using fwt
 
-** Resources are navigatable objects that may be represented by an URI, such as files and URLs.
+** Resources are navigatable objects that may be represented by an URI. 
+** For example, the Explorer application has a 'FileResource' and a 'HttpResource'.
 abstract class Resource {
 
 	@Inject private Registry	_registry
@@ -22,7 +23,9 @@ abstract class Resource {
 	** An (optional) icon that represents this resource. 
 	virtual Image? icon() { return null }
 
-	** A display name for the resource.
+	** A display name for the resource. 
+	** 
+	** Defaults to 'uri.toStr'.
 	virtual Str displayName() { uri.toStr }
 
 	** By populating an existing menu, it allows Panels to create the initial menu. 
@@ -37,6 +40,8 @@ abstract class Resource {
 	} 
 	
 	** The Views that may display this resource.
+	** 
+	** Defaults to empty list.
 	virtual Type[] viewTypes() {
 		[,]
 	}

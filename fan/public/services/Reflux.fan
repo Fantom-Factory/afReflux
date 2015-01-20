@@ -31,7 +31,7 @@ mixin Reflux {
 
 
 
-	static Void start(Str appName, Type[] modules, |Reflux, Window| onOpen) {
+	static Void start(Str appName, Type[] modules, |Reflux, Window|? onOpen := null) {
 		bob := RegistryBuilder()
 
 		// try to dig out the project name
@@ -57,7 +57,7 @@ mixin Reflux {
 				session.load
 				
 				// once we've all started up and settled down, load URIs from the command line
-				onOpen.call(reflux, frame)
+				onOpen?.call(reflux, frame)
 			}
 		}
 
