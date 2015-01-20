@@ -135,7 +135,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	}
 
 	override Void refresh() {
-		activeView.refresh
+		activeView?.refresh
 
 		panels.panels.each {
 			if (it.isShowing)
@@ -168,7 +168,6 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 			return panel
 		
 		frame.showPanel(panel, prefAlign(panel))
-		refluxEvents.onPanelShown(panel)
 
 		// initialise panel with data
 		if (panel is RefluxEvents && activeView?.resource != null)
@@ -186,7 +185,6 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 			return panel
 
 		frame.hidePanel(panel, prefAlign(panel))		
-		refluxEvents.onPanelHidden(panel)
 
 		return panel
 	}
@@ -195,10 +193,11 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		// save the open panels before we close them!
 		session.save
 
-		while (activeView != null && closeView(activeView, true)) { }
-		if    (activeView != null) return
-		
-		panels.panels.each { hidePanel(it.typeof) }
+		// actually, what is the need to close down each view and panel?
+		// we've already saved the session!
+//		while (activeView != null && closeView(activeView, true)) { }
+//		if    (activeView != null) return
+//		panels.panels.each { hidePanel(it.typeof) }
 		
 		frame.close
 	}

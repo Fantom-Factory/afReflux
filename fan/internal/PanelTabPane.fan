@@ -45,7 +45,6 @@ internal class PanelTabPane : ContentPane {
 
 		panel.isShowing = true
 		panel->onShow
-		panel->onModify
 
 		return this
 	}
@@ -58,7 +57,6 @@ internal class PanelTabPane : ContentPane {
 		activate(null)	// deactivate if its showing
 		panel.isShowing = false
 		panel->onHide
-		panel->onModify
 
 		panelTabs.removeSame(tuple)
 

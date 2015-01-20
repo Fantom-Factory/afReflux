@@ -1,11 +1,13 @@
 
-One the things that originally enticed me to Fantom was FWT. I already had a soft spot for SWT because it was far simpler than Swing, and Fantom's FWT wrapper simplified SWT exponentially!
+One the things that originally enticed me to Fantom was FWT. I already had a soft spot for SWT because it was far simpler than Swing, and Fantom's FWT wrapper simplified SWT even further, exponentially so!
 
-I also really liked the idea of 'flux', creating applications based on a browser paradigm and the ability to represent database entities with URIs. With 'Views' and 'SideBars' it was also kinda inspired by Eclipse's RCP. In all, it was a neat idea!
+I also really liked the idea of 'flux', creating applications based on a browser paradigm and the ability to represent database entities with URIs. Complete with 'Views' and 'SideBars' it looked like it was inspired by Eclipse's RCP. In all, it was really neat!
 
-Only I kept finding the 'flux' implementation a bit, um, *klunky*. It was hard to customise, configuration by index props seemed like a poor man's IoC, and installing an app on a fresh Fantom install required lots of annoying config file changes.   
+Thanks Andy! Thanks Brian!
 
-So, fuelled by a desire to create a customisable, voice driven explorer application, I tinkered with a new code base that's now evolved to 'Reflux'. 
+Only I kept finding the 'flux' implementation a bit, um, *clunky*. It was hard to customise, configuration by index props seemed like a poor man's IoC, and installing an app on a fresh Fantom install required lots of annoying manual config file changes. I found myself forever adding pathces to make flux behave as I wanted it to.
+
+So, wishing to make life easy for myself and, fuelled by a desire to create a customisable voice driven explorer application, I tinkered with a new code base that's now evolved to 'Reflux'. It doesn't quite have all the features flux has, but I think it has enough to be getting on with...
 
 
 
@@ -13,7 +15,7 @@ Overview [#overview]
 ********************
 'Reflux' is a framework for creating simple FWT desktop applications. 
 
-Modelled after an internet browser, Reflux lets you explore and edit resources using URIs. It expands upon Fantom's FWT by adding:
+Modelled after an internet browser, Reflux lets you explore and edit resources via URIs. It expands upon Fantom's FWT by adding:
  
  - **An IoC container** - Reflux applications are IoC applications.
  - **Events** - An application wide eventing mechanism. 
@@ -281,7 +283,7 @@ The menus services take contributions of 'MenuItems', so to add a *Hello Mum!* c
 
 pre>
 @Contribute { serviceId="afReflux.editMenu" }
-static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
+static Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
     config["myCommand"] = MenuItem(command)
 }
@@ -293,7 +295,7 @@ Use IoC ordering constraints to further position any contributed commands / menu
 
 pre>
 @Contribute { serviceId="afReflux.editMenu" }
-static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
+static Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
     config
         .set("myCommand", MenuItem(command))
@@ -304,14 +306,135 @@ static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) 
 When ordering menu items commands consult the source code of 'RefluxModule' to find current contribution IDs, such as 'afReflux.cmdUndo' above.
 
 
+
 Tool Bar [#toolBar]
 *******************
+The tool bar may be configured in much the same way as the menu bar, with IoC contributions. To add fwt 'Button' objects, contribute them to the 'afReflux.toolBar' service:
+
+pre>
+@Contribute { serviceId="afReflux.toolBar" }
+static Void contributeEditMenu(Configuration config) {
+    command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
+    config["myButton"] = Button(command)
+}
+<pre
+
+To remove or position buttons in the tool bar, consult the 'RefluxModule' source code for current contribution IDs.
 
 
 
 Global Commands [#globalCommands]
+*********************************
+Global commands are wrappers around standard fwt commands that may be accessed from the 'GlobalCommands' service.
+They are generally added to menus and tool bars. For the accelerator (keyboard shortcuts) to work, they need to be added to a menu bar. 
+
+Global command instances should be contributed to the 'GlobalCommands' service:
+
+pre>
+@Contribute { serviceType=GlobalCommands# }
+static Void contributeGlobalCommands(Configuration config) {
+    config["myGlobCmd"] = config.autobuild(MyGlobalCommand#)
+}
+<pre
+
+Global commands are disabled by default. It is up to 'Views' and 'Panels' (or any service) to add enabler functions that dictate when the command should be active. This way, global commands may be decoupled from their context sensitivity. For example, to only enable 'myGlobCmd' when 'MyPanel' is active:    
+
+pre>
+class MyPanel : Panel {
+    @Inject GlobalCommands globalCommands
+
+    new make(|This| in) : super(in) { }
+    
+    override Void onActivate() {
+        globalCommands["myGlobCmd"].addEnabler("myPanel") |->Bool| { true }
+    }
+
+    override Void onDeactivate() {
+        globalCommands["myGlobCmd"].removeEnabler("myPanel")
+    }
+}
+<pre
+
+Other Panels may add their own enabler functions thereby allowing the command to be enabled in *multiple* situations.
+
+Note that enabler functions are OR'ed together, that is, it only takes one function to return 'true' for the command to be enabled.
 
 
 
 Eventing [#eventing]
+********************
+Reflux eventing allows different parts of the application to communicate with other parts without direct references.  
+
+
+
+Define [#eventDefine]
+=====================
+Reflux events are defined by a 'mixin'. The mixin should define *virtual* (or *abstract*) methods, these are the *events*. As such, it is convention that they are named 'onXXXX()':
+
+pre>
+mixin MyEvents {
+    virtual Void onMyEvent(Str stuff) { }
+    
+    ...
+}
+<pre
+
+Note that event methods should not return anything (they're strictly fire and forget) and any *virtual* implementations should do nothing. 
+ 
+For 'MyEvents' to be recognised as an event type it needs to be contributed to the 'EventTypes' service:
+
+pre>
+@Contribute { serviceType=EventTypes# }
+static Void contributeEventHub(Configuration config) {
+    config.add(MyEvents#)
+}
+<pre
+
+
+
+Fire [#eventFire]
+=================
+Reflux creates a instance of the event mixin that can be injected into your components and services. To fire an event, just call the method. 
+
+pre>
+class MyService {
+    @Inject MyEvents myEvents
+    
+    new make(|This|in) { in(this) }
+    
+    Void someHandler() {
+        myEvents.onMyEvent("wotever")
+    }
+}
+<pre
+
+
+
+Handle [#eventHandle]
+=======================
+Multiple classes may handle events. For a class to so, it must first register itself with the 'EventHub' service. When an event is fired, each registered class is scanned to see if it implements the appropriate event mixin. If it does, the event method is called:  
+
+pre>
+class MyOtherService : MyEvents {
+    
+    new make(EventHub eventHub) {
+        eventHub.register(this)
+    }
+    
+    override Void onMyEvent(Str stuff) {
+        echo("Got ${stuff}")
+    }
+}
+<pre
+
+Event methods may be 'abstract', but by making them 'virtual' event handler classes are not forced to implement all the event methods.
+
+Because it is common for them to receive events, all instances of 'Panels', 'Views' and 'GlobalCommands' are automatically added to 'EventHub' by default. Therefore to receive events, all they need to do is implement the event mixin. 
+
+
+
+Example Code [#exampleCode]
+***************************
+Following is a basic Reflux app that incorporates the ideas and example code shown in previous sections. When learning Reflux, it is suggested that you start here and then look at the source code of the [Explorer]`pod:afExplorer` application.
+
 

@@ -3,7 +3,7 @@ using gfx::Image
 using concurrent::Actor
 
 ** (Service) - 
-** Maintains a cache of Images, ensuring they get disposed of properly. 
+** Maintains a cache of Images, ensuring they are disposed of properly. 
 mixin Images {
 	
 	** Returns the image at the given URI, storing it in the cache. 

@@ -3,6 +3,8 @@ using afIoc
 ** Views are 'Panels' that are associated with an (editable) resource.
 ** 
 ** For a 'View' to be displayed, a 'Resource' must list it as one of its 'viewTypes()'.
+** 
+** 'Views' are automatically added to the 'EventHub', so to receive events they only need to implement the required event mixin.
 abstract class View : Panel {
 	@Inject private		Reflux			_reflux
 	@Inject private		Errors			_errors
