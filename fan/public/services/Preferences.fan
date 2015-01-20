@@ -10,7 +10,28 @@ using afIoc
 **   %FAN_HOME%/etc/<app-name>/xxx.fog
 ** 
 ** Preference instances must be serializable. 
-class Preferences {
+mixin Preferences {
+
+	** Returns an instance of the given preferences object.
+	** 
+	**   preferences.loadPrefs(MyPrefs#, "myPrefs.fog")
+	abstract Obj loadPrefs(Type prefsType, Str? name := null)
+
+	** Saves the given preference instance.
+	** 
+	**   preferences.savePrefs(myPrefs, "myPrefs.fog")
+	abstract Void savePrefs(Obj prefs, Str? name := null)
+	
+	** Returns 'true' if the preferences file has been updated since it was last read.
+	abstract Bool updated(Type prefsType)
+	
+	** Finds the named file in the applications 'etc' dir. 
+	** If such a file does not exist, a file in the 'workDir' is returned.  
+	abstract File? findFile(Str name)
+
+}
+
+internal class PreferencesImpl : Preferences {
 			private static const Log 	log 	:= Preferences#.pod.log
 			private Type:CachedPrefs	cache	:= Type:CachedPrefs[:]
 			private Str					appName
@@ -21,10 +42,7 @@ class Preferences {
 		this.appName = regMeta["afReflux.appName"].toStr.fromDisplayName
 	}
 	
-	** Returns an instance of the given preferences object.
-	** 
-	**   preferences.loadPrefs(MyPrefs#, "myPrefs.fog")
-	Obj loadPrefs(Type prefsType, Str? name := null) {
+	override Obj loadPrefs(Type prefsType, Str? name := null) {
 		name = name ?: "${prefsType.name}.fog"
 		cached	:= loadFromCache(prefsType)
 
@@ -46,10 +64,7 @@ class Preferences {
 		return prefs
 	}
 
-	** Saves the given preference instance.
-	** 
-	**   preferences.savePrefs(myPrefs, "myPrefs.fog")
-	Void savePrefs(Obj prefs, Str? name := null) {
+	override Void savePrefs(Obj prefs, Str? name := null) {
 		name = name ?: "${prefs.typeof.name}.fog"
 		if (runtimeIsJs) {
 			log.info("Cannot save $name in JS")
@@ -59,14 +74,11 @@ class Preferences {
 		file.writeObj(prefs, ["indent":2])
 	}
 	
-	** Returns 'true' if the preferences file has been updated since it was last read.
-	Bool updated(Type prefsType) {
+	override Bool updated(Type prefsType) {
 		((CachedPrefs?) cache[prefsType])?.modified ?: true
 	}
 	
-	** Finds the named file in the applications 'etc' dir. 
-	** If such a file does not exist, a file in the 'workDir' is returned.  
-	File? findFile(Str name) {
+	override File? findFile(Str name) {
 		pathUri := `etc/${appName}/${name}`
 		if (runtimeIsJs) {
 			log.info("File $pathUri does not exist in JS")

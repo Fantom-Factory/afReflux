@@ -19,7 +19,7 @@ class RefluxModule {
 		defs.add(RefluxIcons#)
 		defs.add(GlobalCommands#)
 		defs.add(History#)
-		defs.add(Session#)
+		defs.add(Session#).withCtorArgs(["sessionData.fog"])
 	}
 	
 	@Contribute { serviceType=Panels# }
@@ -127,7 +127,7 @@ class RefluxModule {
 		addNonEmptyMenu(config, "afReflux.helpMenu")
 	}
 	
-	static Void addNonEmptyMenu(Configuration config, Str menuId) {
+	private static Void addNonEmptyMenu(Configuration config, Str menuId) {
 		menu := (Menu) config.registry.serviceById(menuId)
 		if (!menu.children.isEmpty)
 			config[menuId] = menu

@@ -13,6 +13,7 @@ using fwt
 **     config["myPanel"] = config.autobuild(MyPanel#)
 **   }
 ** 
+** 'Panels' are automatically added to the 'EventHub', so to receive events they only need to implement the required event mixin.
 abstract class Panel {
 
 	@Inject private Log				_log
@@ -47,12 +48,12 @@ abstract class Panel {
 	** As displayed in the panel's tab. 
 	** If no name is given, it defaults the the Panel's type, minus any 'Panel' suffix.
 	Str name := "" {
-		set { &name = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->text = it; this->onModify }
+		set { &name = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->text = it; if (isShowing) this->onModify }
 	}
 
 	** As displayed in the panel's tab.
 	Image? icon {
-		set { &icon = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->image = it; this->onModify }
+		set { &icon = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->image = it; if (isShowing) this->onModify }
 	}
 	
 	** Subclasses should define the following ctor:
@@ -129,6 +130,7 @@ abstract class Panel {
 				case #onShow.name		: _events.onPanelShown(this)
 				case #onHide.name		: _events.onPanelHidden(this)
 				case #onActivate.name	: _events.onPanelActivated(this)
+				case #onDeactivate.name	: _events.onPanelDeactivated(this)
 				case #onModify.name		: _events.onPanelModified(this)
 			}
 		

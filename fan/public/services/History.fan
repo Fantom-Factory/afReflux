@@ -2,7 +2,7 @@ using afIoc
 using fwt
 
 ** (Service) - 
-** Maintains a history of view URIs.
+** Maintains a history of View URIs.
 mixin History {
 	
 	** Loads the previous history item.

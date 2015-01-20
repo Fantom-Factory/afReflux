@@ -64,18 +64,23 @@ class RefluxCommand : Command {
 		plat := Desktop.platform
 
 		// TODO: check for values in an app specific 'en.props' first 
+		locale := |Str name, Str? def -> Str?| {
+			// the quick start example throws 'sys::Err: Not backed by pod file: ExampleView_0' 
+			try 	return pod.locale(name, def)
+			catch	return null
+		}
 		
 		// name
-		locName := pod.locale("${keyBase}.name.${plat}", null)
+		locName := locale("${keyBase}.name.${plat}", null)
 		if (locName == null)
-			locName = pod.locale("${keyBase}.name", null)
+			locName = locale("${keyBase}.name", null)
 		if (locName != null)
 			this.name = locName
 
 		// icon
-		locIcon := pod.locale("${keyBase}.icon.${plat}", null)
+		locIcon := locale("${keyBase}.icon.${plat}", null)
 		if (locIcon == null)
-			locIcon = pod.locale("${keyBase}.icon", null)
+			locIcon = locale("${keyBase}.icon", null)
 		if (locIcon != null)
 			try {
 				this.icon = (locIcon.trimToNull == null) ? null : _images.get(locIcon.toUri, false)
@@ -83,10 +88,10 @@ class RefluxCommand : Command {
 				_errors.add(Err("Command: cannot load '${keyBase}.icon' => $locIcon", err))
 		
 		// accelerator
-		locAcc := pod.locale("${keyBase}.accelerator.${plat}", null)
+		locAcc := locale("${keyBase}.accelerator.${plat}", null)
 		locAccPlat := locAcc != null
 		if (locAcc == null)
-			locAcc = pod.locale("${keyBase}.accelerator", null)
+			locAcc = locale("${keyBase}.accelerator", null)
 		if (locAcc != null)
 			try {
 				this.accelerator = (locAcc.trimToNull == null) ? null : Key.fromStr(locAcc)

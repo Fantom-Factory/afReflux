@@ -1,10 +1,16 @@
 using afBeanUtils
 
-@NoDoc	// Don't overwhelm the masses!
+** (Service) -
+** Maintains and provides access to 'GlobalCommand' instances.
 mixin GlobalCommands {
 	
+	** Returns the command that was contributed with the given id.
+	** 
+	**   myCmd := globalCommands.get("myCmd")
+	** 
+	**   myCmd := globalCommands["myCmd"]
 	@Operator
-	abstract GlobalCommand get(Str cmdId)
+	abstract GlobalCommand get(Str id)
 }
 
 internal class GlobalCommandsImpl : GlobalCommands {
