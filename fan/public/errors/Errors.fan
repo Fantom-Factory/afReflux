@@ -2,7 +2,7 @@ using afIoc
 
 ** (Service) - 
 ** Maintains a list of errors incurred by the application.
-** Errors are displayed in the `ErrorsPanel`.
+** Errors are displayed in the 'ErrorsPanel'.
 ** 
 ** Errors are *not* persisted and are only held in memory. 
 mixin Errors {

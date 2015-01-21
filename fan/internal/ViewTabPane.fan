@@ -52,9 +52,10 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	}
 
 	View? load(Resource resource, LoadCtx ctx) {
+		
 		// if the resource is already loaded in a view, just activate it 
 		view := (View?) panelTabs.find { ((View) it.panel).resource == resource }?.panel
-		if (view != null) {
+		if (view != null && !ctx.newTab) {
 			super.activate(view)
 			// returning the view would re-load the resource - we just want to switch tabs		
 			return null
@@ -69,7 +70,7 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		// find any view of the correct type and check for re-use
 		// BugFix: Don't use fits() 'cos FandocViewer can't display http resources and tries to convert ALL file resources
 		pots := panelTabs.findAll { it.panel.typeof == viewType }
-		if (!pots.isEmpty) {
+		if (!pots.isEmpty && !ctx.newTab) {
 			if (pots.any { it.panel == reflux.activeView } && reflux.activeView.reuseView(resource))
 				view = reflux.activeView
 			else

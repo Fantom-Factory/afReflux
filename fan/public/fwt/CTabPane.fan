@@ -3,7 +3,7 @@ using fwt
 
 // TODO: add showMinimised / showMaximised and associated events - but there's no EventId for it.
 ** (Widget) - 
-** A container for 'CTabs' and a replacement for FWT [Tabs]`fwt::Tabs`. 
+** A container for 'CTabs' and a replacement for FWT [Tabs]`fwt::TabPane`. 
 ** 
 ** 'CTabs' follow Eclipse's *Custom* range of widgets. They are similar to normal tabs, except they:
 ** 
@@ -34,18 +34,18 @@ class CTabPane : Pane {
 	** Callback when a tab is selected.
 	**
 	** Event id fired:
-	**	 - `EventId.select`
+	**	 - 'EventId.select'
 	**
 	** Event fields:
-	**	 - `Event.index`: index of selected tab
-	**	 - `Event.data`: new active Tab instance
+	**	 - 'Event.index': index of selected tab
+	**	 - 'Event.data': new active Tab instance
 	once EventListeners onSelect() { EventListeners() }
 
 	** Callback when a tab is closed.
 	once EventListeners onClose() { EventListeners() }
 
 	** Get the list of installed tabs.	Tabs are added and
-	** removed using normal `Widget.add` and `Widget.remove`.
+	** removed using normal 'Widget.add' and 'Widget.remove'.
 	CTab[] tabs() { return CTab[,].addAll(children) }
 
 	** The currently selected index of `tabs`.

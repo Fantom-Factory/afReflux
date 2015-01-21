@@ -590,7 +590,7 @@ class MyResolver : UriResolver {
     
     override Resource? resolve(Str uri) {
         uri.toUri.scheme == "example"
-            ? registry.autobuild(MyResource#, [uri.toUri])
+            ? MyResource(uri.toUri)
             : null
     }
 }
@@ -600,7 +600,7 @@ class MyResource : Resource {
     override Str     name
     override Image?  icon
 
-    new make(Uri uri, |This|in) : super.make(in) { 
+    new make(Uri uri) { 
         this.uri  = uri
         this.name = uri.name
         this.icon = Image(`fan://icons/x16/database.png`)

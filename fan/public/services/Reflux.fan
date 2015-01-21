@@ -264,4 +264,13 @@ class LoadCtx {
 
 	@NoDoc
 	Bool	addToHistory	:= true
+	
+	override Str toStr() {
+		str := "LoadCtx { "
+		str += "newTab=${newTab} "
+		if (viewType != null)
+			str += "viewType=${viewType.qname} "
+		str += "}"
+		return str
+	}
 }
