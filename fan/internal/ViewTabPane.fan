@@ -24,7 +24,6 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		activate(null)	// deactivate it if its showing
 		tuple.panel.isShowing = false
 		tuple.panel->onHide
-		tuple.panel->onModify
 
 		newView := (View) registry.autobuild(viewType) 
 		newView._parentFunc = |->Widget| { tuple.tab ?: this }
@@ -35,7 +34,6 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		
 		tuple.panel.isShowing = true
 		tuple.panel->onShow
-		tuple.panel->onModify
 
 		super.parent.relayout
 		super.relayout

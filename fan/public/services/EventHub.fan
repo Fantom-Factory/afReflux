@@ -3,18 +3,32 @@ using afIoc
 using fwt
 
 ** (Service) - 
-** An eventing strategy.
+** An eventing strategy for Reflux Apps.
 ** 
-** Eventing is *opt-in*.
+** To receive events, classes must first register themselves with 'EventHub'. 
+** Given 'MyEvents' is an event mixin: 
 ** 
-** panels, views, glob cmds are auto added, everythign else is opt in
+**   class MyService : MyEvents {
+**       new make(EventHub eventHub) {
+**           eventHub.register(this)
+**       }
+** 
+**       override Void onEvent() { ... }
+**   } 
+** 
+** Note that instances of 'Panels', 'Views' and 'GlobalCommands' are already automatically added 
+** to 'EventHub' by default. 
 mixin EventHub {
 
 	** Registers an object to receive events. 
+	** The object must implement one or more contributed event types else an 'ArgErr' is thrown. 
 	abstract Void register(Obj eventSink, Bool checked := true)
 
+	** Fires an event. There should be very little need to call this directly. 
+	** Just '@Inject' the service and call the event method instead! 
 	abstract Void fireEvent(Method method, Obj?[]? args := null)
 	
+	** Fires an event after the given delay. 
 	abstract Void fireEventIn(Duration delay, Method method, Obj?[]? args := null)
 
 }
@@ -42,6 +56,8 @@ internal class EventHubImpl : EventHub {
 
 	override Void fireEvent(Method method, Obj?[]? args := null) {
 		sinks := eventSinks.findAll { it.typeof.fits(method.parent) }
+		
+		// TODO: throw Err if method does not belong to an event type
 		
 		sinks.each {
 			try	method.callOn(it, args)
