@@ -46,35 +46,35 @@ class Browser : Pane {
 	** The event handler can modify the 'data' field with a new URI or set to 'null' to cancel the hyperlink.
 	**
 	** Event id fired:
-	**	 - `EventId.hyperlink`
+	**	 - 'EventId.hyperlink'
 	**
 	** Event fields:
-	**	 - `Event.data`: the `sys::Uri` of the new page.
+	**	 - 'Event.data': the `sys::Uri` of the new page.
 	once EventListeners onHyperlink() { EventListeners() }
 
 	** Callback when the page loading is complete. 
 	** DOM elements should be available for Javascript interaction at this time.
 	**
 	** Event id fired:
-	**	 - `EventId.unknown`
+	**	 - 'EventId.unknown'
 	once EventListeners onLoad() { EventListeners() }
 
 	** Callback when the title text is available or is modified.
 	**
 	** Event id fired:
-	**	 - `EventId.unknown`
+	**	 - 'EventId.unknown'
 	**
 	** Event fields:
-	**	 - `Event.data`: the title text.
+	**	 - 'Event.data': the title text.
 	once EventListeners onTitleText() { EventListeners() }
 
 	** Callback when the status bar text changes.
 	**
 	** Event id fired:
-	**	 - `EventId.unknown`
+	**	 - 'EventId.unknown'
 	**
 	** Event fields:
-	**	 - `Event.data`: the status bar text.
+	**	 - 'Event.data': the status bar text.
 	once EventListeners onStatusText() { EventListeners() }
 
 	** Refresh the current page.

@@ -6,14 +6,6 @@ using fwt
 ** For example, the Explorer application has a 'FileResource' and a 'HttpResource'.
 abstract class Resource {
 
-	@Inject private Registry	_registry
-	@Inject private Reflux		_reflux
-	
-	** Resources should be built by IoC:
-	** 
-	**   registry.autobuild(MyResource#)
-	new make(|This|in) { in(this) }
-	
 	** The URI that equates to this resource.
 	abstract Uri uri()
 
@@ -34,12 +26,6 @@ abstract class Resource {
 		return menu 
 	}
 
-	** The default action this resource should perform if selected. 
-	** By default it loads itself.
-	virtual Void doAction() {
-		_reflux.loadResource(this)
-	} 
-	
 	** The Views that may display this resource.
 	** 
 	** Defaults to empty list.
