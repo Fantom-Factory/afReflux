@@ -4,16 +4,6 @@
 [![pod: v0.0.0](http://img.shields.io/badge/pod-v0.0.0-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
 ![Licence: MIT](http://img.shields.io/badge/licence-MIT-blue.svg)
 
-One the things that originally enticed me to Fantom was FWT. I already had a soft spot for SWT because it was far simpler than Swing, and Fantom's FWT wrapper simplified SWT even further, exponentially so!
-
-I also really liked the idea of `flux`, creating applications based on a browser paradigm and the ability to represent database entities with URIs. Complete with `Views` and `SideBars` it looked like it was inspired by Eclipse's RCP. In all, it was really neat!
-
-Thanks Andy! Thanks Brian!
-
-Only I kept finding the `flux` implementation a bit, um, *clunky*. It was hard to customise, configuration by index props seemed like a poor man's IoC, and installing an app on a fresh Fantom install required lots of annoying manual config file changes. I found myself forever adding pathces to make flux behave as I wanted it to.
-
-So, wishing to make life easy for myself and, fuelled by a desire to create a customisable voice driven explorer application, I tinkered with a new code base that's now evolved to `Reflux`. It doesn't quite have all the features flux has, but I think it has enough to be getting on with...
-
 ## Overview
 
 `Reflux` is a framework for creating simple FWT desktop applications.
@@ -29,7 +19,7 @@ Modelled after an internet browser, Reflux lets you explore and edit resources v
 
 Reflux was inspired by Fantom's core `flux` library.
 
-> Reflux :: Flux -> Reloaded.
+> Flux -> Reloaded -> Reflux
 
 ## Install
 
@@ -46,6 +36,28 @@ To use in a [Fantom](http://fantom.org/) project, add a dependency to `build.fan
 Full API & fandocs are available on the [Status302 repository](http://repo.status302.com/doc/afReflux/).
 
 ## Quick Start
+
+1). Create a text file called `Example.fan` and copy this [Example Reflux Code](#exampleCode)
+
+2). Run `Example.fan` as a Fantom script from the command line:
+
+```
+C:\> fan Example.fan
+
+[afIoc] Adding module definition for afReflux::RefluxModule
+[afIoc] Adding module definition for ExampleView_0::AppModule
+[afIoc]
+
+   ___    __                 _____        _
+  / _ |  / /_____  _____    / ___/__  ___/ /_________  __ __
+ / _  | / // / -_|/ _  /===/ __// _ \/ _/ __/ _  / __|/ // /
+/_/ |_|/_//_/\__|/_//_/   /_/   \_,_/__/\__/____/_/   \_, /
+                            Alien-Factory IoC v2.0.2 /___/
+
+IoC Registry built in 216ms and started up in 10ms
+```
+
+![Example Screenshot](afReflux.example.png)
 
 ## Usage
 
@@ -66,6 +78,18 @@ URIs are typed into the address bar. The typed URI is then resolved to a `Resour
 The menu and tool bars are customisable via IoC contributions. Global commands wrap standard FWT commands to make them context sensitive; for example, the Save global command is only enabled when the current view is dirty.
 
 Note that Reflux itself is just a toolkit. See the [Alien-Factory Explorer](http://www.fantomfactory.org/pods/afExplorer) application for a concrete example of Reflux use.
+
+### Alien-Factory Explorer
+
+Explorer is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
+
+Install `Explorer` with the [fanr](http://fantom.org/doc/docFanr/Tool.html#install):
+
+    C:\> fanr install -r http://repo.status302.com/fanr/ afExplorer
+
+Start the `Explorer` application from the command line:
+
+    C:\> fan afExplorer
 
 ## Panels
 
@@ -119,9 +143,7 @@ Panels contain several callback methods that are invoked at different times of i
 - `onHide()` - called when it is removed from the tab pane.
 - `refresh()` - called when the panel `isShowing` and the refresh button is clicked.
 
-Panel's are
-
-Panels are automatically added to the `EventHub` - see [Eventing](http://repo.status302.com/doc/afReflux/#eventing.html) for details.
+Panels are automatically added to the `EventHub` - see [Eventing](#eventing) for details.
 
 ## Views
 
@@ -403,5 +425,207 @@ Because it is common for them to receive events, all instances of `Panels`, `Vie
 
 ## Example Code
 
-Following is a basic Reflux app that incorporates the ideas and example code shown in previous sections. When learning Reflux, it is suggested that you start here and then look at the source code of the [Explorer](http://www.fantomfactory.org/pods/afExplorer) application.
+Following is a basic Reflux app that incorporates ideas and example code shown in previous sections. When learning Reflux, it is suggested that you start here and then look at the source code of the [Explorer](http://www.fantomfactory.org/pods/afExplorer) application.
+
+The sample application contains:
+
+- A panel that captures and lists all the Reflux events fired.
+- A URI resolver, a resource and a corresponding green view.
+- A new `Example` menu with items to open up URIs.
+- A **Launch Nukes** global command that's added to both the edit menu and the toolbar.
+- A red Alien Attack panel that selectively enables the Launch Nukes global command.
+
+As you will see, the **Launch Nukes** global command is only active when the Alien Attack panel is *not* displayed.
+
+![Example Screenshot](afReflux.example.png)
+
+Things to try:
+
+- Enter `example:Fantom-Factory` into the address bar.
+- Enter `whoops:not-found` into the address bar.
+
+Example.fan
+
+```
+using afIoc
+using afReflux
+using fwt
+using gfx
+
+class Example {
+    Void main() {
+        Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
+            reflux.showPanel(EventsPanel#)
+            reflux.showPanel(AlienAlertPanel#)
+            reflux.load("example:Fantom")
+        }
+    }
+}
+
+class AppModule {
+    @Contribute { serviceType=Panels# }
+    static Void contributePanels(Configuration config) {
+        config["events"]     = config.autobuild(EventsPanel#)
+        config["alienAlert"] = config.autobuild(AlienAlertPanel#)
+    }
+    
+    @Contribute { serviceType=UriResolvers# }
+    static Void contributeUriResolvers(Configuration config) {
+        config["myResolver"] = config.autobuild(MyResolver#)
+    }
+    
+    @Contribute { serviceType=GlobalCommands# }
+    static Void contributeGlobalCommands(Configuration config) {
+        config["cmdLaunchNukes"] = config.autobuild(LaunchNukesCommand#)
+    }
+
+    @Contribute { serviceId="afReflux.menuBar" }
+    static Void contributeMenuBar(Configuration config, Reflux reflux) {
+        menu := Menu() { it.text = "Example"}
+        config
+            .set("example", menu)
+            .after("afReflux.editMenu")
+            .before("afReflux.viewMenu")
+        menu.add(MenuItem(Command("Monica",  null) { reflux.load("example:Monica" ) } ))
+        menu.add(MenuItem(Command("Erica",   null) { reflux.load("example:Erica"  ) } ))
+        menu.add(MenuItem(Command("Rita",    null) { reflux.load("example:Rita"   ) } ))
+        menu.add(MenuItem(Command("Tina",    null) { reflux.load("example:Tina"   ) } ))
+        menu.add(MenuItem(Command("Sandra",  null) { reflux.load("example:Sandra" ) } ))
+        menu.add(MenuItem(Command("Mary",    null) { reflux.load("example:Mary"   ) } ))
+        menu.add(MenuItem(Command("Jessica", null) { reflux.load("example:Jessica") } ))
+    }
+    
+    @Contribute { serviceId="afReflux.editMenu" }
+    static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
+        config["cmdLaunchNukes"] = MenuItem(globalCmds["cmdLaunchNukes"].command)
+    }
+
+    @Contribute { serviceId="afReflux.toolBar" }
+    static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
+        button := Button(globalCmds["cmdLaunchNukes"].command) 
+        button.text = ""
+        config["cmdLaunchNukes"] = button 
+    }
+}
+
+class LaunchNukesCommand : GlobalCommand {
+    new make(|This|in) : super.make("cmdLaunchNukes", in) {
+        command.icon = Image(`fan://icons/x16/sun.png`)
+    }
+    
+    override Void doInvoke(Event? event) {
+        Dialog.openWarn(command.window, "Launching Nukes!")
+    }
+}
+
+** This panel lists all the events it receives
+class EventsPanel : Panel, RefluxEvents {
+    Table table
+    EventsPanelModel model := EventsPanelModel()
+
+    new make(|This| in) : super(in) { 
+        icon = Image(`fan://icons/x16/history.png`)
+        table = content = Table()
+        table.model = model
+    }
+    
+    override Void onLoadSession (Str:Obj? session) { update("onLoadSession"      ) }
+    override Void onSaveSession (Str:Obj? session) { update("onSaveSession"      ) }
+    override Void onLoad       (Resource resource) { update("onLoad"             ) }
+    override Void onError            (Error error) { update("onError"            ) }
+    override Void onPanelShown       (Panel panel) { update("onPanelShown"       , panel) }
+    override Void onPanelHidden      (Panel panel) { update("onPanelHidden"      , panel) }
+    override Void onPanelActivated   (Panel panel) { update("onPanelActivated"   , panel) }
+    override Void onPanelDeactivated (Panel panel) { update("onPanelDeactivated" , panel) }
+    override Void onPanelModified    (Panel panel) { update("onPanelModified"    , panel) }
+    override Void onViewShown          (View view) { update("onViewShown"        , view) }
+    override Void onViewHidden         (View view) { update("onViewHidden"       , view) }
+    override Void onViewActivated      (View view) { update("onViewActivated"    , view) }
+    override Void onViewDeactivated    (View view) { update("onViewDeactivated"  , view) } 
+    override Void onViewModified       (View view) { update("onViewModified"     , view) }
+    
+    Void update(Str event, Obj? panel := null) {
+        model.events.add([event, panel?.typeof?.name ?: ""])
+        table.refreshAll
+    }
+}
+class EventsPanelModel : TableModel {
+    Str[][] events := Str[][,]
+    override Int numCols() { 2 }
+    override Int numRows() { events.size }
+    override Str header(Int col) { col == 0 ? "Events" : "Panel" }
+    override Str text(Int col, Int row) { events[row][col] }
+}
+
+** This panel, when active, enables the global cmdLaunchNukes command
+class AlienAlertPanel : Panel {
+    @Inject GlobalCommands globalCommands
+    
+    new make(|This| in) : super(in) { 
+        icon = Image(`fan://icons/x16/warn.png`)
+        name = "Alien Alert!"
+        content = Text() {
+            it.bg = Color.red
+            it.multiLine = true
+            it.text = "Alien Alert!\n
+                       Aliens are attacking!\nLaunch the Nukes!\n
+                       Tip: Select the other tab first."
+        }
+    }
+    
+    override Void onActivate() {
+        globalCommands["cmdLaunchNukes"].removeEnabler("alienAlert")
+    }
+    
+    override Void onDeactivate() {
+        // only enable the nuke when we *aren't* active!
+        globalCommands["cmdLaunchNukes"].addEnabler("alienAlert") |->Bool| { true }
+    }
+}
+
+class MyResolver : UriResolver {
+    @Inject Registry registry
+    
+    new make(|This|in) { in(this) }
+    
+    override Resource? resolve(Str uri) {
+        uri.toUri.scheme == "example"
+            ? registry.autobuild(MyResource#, [uri.toUri])
+            : null
+    }
+}
+
+class MyResource : Resource {
+    override Uri     uri
+    override Str     name
+    override Image?  icon
+
+    new make(Uri uri, |This|in) : super.make(in) { 
+        this.uri  = uri
+        this.name = uri.name
+        this.icon = Image(`fan://icons/x16/database.png`)
+    }
+
+    override Type[] viewTypes() {
+        [MyView#]
+    }    
+}
+
+class MyView : View {
+    Label label
+
+    new make(|This| in) : super(in) { 
+        content = label = Label() {
+            it.bg   = Color.green
+        }
+    }
+    
+    override Void load(Resource resource) {
+        super.load(resource)
+        label.text = "Resource Name: ${resource.name}"
+    }
+}
+```
+
+Have fun!
 
