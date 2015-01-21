@@ -102,14 +102,35 @@ abstract class Panel {
 	** Typically, active panels are asked to refresh when the 'refresh' button is clicked. 
 	virtual Void refresh() {} 
 
-	// TODO: explain how to use!
+	** It is common to handle events from FWT widgets, such as 'onSelect()', but should these throw 
+	** an Err they are usually just swallowed (or at best traced to std err). To work around it, 
+	** follow this pattern:
+	** 
+	** pre>
+	** class MyPanel : Panel {
+	**     new make(|This| in) : super(in) {
+	**         content = Tree() { it.onSelect.add |e| { this->onSelect(e) } }
+	**     }
+	**
+	**     private Void onSelect(Event e) {
+	**         ...
+	**     }
+	** }
+	** <pre
+	** 
+	** Routing the event to a handler method via '->' calls this 'trap()' method. Should that 
+	** method return 'Void' and be prefixed with 'onXXX' then any Err thrown is logged with the 
+	** Errors service.
+	** 
+	** Simple Err handling without fuss!
 	override Obj? trap(Str name, Obj?[]? args := null) {
 		if (name.startsWith("on"))
 			_log.debug("${name} - $this")
 
 		retVal := null
 		try retVal = super.trap(name, args)
-		catch(Err err) {
+		catch (Err err) {
+			// because we handle the err and return null, we want to make sure we only do it for fwt events
 			if (name.startsWith("on") && typeof.method(name, false)?.returns == Void#) {
 				_errors.add(err)
 				return null
@@ -137,3 +158,4 @@ abstract class Panel {
 		return retVal
 	}
 }
+
