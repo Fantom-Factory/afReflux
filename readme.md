@@ -1,7 +1,7 @@
-#Reflux v0.0.0
+#Reflux v0.0.2
 ---
 [![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom.org/)
-[![pod: v0.0.0](http://img.shields.io/badge/pod-v0.0.0-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
+[![pod: v0.0.2](http://img.shields.io/badge/pod-v0.0.2-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
 ![Licence: MIT](http://img.shields.io/badge/licence-MIT-blue.svg)
 
 ## Overview
@@ -187,7 +187,7 @@ class MyResource : Resource {
     override Str    name
     override Image? icon
 
-    new make(Uri uri, |This|in) : super.make(in) { 
+    new make(Uri uri) { 
         this.uri  = uri
         this.name = uri.name
         this.icon = Image("fan://icons/x16/database.png")
@@ -213,7 +213,7 @@ class MyResolver : UriResolver {
     
     override Resource? resolve(Str uri) {
         uri.toUri.scheme == "example"
-            ? registry.autobuild(MyResource#, [uri.toUri])
+            ? MyResource(uri.toUri)
             : null
     }
 }
