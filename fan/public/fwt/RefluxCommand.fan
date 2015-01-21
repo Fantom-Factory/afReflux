@@ -27,7 +27,7 @@ class RefluxCommand : Command {
 
 	** Creates an 'RefluxCommand'. Should be done via IoC:
 	** 
-	**   registry.autobuild(MyCommand#, ["Command Name", cmdImage])
+	**   registry.autobuild(MyCommand#, ["Command Name", cmdImage, invokeFunc])
 	@Inject
 	new makeViaIoc(Str? name, Image? icon, |Event event|? onInvoke, |This|in) : super.make(name ?: "", icon, onInvoke) {
 		in(this)

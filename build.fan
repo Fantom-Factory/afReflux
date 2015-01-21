@@ -5,14 +5,14 @@ class Build : BuildPod {
 
 	new make() {
 		podName = "afReflux"
-		summary = "Flux - Reloaded"
+		summary = "A framework for creating simple FWT desktop applications"
 		version = Version("0.0.1")
 
 		meta = [
 			"proj.name"		: "Reflux",
-			"repo.private"	: "true",
-
-			"afIoc.module"	: "afReflux::RefluxModule"
+			"afIoc.module"	: "afReflux::RefluxModule",
+			"tags"			: "system",
+			"repo.private"	: "true"
 		]
 
 		depends = [	

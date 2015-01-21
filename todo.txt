@@ -1,4 +1,27 @@
 
+Add alwaysShowTabs to CTabPane and prefs
+
+Add alwaysShowCloseButton to CTabPane and prefs
+
+Better / more / enhaced favourites support
+
+Better about box -> sine dots?
+
 Can views manipulate the menu / toolbar?
 	-> NO! Menus are defined at app startup.
 	-> GlobalCommands, however, maybe enabled / disabled  
+
+	
+	
+
+One the things that originally enticed me to Fantom was FWT. I already had a soft spot for SWT because it was far simpler than Swing, and Fantom's FWT wrapper simplified SWT even further, exponentially so!
+
+I also really liked the idea of 'flux', creating applications based on a browser paradigm and the ability to represent database entities with URIs. Complete with 'Views' and 'SideBars' it looked like it was inspired by Eclipse's RCP. In all, it was really neat!
+
+Thanks Andy! Thanks Brian!
+
+Only I kept finding the 'flux' implementation a bit, um, *clunky*. It was hard to customise, configuration by index props seemed like a poor man's IoC, and installing an app on a fresh Fantom install required lots of annoying manual config file changes. I found myself forever adding pathces to make flux behave as I wanted it to.
+
+So, wishing to make life easy for myself and, fuelled by a desire to create a customisable voice driven explorer application, I tinkered with a new code base that's now evolved to 'Reflux'. It doesn't quite have all the features flux has, but I think it has enough to be getting on with...
+
+Note that Explorer is still in its early stages, I've made it available just so Reflux has a (semi) decent example.  

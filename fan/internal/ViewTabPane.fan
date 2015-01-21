@@ -67,12 +67,13 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		}
 		
 		// find any view of the correct type and check for re-use
-		pots := panelTabs.findAll { it.panel.typeof.fits(viewType) }
+		// BugFix: Don't use fits() 'cos FandocViewer can't display http resources and tries to convert ALL file resources
+		pots := panelTabs.findAll { it.panel.typeof == viewType }
 		if (!pots.isEmpty) {
-			if (pots.any { it.panel == reflux.activeView } && reflux.activeView.reuseView)
+			if (pots.any { it.panel == reflux.activeView } && reflux.activeView.reuseView(resource))
 				view = reflux.activeView
 			else
-				if (((View) pots.first.panel).reuseView)
+				if (((View) pots.first.panel).reuseView(resource))
 					view = pots.first.panel
 		}
 		

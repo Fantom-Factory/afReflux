@@ -128,7 +128,7 @@ internal class HistoryImpl : History, RefluxEvents {
 
 internal class HistoryCommand : RefluxCommand {
 	new make(Resource resource, Reflux reflux, |This|in) : super.make(in) {
-		this.name = resource.displayName
+		this.name = (resource.uri.toStr != resource.displayName) ? resource.displayName : Url(resource.uri).minusFrag.toStr
 		this.icon = resource.icon
 		this.onInvoke.add { reflux.loadResource(resource) }
 	}

@@ -21,9 +21,6 @@ abstract class View : Panel {
 	**   new make(|This| in) : super(in) { ... }
 	protected new make(|This| in) : super(in) { }
 
-	** Set to 'true' if the View should re-used for multiple resources.
-	Bool reuseView := false
-	
 	** Returns 'true' if the resource has unsaved change. 
 	** 'Views' are responsible for setting this themselves.
 	Bool isDirty {
@@ -39,6 +36,11 @@ abstract class View : Panel {
 			// could call this->onModify() but setting 'name' already does that
 		}
 	}
+
+	** Return 'true' if the View should re-used for the given resource.
+	** 
+	** By default this returns 'false'.
+	virtual Bool reuseView(Resource resource) { false }
 
 	** Callback when the View should load the given resource.
 	**  

@@ -149,8 +149,6 @@ Panels contain several callback methods that are invoked at different times of i
  - 'onHide()' - called when it is removed from the tab pane.
  - 'refresh()' - called when the panel 'isShowing' and the refresh button is clicked.
 
-Panel's are 
-
 Panels are automatically added to the 'EventHub' - see [Eventing]`#eventing` for details.
 
 
