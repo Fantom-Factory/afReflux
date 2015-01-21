@@ -12,7 +12,7 @@ class Build : BuildPod {
 			"proj.name"		: "Reflux",
 			"afIoc.module"	: "afReflux::RefluxModule",
 			"tags"			: "system",
-			"repo.private"	: "false"
+			"repo.private"	: "true"
 		]
 
 		depends = [	
