@@ -5,6 +5,7 @@ using fwt
 ** (Service) - The main API for managing a Reflux application.
 mixin Reflux {
 	
+	// TODO: Fandoc this class
 	abstract Registry registry()
 	abstract Void callLater(Duration delay, |->| f)
 
@@ -30,7 +31,12 @@ mixin Reflux {
 	abstract Void copyToClipboard(Str text)
 
 
-
+	** Use to launch a Reflux application. Example:
+	**
+	**   Reflux.start("Example App", [AppModule#]) |Reflux reflux, Window window| {
+	**       reflux.showPanel(MyPanel#)
+	**       ...
+	**   }
 	static Void start(Str appName, Type[] modules, |Reflux, Window|? onOpen := null) {
 		bob := RegistryBuilder()
 
