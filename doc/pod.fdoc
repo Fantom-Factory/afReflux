@@ -57,7 +57,7 @@ C:\> fan Example.fan
 IoC Registry built in 216ms and started up in 10ms
 <pre
 
-![Example Screenshot]`afReflux.example.png`
+![Example Screenshot]`http://static.alienfactory.co.uk/fantom-docs/afReflux.example.png`
 
 
 
@@ -73,7 +73,7 @@ A Reflux application is made up of:
  - Panels
  - Views
 
-![Screenshot of the Alien-Factory Explorer application]`afReflux.afExplorer.png`
+![Screenshot of the Alien-Factory Explorer application]`http://static.alienfactory.co.uk/fantom-docs/afReflux.afExplorer.png`
 
 URIs are typed into the address bar. The typed URI is then resolved to a 'Resource'. Resource objects hold meta data that describe how it should be displayed / interacted with. Views are used to view and / or edit resources. Panels are extra tabs that show arbitrary data; for example, the `ErrorsPanel` lists any errors incurred by the application. 
 
@@ -87,7 +87,7 @@ Alien-Factory Explorer [#afExplorer]
 ====================================
 Explorer is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
 
-Install 'Explorer' with the [fanr]`docFanr::Tool.install`:
+Install 'Explorer' with [fanr]`docFanr::Tool.install`:
 
   C:\> fanr install -r http://repo.status302.com/fanr/ afExplorer
   
@@ -130,7 +130,7 @@ Panels need to be *autobuilt* so IoC injects all the dependencies (via that it-b
 
 Panels are automatically added to the 'View -> Panels' menu. If the panel does not set a name it defaults the Panel's type, minus any 'Panel' suffix. When displayed, our simple panel should look like:
 
-![Screenshot of Panel Example]`afReflux.panelExample.png`
+![Screenshot of Panel Example]`http://static.alienfactory.co.uk/fantom-docs/afReflux.panelExample.png`
 
 Note that Panels are not displayed by default; but the user's display settings are saved from one session to the next. To force the user to always start with the panel displayed, show it programmatically on application startup: 
 
@@ -246,7 +246,7 @@ When 'example:foo-bar' is entered into the address bar, the following should hap
 
 And this should be displayed:
 
-![Screenshot of View Example]`afReflux.viewExample.png`
+![Screenshot of View Example]`http://static.alienfactory.co.uk/fantom-docs/afReflux.viewExample.png`
 
 
 
@@ -466,7 +466,7 @@ The sample application contains:
 
 As you will see, the **Launch Nukes** global command is only active when the Alien Attack panel is *not* displayed.
 
-![Example Screenshot]`afReflux.example.png`
+![Example Screenshot]`http://static.alienfactory.co.uk/fantom-docs/afReflux.example.png`
 
 Things to try:
 
