@@ -662,6 +662,11 @@ Have fun!
 
 Release Notes [#releaseNotes]
 *****************************
+v0.0.4 [#v0.0.4]
+================
+ - Chg: Toned down the alerting on 'UnresolvedErrs'.
+ - Bug: Reflux now explicitly depends on Fantom 1.0.67 - Thanks LightDye!
+
 v0.0.2 [#v0.0.2]
 ================
  - New: Initial release.
