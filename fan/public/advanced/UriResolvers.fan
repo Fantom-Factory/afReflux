@@ -13,6 +13,6 @@ internal class UriResolversImpl : UriResolvers {
 	}
 	
 	override Resource resolve(Str uri) {
-		resolvers.eachWhile { it.resolve(uri) } ?: throw ArgErr("Could not resolve URI: ${uri}")
+		resolvers.eachWhile { it.resolve(uri) } ?: throw UnresolvedErr("Could not resolve URI: ${uri}")
 	}
 }

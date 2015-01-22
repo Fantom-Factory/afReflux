@@ -7,11 +7,6 @@ Better / more / enhaced favourites support
 
 Better about box -> sine dots?
 
-Bugs:
-  - keep view panel sort, resource specific, keep local stash
-  
-  - If a resource can't be loaded, don't show it in the URI bar
-
 
 
 Can views manipulate the menu / toolbar?

@@ -11,6 +11,7 @@ internal class ErrorsPanel : Panel, RefluxEvents {
 	@Inject private Registry		registry
 	@Inject private RefluxIcons		icons
 	@Inject private Log				log
+	@Inject private Dialogues		dialog
 			private Table			table
 
 	@Autobuild private ErrorsPanelModel model
@@ -25,11 +26,15 @@ internal class ErrorsPanel : Panel, RefluxEvents {
 			it.model = this.model
 		}
 	}
-	
+
 	override Void onError(Error error) {
 		log.err(error.err.msg, error.err)
 		table.refreshAll
-	    Dialog.openErr(content.window, error.err.toStr, error.err)
+		
+		if (error.err is UnresolvedErr)
+			dialog.openWarn(error.err.toStr)
+		else
+			dialog.openErr(error.err.toStr, error.err)
 	}
 	
 	Void onAction(Event event) {
@@ -37,7 +42,7 @@ internal class ErrorsPanel : Panel, RefluxEvents {
 			// can't be bothered with resources and views just now so
 			// just display a dialogue
 			error := model.errors.errors[event.index]
-			Dialog.openErr(content.window, error.err.toStr, error.err)
+			dialog.openErr(error.err.toStr, error.err)
 		}
 	}
 }
