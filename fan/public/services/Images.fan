@@ -44,20 +44,29 @@ class ImagesImpl : Images {
 
 		return image
 	}
-	
+
 	override Image? getFaded(Uri uri, Bool checked := true) {
-		fadedImages.getOrAdd(uri) |->Image| {
-			image := load(uri, checked)
-			return Image.makePainted(image.size) |gfx| {
-				gfx.alpha = 128
-				gfx.antialias = false
-				gfx.drawImage(image, 0, 0)
-			}			
+		if (fadedImages.containsKey(uri))
+			return fadedImages[uri]
+		
+		image := load(uri, checked)
+		if (image == null)
+			return null
+		
+		faded := Image.makePainted(image.size) |gfx| {
+			gfx.alpha = 128
+			gfx.antialias = false
+			gfx.drawImage(image, 0, 0)
 		}
+		
+		fadedImages[uri] = faded
+		return faded
 	}
 	
 	override Image? load(Uri uri, Bool checked := true) {
 		image := get(uri, checked)
+		if (image == null)
+			return null
 
 		napTime := 0sec
 		while (napTime < maxLoadTime && (image.size.w == 0 || image.size.h == 0)) {
