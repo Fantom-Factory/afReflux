@@ -15,4 +15,8 @@ class Panels {
 	Panel? get(Type panelType, Bool checked := true) {
 		panelMap[panelType] ?: (checked ? throw ArgNotFoundErr("Could not find Panel: ${panelType.name}", panelMap.keys) : null)
 	}
+	
+	Type[] panelTypes() {
+		panelMap.keys
+	}
 }

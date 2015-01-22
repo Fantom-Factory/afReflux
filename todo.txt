@@ -7,12 +7,19 @@ Better / more / enhaced favourites support
 
 Better about box -> sine dots?
 
+Bugs:
+  - keep view panel sort, resource specific, keep local stash
+  
+  - If a resource can't be loaded, don't show it in the URI bar
+
+
+
 Can views manipulate the menu / toolbar?
 	-> NO! Menus are defined at app startup.
 	-> GlobalCommands, however, maybe enabled / disabled  
 
 	
-	
+
 
 One the things that originally enticed me to Fantom was FWT. I already had a soft spot for SWT because it was far simpler than Swing, and Fantom's FWT wrapper simplified SWT even further, exponentially so!
 
