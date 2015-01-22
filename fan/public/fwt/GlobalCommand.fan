@@ -61,7 +61,9 @@ class GlobalCommand {
 	** Removes the specified invoker function.
 	Void removeInvoker(Str listenerId) {
 		listener := _invokers.remove(listenerId)
-		command.onInvoke.remove(listener)
+		// the user may be over zealous and try to remove the istener twice
+		if (listener != null)
+			command.onInvoke.remove(listener)
 	}
 
 	** Adds a function that helps decide if the underlying command should be enabled or not.
