@@ -13,7 +13,7 @@ Modelled after an internet browser, Reflux lets you explore and edit resources v
 - **An IoC container** - Reflux applications are IoC applications.
 - **Events** - An application wide eventing mechanism.
 - **Customisation** - All aspects of a Reflux application may be customised.
-- **Context sensitive commands** - Global cmds may be enabled / disabled.
+- **Context sensitive commands** - Global commands may be enabled / disabled.
 - **Browser session** - A consistent means to store session data.
 - **New FWT widgets** - Fancy tabs and a working web browser.
 
@@ -73,15 +73,15 @@ A Reflux application is made up of:
 
 ![Screenshot of the Alien-Factory Explorer application](http://static.alienfactory.co.uk/fantom-docs/afReflux.afExplorer.png)
 
-URIs are typed into the address bar. The typed URI is then resolved to a `Resource`. Resource objects hold meta data that describe how it should be displayed / interacted with. Views are used to view and / or edit resources. Panels are extra tabs that show arbitrary data; for example, the [ErrorsPanel](http://repo.status302.com/doc/afReflux/ErrorsPanel.html) lists any errors incurred by the application.
+URIs are typed into the address bar. The typed URI is then resolved to a `Resource`. Resource objects hold meta data that describe how it should be displayed / interacted with. Views are used to view and / or edit resources. Panels are extra tabs that show arbitrary data.
 
 The menu and tool bars are customisable via IoC contributions. Global commands wrap standard FWT commands to make them context sensitive; for example, the Save global command is only enabled when the current view is dirty.
 
 Note that Reflux itself is just a toolkit. See the [Alien-Factory Explorer](http://www.fantomfactory.org/pods/afExplorer) application for a concrete example of Reflux use.
 
-### Alien-Factory Explorer
+### Explorer
 
-Explorer is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
+[Alien-Factory Explorer](http://www.fantomfactory.org/pods/afExplorer) is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
 
 Install `Explorer` with [fanr](http://fantom.org/doc/docFanr/Tool.html#install):
 
