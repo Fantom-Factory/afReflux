@@ -28,13 +28,16 @@ internal class ErrorsPanel : Panel, RefluxEvents {
 	}
 
 	override Void onError(Error error) {
-		log.err(error.err.msg, error.err)
 		table.refreshAll
 		
-		if (error.err is UnresolvedErr)
+		if (error.err is UnresolvedErr) {
+			// .toStr gives us the Err Type
+			log.warn(error.err.toStr)
 			dialog.openWarn(error.err.toStr)
-		else
+		} else {
+			log.err(error.err.msg, error.err)
 			dialog.openErr(error.err.toStr, error.err)
+		}
 	}
 	
 	Void onAction(Event event) {
