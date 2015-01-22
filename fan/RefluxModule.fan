@@ -20,6 +20,7 @@ class RefluxModule {
 		defs.add(GlobalCommands#)
 		defs.add(History#)
 		defs.add(Session#).withCtorArgs(["sessionData.fog"])
+		defs.add(Dialogues#)
 	}
 	
 	@Contribute { serviceType=Panels# }
