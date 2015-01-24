@@ -49,8 +49,8 @@ abstract class View : Panel {
 		if (isDirty)
 			confirmClose(true)
 		this.resource	= resource
-		super.icon 		= resource.icon
-		super.name 		= resource.name
+		this.icon 		= resource.icon
+		this.name 		= resource.name
 	}
 
 	** Callback for when the panel should refresh it's contents. 
@@ -76,6 +76,12 @@ abstract class View : Panel {
 	** By default this returns 'true'.  
 	virtual Bool confirmClose(Bool force) {
 		true
+	}
+	
+	** Callback to handle dropped files. 
+	** Return 'true' to specify the drop event has been handled.
+	virtual Bool onDrop(File[] droppedFiles) {
+		return false
 	}
 	
 	** Add a pair of Undo / Redo commands.

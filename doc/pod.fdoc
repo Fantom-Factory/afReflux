@@ -664,6 +664,7 @@ Release Notes [#releaseNotes]
 *****************************
 v0.0.4 [#v0.0.4]
 ================
+ - New: 'View.onDrop()' event handler for FWT file drops. 
  - New: 'Dialogues' service so calls may be intercepted.
  - Chg: Toned down the alerting on 'UnresolvedErrs'.
  - Bug: Reflux now explicitly depends on Fantom 1.0.67 - Thanks LightDye!

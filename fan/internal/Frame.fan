@@ -46,6 +46,21 @@ internal class Frame : Window, RefluxEvents {
 		}
 		
 		this.onClose.add |Event e| { if (!closing) reflux.exit }
+
+		// Handle file drops -> open up FWT's back door!
+		dialogues := (Dialogues) registry.serviceById(Dialogues#.qname)
+		this.onDrop = |Obj data| {
+			files 	:= (File[]) data
+			handled := reflux.activeView?.onDrop(files) ?: false
+			if (!handled) {
+				if (files.size > 10) {
+					answer := dialogues.openQuestion("Do you really want to open ${files.size} files?", null, dialogues.yesNo)
+					if (answer == dialogues.yes)
+						files.each { reflux.load(it.normalize.uri.toStr, LoadCtx { it.newTab = true }) }
+				} else
+					files.each { reflux.load(it.normalize.uri.toStr, LoadCtx { it.newTab = true }) }
+			}
+		}
 	}
 	
 	Void showPanel(Panel panel, Obj prefAlign) {
