@@ -10,6 +10,14 @@ mixin Images {
 	@Operator
 	abstract Image? get(Uri uri, Bool checked := true)
 
+	** Stashes the image under the given URI. 
+	** If another image existed under the same URI, it is disposed of.
+	@Operator
+	abstract Void set(Uri uri, Image image)
+
+	** Returns true if an image is mapped to the given URI.
+	abstract Bool contains(Uri uri)
+
 	** Returns (and caches) a faded version of the image at the given URI.
 	** Useful for generating *disabled* icons. 
 	abstract Image? getFaded(Uri uri, Bool checked := true)
@@ -44,6 +52,18 @@ class ImagesImpl : Images {
 
 		return image
 	}
+	
+	override Void set(Uri uri, Image image) {
+		if (image == images[uri])
+			return
+		if (images.containsKey(uri))
+			images[uri].dispose
+		images[uri] = image
+	}
+
+	override Bool contains(Uri uri) {
+		images.containsKey(uri)
+	}
 
 	override Image? getFaded(Uri uri, Bool checked := true) {
 		if (fadedImages.containsKey(uri))
@@ -68,13 +88,21 @@ class ImagesImpl : Images {
 		if (image == null)
 			return null
 
-		napTime := 0sec
-		while (napTime < maxLoadTime && (image.size.w == 0 || image.size.h == 0)) {
-			napTime += 20ms
-			Actor.sleep(20ms)
-		}
-		if (image.size.w == 0 || image.size.h == 0)
-			throw Err("Loading image `${uri}` took too long... (>${maxLoadTime.toLocale})")
+		try {
+			napTime := 0sec
+			while (napTime < maxLoadTime && (image.size.w == 0 || image.size.h == 0)) {
+				napTime += 20ms
+				Actor.sleep(20ms)
+			}
+			if (image.size.w == 0 || image.size.h == 0)
+				throw Err("Loading image `${uri}` took too long... (>${maxLoadTime.toLocale})")
+
+		} catch (Err err) {
+			// beware: org.eclipse.swt.SWTException: Unsupported or unrecognized format
+			if (!checked)
+				return null
+			throw err
+		}		
 		
 		return image
 	}

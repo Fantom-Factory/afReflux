@@ -64,11 +64,11 @@ class RefluxModule {
 		config["afReflux.cmdUndo"]			= config.autobuild(UndoCommand#)
 		config["afReflux.cmdRedo"]			= config.autobuild(RedoCommand#)
 
-//		config["afReflux.cmdSaveAs"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
-//		config["afReflux.cmdSaveAll"]	= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
-//		config["afReflux.cmdCut"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
-//		config["afReflux.cmdCopy"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
-//		config["afReflux.cmdPaste"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
+//	  config["afReflux.cmdSaveAs"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
+//	  config["afReflux.cmdSaveAll"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
+//	  config["afReflux.cmdCut"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
+//	  config["afReflux.cmdCopy"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
+//	  config["afReflux.cmdPaste"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
 	}
 	
 	@Contribute { serviceType=RegistryShutdown# }
@@ -78,9 +78,9 @@ class RefluxModule {
 			imgSrc.disposeAll
 		}
 	}
-	
-	
-	
+
+
+
 	// ---- Reflux Menu Bar -----------------------------------------------------------------------
 	
 	@Build { serviceId="afReflux.menuBar" }
@@ -100,7 +100,7 @@ class RefluxModule {
 
 	@Build { serviceId="afReflux.viewMenu" }
 	static Menu buildViewMenu(MenuItem[] menuItems) {
-		menu("afReflux.viewMenu").addAll(menuItems)		
+		menu("afReflux.viewMenu").addAll(menuItems)	 
 	}
 
 	@Build { serviceId="afReflux.historyMenu" }
@@ -152,7 +152,7 @@ class RefluxModule {
 	static Void contributeViewMenu(Configuration config, Panels panels, Registry reg, GlobalCommands globalCmds) {
 		
 		// only stick panels in a sub-menu should there be a few of them
-		if (panels.panels.size > 5) {	
+		if (panels.panels.size > 5) {   
 			panelsMenu := menu("afReflux.showPanelMenu")
 			panels.panels.each {
 				cmd := reg.autobuild(ShowHidePanelCommand#, [it])
@@ -164,7 +164,7 @@ class RefluxModule {
 			panels.panels.each {
 				cmd := reg.autobuild(ShowHidePanelCommand#, [it])
 				config.add(MenuItem.makeCommand(cmd))
-			}			
+			}	
 		}
 
 		config["separator.01"]				= MenuItem { it.mode = MenuItemMode.sep }
@@ -185,7 +185,7 @@ class RefluxModule {
 
 	@Contribute { serviceId="afReflux.helpMenu" }
 	static Void contributeHelpMenu(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.cmdAbout"]			= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
+		config["afReflux.cmdAbout"]		 = MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
 	}
 	
 
@@ -203,9 +203,9 @@ class RefluxModule {
 		config["separator.01"]				= Button { mode = ButtonMode.sep }
 		config["afReflux.cmdNavBackward"]	= toolBarCommand(globalCmds["afReflux.cmdNavBackward"].command)
 		config["afReflux.cmdNavForward"]	= toolBarCommand(globalCmds["afReflux.cmdNavForward"].command)
+		config["afReflux.cmdNavUp"]			= toolBarCommand(globalCmds["afReflux.cmdNavUp"].command)
 		config["afReflux.cmdRefresh"]		= toolBarCommand(globalCmds["afReflux.cmdRefresh"].command)
 		config["afReflux.uriWidget"]		= config.autobuild(UriWidget#)
-		config["afReflux.cmdNavUp"]			= toolBarCommand(globalCmds["afReflux.cmdNavUp"].command)
 		config["afReflux.cmdNavHome"]		= toolBarCommand(globalCmds["afReflux.cmdNavHome"].command)
 	}
 
@@ -225,9 +225,9 @@ class RefluxModule {
 	}
 
 	private static Button toolBarCommand(Command command) {
-	    button  := Button.makeCommand(command)
-	    if (command.icon != null)
-	    	button.text = ""
+		button  := Button.makeCommand(command)
+		if (command.icon != null)
+			button.text = ""
 		return button
 	}
 }
