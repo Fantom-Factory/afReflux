@@ -99,7 +99,7 @@ To create a custom panel, first create a class that extends [Panel](http://repo.
 
 ```
 class MyPanel : Panel {
-    new make(|This| in) : super(in) { 
+    new make(|This| in) : super(in) {
         content = Label() {
             it.text = "Hello Mum!"
             it.bg   = Color.yellow
@@ -131,7 +131,7 @@ Note that Panels are not displayed by default; but the user's display settings a
 ```
 Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
     reflux.showPanel(MyPanel#)
-} 
+}
 ```
 
 Panels contain several callback methods that are invoked at different times of its lifecycle. These are:
@@ -155,12 +155,12 @@ Custom views must extends [View](http://repo.status302.com/doc/afReflux/View.htm
 class MyView : View {
     Label label
 
-    new make(|This| in) : super(in) { 
+    new make(|This| in) : super(in) {
         content = label = Label() {
             it.bg = Color.green
         }
     }
-    
+
     override Void load(Resource resource) {
         super.load(resource)
         label.text = "Resource Name: ${resource.name}"
@@ -187,7 +187,7 @@ class MyResource : Resource {
     override Str    name
     override Image? icon
 
-    new make(Uri uri) { 
+    new make(Uri uri) {
         this.uri  = uri
         this.name = uri.name
         this.icon = Image("fan://icons/x16/database.png")
@@ -195,7 +195,7 @@ class MyResource : Resource {
 
     override Type[] viewTypes() {
         [MyView#]
-    }    
+    }
 }
 ```
 
@@ -208,9 +208,9 @@ It is the job of [UriResolvers](http://repo.status302.com/doc/afReflux/UriResolv
 ```
 class MyResolver : UriResolver {
     @Inject Registry registry
-    
+
     new make(|This|in) { in(this) }
-    
+
     override Resource? resolve(Str uri) {
         uri.toUri.scheme == "example"
             ? MyResource(uri.toUri)
@@ -344,7 +344,7 @@ class MyPanel : Panel {
     @Inject GlobalCommands globalCommands
 
     new make(|This| in) : super(in) { }
-    
+
     override Void onActivate() {
         globalCommands["myGlobCmd"].addEnabler("myPanel") |->Bool| { true }
     }
@@ -370,7 +370,7 @@ Reflux events are defined by a `mixin`. The mixin should define *virtual* (or *a
 ```
 mixin MyEvents {
     virtual Void onMyEvent(Str stuff) { }
-    
+
     ...
 }
 ```
@@ -393,9 +393,9 @@ Reflux creates a instance of the event mixin that can be injected into your comp
 ```
 class MyService {
     @Inject MyEvents myEvents
-    
+
     new make(|This|in) { in(this) }
-    
+
     Void someHandler() {
         myEvents.onMyEvent("wotever")
     }
@@ -408,11 +408,11 @@ Multiple classes may handle events. For a class to so, it must first register it
 
 ```
 class MyOtherService : MyEvents {
-    
+
     new make(EventHub eventHub) {
         eventHub.register(this)
     }
-    
+
     override Void onMyEvent(Str stuff) {
         echo("Got ${stuff}")
     }
@@ -468,12 +468,12 @@ class AppModule {
         config["events"]     = config.autobuild(EventsPanel#)
         config["alienAlert"] = config.autobuild(AlienAlertPanel#)
     }
-    
+
     @Contribute { serviceType=UriResolvers# }
     static Void contributeUriResolvers(Configuration config) {
         config["myResolver"] = config.autobuild(MyResolver#)
     }
-    
+
     @Contribute { serviceType=GlobalCommands# }
     static Void contributeGlobalCommands(Configuration config) {
         config["cmdLaunchNukes"] = config.autobuild(LaunchNukesCommand#)
@@ -494,7 +494,7 @@ class AppModule {
         menu.add(MenuItem(Command("Mary",    null) { reflux.load("example:Mary"   ) } ))
         menu.add(MenuItem(Command("Jessica", null) { reflux.load("example:Jessica") } ))
     }
-    
+
     @Contribute { serviceId="afReflux.editMenu" }
     static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
         config["cmdLaunchNukes"] = MenuItem(globalCmds["cmdLaunchNukes"].command)
@@ -502,9 +502,9 @@ class AppModule {
 
     @Contribute { serviceId="afReflux.toolBar" }
     static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
-        button := Button(globalCmds["cmdLaunchNukes"].command) 
+        button := Button(globalCmds["cmdLaunchNukes"].command)
         button.text = ""
-        config["cmdLaunchNukes"] = button 
+        config["cmdLaunchNukes"] = button
     }
 }
 
@@ -512,7 +512,7 @@ class LaunchNukesCommand : GlobalCommand {
     new make(|This|in) : super.make("cmdLaunchNukes", in) {
         command.icon = Image(`fan://icons/x16/sun.png`)
     }
-    
+
     override Void doInvoke(Event? event) {
         Dialog.openWarn(command.window, "Launching Nukes!")
     }
@@ -523,12 +523,12 @@ class EventsPanel : Panel, RefluxEvents {
     Table table
     EventsPanelModel model := EventsPanelModel()
 
-    new make(|This| in) : super(in) { 
+    new make(|This| in) : super(in) {
         icon = Image(`fan://icons/x16/history.png`)
         table = content = Table()
         table.model = model
     }
-    
+
     override Void onLoadSession (Str:Obj? session) { update("onLoadSession"      ) }
     override Void onSaveSession (Str:Obj? session) { update("onSaveSession"      ) }
     override Void onLoad       (Resource resource) { update("onLoad"             ) }
@@ -541,9 +541,9 @@ class EventsPanel : Panel, RefluxEvents {
     override Void onViewShown          (View view) { update("onViewShown"        , view) }
     override Void onViewHidden         (View view) { update("onViewHidden"       , view) }
     override Void onViewActivated      (View view) { update("onViewActivated"    , view) }
-    override Void onViewDeactivated    (View view) { update("onViewDeactivated"  , view) } 
+    override Void onViewDeactivated    (View view) { update("onViewDeactivated"  , view) }
     override Void onViewModified       (View view) { update("onViewModified"     , view) }
-    
+
     Void update(Str event, Obj? panel := null) {
         model.events.add([event, panel?.typeof?.name ?: ""])
         table.refreshAll
@@ -560,8 +560,8 @@ class EventsPanelModel : TableModel {
 ** This panel, when active, enables the global cmdLaunchNukes command
 class AlienAlertPanel : Panel {
     @Inject GlobalCommands globalCommands
-    
-    new make(|This| in) : super(in) { 
+
+    new make(|This| in) : super(in) {
         icon = Image(`fan://icons/x16/warn.png`)
         name = "Alien Alert!"
         content = Text() {
@@ -572,11 +572,11 @@ class AlienAlertPanel : Panel {
                        Tip: Select the other tab first."
         }
     }
-    
+
     override Void onActivate() {
         globalCommands["cmdLaunchNukes"].removeEnabler("alienAlert")
     }
-    
+
     override Void onDeactivate() {
         // only enable the nuke when we *aren't* active!
         globalCommands["cmdLaunchNukes"].addEnabler("alienAlert") |->Bool| { true }
@@ -585,9 +585,9 @@ class AlienAlertPanel : Panel {
 
 class MyResolver : UriResolver {
     @Inject Registry registry
-    
+
     new make(|This|in) { in(this) }
-    
+
     override Resource? resolve(Str uri) {
         uri.toUri.scheme == "example"
             ? MyResource(uri.toUri)
@@ -600,7 +600,7 @@ class MyResource : Resource {
     override Str     name
     override Image?  icon
 
-    new make(Uri uri) { 
+    new make(Uri uri) {
         this.uri  = uri
         this.name = uri.name
         this.icon = Image(`fan://icons/x16/database.png`)
@@ -608,18 +608,18 @@ class MyResource : Resource {
 
     override Type[] viewTypes() {
         [MyView#]
-    }    
+    }
 }
 
 class MyView : View {
     Label label
 
-    new make(|This| in) : super(in) { 
+    new make(|This| in) : super(in) {
         content = label = Label() {
             it.bg   = Color.green
         }
     }
-    
+
     override Void load(Resource resource) {
         super.load(resource)
         label.text = "Resource Name: ${resource.name}"

@@ -4,17 +4,17 @@ using fwt
 
 ** (Service) - The main API for managing a Reflux application.
 mixin Reflux {
-    
+
     // TODO: Fandoc this class
     abstract Registry registry()
     abstract Void callLater(Duration delay, |->| f)
 
     abstract RefluxPrefs preferences()
-    
-    abstract Void refresh()
+
+    abstract Void refresh(Resource? resource := null)
     abstract Window window()
     abstract Void exit()
-    
+
     ** Resolves the given URI into a 'Resource'.
     abstract Resource resolve(Str uri)
 
@@ -23,11 +23,11 @@ mixin Reflux {
     abstract View? activeView()
     abstract Bool closeView(View view, Bool force)      // currently, only activeView is available, need views()
     abstract Void replaceView(View view, Type viewType) // currently, only activeView is available, need views()
-    
+
     abstract Panel? getPanel(Type panelType, Bool checked := true)
     abstract Panel showPanel(Type panelType)
     abstract Panel hidePanel(Type panelType)
-    
+
     abstract Void copyToClipboard(Str text)
 
 
@@ -45,7 +45,7 @@ mixin Reflux {
         version  := modules.first?.pod?.version
         if (projName != null && version != null)
             bob["afIoc.bannerText"] = "$projName v$version"
-        
+
         registry := bob
             .addModule(RefluxModule#)
             .addModules(modules)
@@ -53,7 +53,7 @@ mixin Reflux {
             .build.startup
         reflux   := (Reflux) registry.serviceById(Reflux#.qname)
         frame    := (Frame)  reflux.window
-        
+
         // onActive -> onFocus -> onOpen
         frame.onOpen.add {
             // Give the widgets a chance to display themselves and set defaults
@@ -61,7 +61,7 @@ mixin Reflux {
                 // load the session before we start loading URIs and opening tabs
                 session := (Session) registry.serviceById(Session#.qname)
                 session.load
-                
+
                 // once we've all started up and settled down, load URIs from the command line
                 onOpen?.call(reflux, frame)
             }
@@ -107,7 +107,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
     override Resource resolve(Str uri) {
         uriResolvers.resolve(uri)
     }
-    
+
     override Void load(Str uri, LoadCtx? ctx := null) {
         ctx = ctx ?: LoadCtx()
 
@@ -117,13 +117,13 @@ internal class RefluxImpl : Reflux, RefluxEvents {
                 ctx.viewType = Type.find(u.query["view"])
                 uri = removeQuery(uri, "view", u.query["view"])
             }
-    
+
             u = uri.toUri
             if (u.query.containsKey("newTab")) {
                 ctx.newTab = u.query["newTab"].toBool(false) ?: false
                 uri = removeQuery(uri, "newTab", u.query["newTab"])
             }
-            
+
         } catch { /* meh */ }
 
         try {
@@ -140,12 +140,12 @@ internal class RefluxImpl : Reflux, RefluxEvents {
         loadIntoView(view, resource)
     }
 
-    override Void refresh() {
-        activeView?.refresh
+    override Void refresh(Resource? resource := null) {
+        activeView?.refresh(resource)
 
         panels.panels.each {
             if (it.isShowing)
-                it.refresh
+                it.refresh(resource)
         }
     }
 
@@ -154,11 +154,11 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 
         if (view.isDirty)
             view.save
-        
+
         newView := frame.replaceView(view, viewType)
         loadIntoView(newView, resource)
     }
-    
+
     override Bool closeView(View view, Bool force) {
         frame.closeView(view, true)
     }
@@ -166,13 +166,13 @@ internal class RefluxImpl : Reflux, RefluxEvents {
     override Panel? getPanel(Type panelType, Bool checked := true) {
         panels.get(panelType, checked)
     }
-    
+
     override Panel showPanel(Type panelType) {
         panel := getPanel(panelType)
-        
+
         if (panel.isShowing)
             return panel
-        
+
         frame.showPanel(panel, prefAlign(panel))
 
         // initialise panel with data
@@ -186,32 +186,30 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 
     override Panel hidePanel(Type panelType) {
         panel := getPanel(panelType)
-        
+
         if (!panel.isShowing)
             return panel
 
-        frame.hidePanel(panel, prefAlign(panel))        
+        frame.hidePanel(panel, prefAlign(panel))
 
         return panel
     }
-    
-    override Void exit() {
-        // save the open panels before we close them!
-        session.save
 
-        // actually, what is the need to close down each view and panel?
-        // we've already saved the session!
-//      while (activeView != null && closeView(activeView, true)) { }
-//      if    (activeView != null) return
-//      panels.panels.each { hidePanel(it.typeof) }
-        
+    override Void exit() {
+		// only active and close what we have to - we don't want refresh flashes causing an epi-fit!
+		frame.dirtyViews.each |view| {
+			frame.activateView(view)
+			closeView(view, true)
+		}
+
+        session.save
         frame.close
     }
-    
+
     override Void copyToClipboard(Str text) {
         Desktop.clipboard.setText(text)
     }
-    
+
     override Void onViewActivated(View view) {
         activeView = view
     }
@@ -219,7 +217,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
     override Void onViewDeactivated(View view) {
         activeView = null
     }
-    
+
     override Void onLoadSession(Str:Obj? session) {
         frame.size = session["afReflux.frameSize"] ?: frame.size
 
@@ -241,7 +239,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
         try view?.load(resource)
         catch (Err err)
             errors.add(err)
-        refluxEvents.onLoad(resource)       
+        refluxEvents.onLoad(resource)
     }
 
     private Obj prefAlign(Panel panel) {
@@ -251,7 +249,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
     private Frame frame() {
         window
     }
-    
+
     private static Str removeQuery(Str str, Str key, Str val) {
         str = str.replace("${key}=${val}", "")
         if (str.endsWith("?"))
@@ -260,17 +258,17 @@ internal class RefluxImpl : Reflux, RefluxEvents {
     }
 }
 
-** Contextual data for loading 'Resources'. 
+** Contextual data for loading 'Resources'.
 class LoadCtx {
     ** If 'true' then the resource is opened in a new View tab.
     Bool    newTab
-    
-    ** The 'View' the resource should be opened in. 
+
+    ** The 'View' the resource should be opened in.
     Type?   viewType
 
     @NoDoc
     Bool    addToHistory    := true
-    
+
     override Str toStr() {
         str := "LoadCtx { "
         str += "newTab=${newTab} "

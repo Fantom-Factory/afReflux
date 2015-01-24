@@ -19,16 +19,16 @@ internal class Frame : Window, RefluxEvents {
 
 		eventHub	:= (EventHub) registry.serviceById(EventHub#.qname)
 		eventHub.register(this)
-		
+
 		panelTabs[Halign.left]	= registry.autobuild(PanelTabPane#, [false, false])
 		panelTabs[Halign.right]	= registry.autobuild(PanelTabPane#, [false, false])
 		panelTabs[Valign.bottom]= registry.autobuild(PanelTabPane#, [false, true])
 		viewTabs				= registry.autobuild(ViewTabPane#,  [reflux])
-		
+
 		navBar := (RefluxBar) registry.autobuild(RefluxBar#)
-		
+
 		this.menuBar	= registry.serviceById("afReflux.menuBar")
-		
+
 		this.content 	= EdgePane {
 			top = navBar
 			center = sash1 = SashPane {
@@ -44,7 +44,7 @@ internal class Frame : Window, RefluxEvents {
 				panelTabs[Halign.right],
 			}
 		}
-		
+
 		this.onClose.add |Event e| { if (!closing) reflux.exit }
 
 		// Handle file drops -> open up FWT's back door!
@@ -62,19 +62,27 @@ internal class Frame : Window, RefluxEvents {
 			}
 		}
 	}
-	
+
+	View[] dirtyViews() {
+		viewTabs.dirtyViews
+	}
+
+	Void activateView(View view) {
+		viewTabs.activate(view)
+	}
+
 	Void showPanel(Panel panel, Obj prefAlign) {
 		panelTabs[prefAlign].addTab(panel).activate(panel)
 	}
-	
+
 	Void hidePanel(Panel panel, Obj prefAlign) {
 		panelTabs[prefAlign].activate(null).removeTab(panel)
 	}
-	
+
 	View? replaceView(View view, Type viewType) {
 		viewTabs.replaceView(view, viewType)
 	}
-	
+
 	Bool closeView(View view, Bool force) {
 		viewTabs.closeView(view, force)
 	}
@@ -88,30 +96,30 @@ internal class Frame : Window, RefluxEvents {
 	override Void onViewActivated(View view) {
 		update(view.resource, view.isDirty)
 	}
-	
+
 	override Void onViewModified(View view) {
 		update(view.resource, view.isDirty)
 	}
-	
+
 	override Void onLoadSession(Str:Obj? session) {
-		sash1.weights = session["afReflux.frame.sash1Weights"] ?: sash1.weights 
-		sash2.weights = session["afReflux.frame.sash2Weights"] ?: sash2.weights 
+		sash1.weights = session["afReflux.frame.sash1Weights"] ?: sash1.weights
+		sash2.weights = session["afReflux.frame.sash2Weights"] ?: sash2.weights
 	}
 
 	override Void onSaveSession(Str:Obj? session) {
 		session["afReflux.frame.sash1Weights"] = sash1.weights
 		session["afReflux.frame.sash2Weights"] = sash2.weights
 	}
-	
+
 	override Void close(Obj? result := null) {
 		this.closing = true
 		super.close(result)
 	}
-	
+
 	private Void update(Resource? resource, Bool isDirty) {
 		if (resource == null) return
 		this.title = "${appName} - ${resource.name}"
 		if (isDirty)
 			title += " *"
-	}	
+	}
 }
