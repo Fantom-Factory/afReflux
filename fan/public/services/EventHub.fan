@@ -55,9 +55,11 @@ internal class EventHubImpl : EventHub {
 	}
 
 	override Void fireEvent(Method method, Obj?[]? args := null) {
-		sinks := eventSinks.findAll { it.typeof.fits(method.parent) }
+		check
+			:= eventTypes.eventTypes.find { it.fits(method.parent) }
+			?: throw ArgNotFoundErr("Method '${method.qname}' does not belong to an event type ", eventTypes.eventTypes)
 		
-		// TODO: throw Err if method does not belong to an event type
+		sinks := eventSinks.findAll { it.typeof.fits(method.parent) }
 		
 		sinks.each {
 			try	method.callOn(it, args)
