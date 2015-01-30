@@ -662,6 +662,10 @@ Have fun!
 
 Release Notes [#releaseNotes]
 *****************************
+v0.0.6 [#v0.0.6]
+================
+ - Bug: Default 'View.refresh()' could cause a 'NullErr'.
+
 v0.0.4 [#v0.0.4]
 ================
  - New: 'View.onDrop()' event handler for FWT file drops.
