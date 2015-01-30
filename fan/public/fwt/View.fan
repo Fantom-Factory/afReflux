@@ -57,7 +57,7 @@ abstract class View : Panel {
 	**
 	** By default this calls 'load()'.
 	override Void refresh(Resource? resource := null) {
-		if (resource == null || resource == this.resource)
+		if (resource != null && resource == this.resource)
 			load(this.resource)
 	}
 
