@@ -29,6 +29,7 @@ class GlobalCommand {
 			private Str:|Event?|	_invokers	:= Str:|Event?|[:]
 			private Str:|->Bool|	_enablers	:= Str:|->Bool|[:]
 			private Str				_baseName
+			private Bool			_initialised:= false
 	
 	** The wrapped command.
 	RefluxCommand	command
@@ -47,6 +48,8 @@ class GlobalCommand {
 		command = _registry.autobuild(RefluxCommand#, [name, icon, |Event? event| { doInvoke(event) } ])
 		command.localise(this.typeof.pod, baseName)
 		command.enabled = false	// use enablers to switch command on
+		
+		_initialised = true
 	}
 
 	** Callback for subclasses. 
@@ -88,7 +91,8 @@ class GlobalCommand {
 	** Returns if this command is currently enabled or not. 
 	** A 'GlobalCommand' is enabled if any enabler function returns true.
 	Bool enabled {
-		get { _enablers.any { it.call() } }
+		// use initialised 'cos IoC reads this to see if it's null
+		get { _initialised ? _enablers.any { it.call() } : false }
 		private set { }
 	}
 	
