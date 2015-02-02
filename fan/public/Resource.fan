@@ -33,6 +33,11 @@ mixin Resource {
 	** Defaults to empty list.
 	virtual Resource[] children() { Resource#.emptyList }
 	
+	** Return the parent resource. Root resources should return 'null'. Used by 'ResourceTree'.
+	** 
+	** Defaults to 'null'.
+	virtual Resource? parent() { null }
+	
 	** The Views that may display this resource.
 	**
 	** Defaults to empty list.
