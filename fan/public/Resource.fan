@@ -4,7 +4,7 @@ using fwt
 
 ** Resources are navigatable objects that may be represented by an URI.
 ** For example, the Explorer application has a 'FileResource' and a 'HttpResource'.
-abstract class Resource {
+mixin Resource {
 
 	** The URI that equates to this resource.
 	abstract Uri uri()
@@ -13,7 +13,7 @@ abstract class Resource {
 	abstract Str name()
 
 	** An (optional) icon that represents this resource.
-	virtual Image? icon() { return null }
+	virtual Image? icon() { null }
 
 	** A display name for the resource.
 	** File resources may show their OS specific variant rather than Fantom's canonical URI form.
@@ -21,19 +21,22 @@ abstract class Resource {
 	** The display name is displayed in the address bar.
 	**
 	** Defaults to 'uri.toStr'.
-	virtual Str displayName() { Url(uri).minusFrag.toStr }
-
-	** By populating an existing menu, it allows Panels to create the initial menu.
-	virtual Menu populatePopup(Menu menu) {
-		return menu
+	virtual Str displayName() {
+		Url(uri).minusFrag.toStr
 	}
 
+	** By populating an existing menu, it allows Panels to create the initial menu.
+	virtual Menu populatePopup(Menu menu) { menu }
+
+	** Return child resources. Used by 'ResourceTree'.
+	** 
+	** Defaults to empty list.
+	virtual Resource[] children() { Resource#.emptyList }
+	
 	** The Views that may display this resource.
 	**
 	** Defaults to empty list.
-	virtual Type[] viewTypes() {
-		[,]
-	}
+	virtual Type[] viewTypes() { Type#.emptyList }
 
 	@NoDoc
 	override Bool equals(Obj? that) {
