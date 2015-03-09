@@ -1,7 +1,7 @@
-#Reflux v0.0.4
+#Reflux v0.0.6
 ---
 [![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom.org/)
-[![pod: v0.0.4](http://img.shields.io/badge/pod-v0.0.4-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
+[![pod: v0.0.6](http://img.shields.io/badge/pod-v0.0.6-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
 ![Licence: MIT](http://img.shields.io/badge/licence-MIT-blue.svg)
 
 ## Overview
@@ -15,7 +15,7 @@ Modelled after an internet browser, Reflux lets you explore and edit resources v
 - **Customisation** - All aspects of a Reflux application may be customised.
 - **Context sensitive commands** - Global commands may be enabled / disabled.
 - **Browser session** - A consistent means to store session data.
-- **New FWT widgets** - Fancy tabs and a working web browser.
+- **New FWT widgets** - Fancy tabs, trees and a working web browser.
 
 Reflux was inspired by Fantom's core `flux` library.
 
