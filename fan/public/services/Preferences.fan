@@ -39,7 +39,7 @@ internal class PreferencesImpl : Preferences {
 
 	private new make(RegistryMeta regMeta, |This| in) {
 		in(this)
-		this.appName = regMeta["afReflux.appName"].toStr.fromDisplayName
+		this.appName = regMeta[RefluxConstants.meta_appName].toStr.fromDisplayName
 	}
 
 	override Obj loadPrefs(Type prefsType, Str? name := null) {

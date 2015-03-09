@@ -129,7 +129,7 @@ Panels are automatically added to the `View -> Panels` menu. If the panel does n
 Note that Panels are not displayed by default; but the user's display settings are saved from one session to the next. To force the user to always start with the panel displayed, show it programmatically on application startup:
 
 ```
-Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
+RefluxBuilder(AppModule#).start |Reflux reflux, Window window| {
     reflux.showPanel(MyPanel#)
 }
 ```
@@ -454,7 +454,7 @@ using gfx
 
 class Example {
     Void main() {
-        Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
+        RefluxBuilder(AppModule#).start |Reflux reflux, Window window| {
             reflux.showPanel(EventsPanel#)
             reflux.showPanel(AlienAlertPanel#)
             reflux.load("example:Fantom")

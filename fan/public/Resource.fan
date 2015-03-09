@@ -38,6 +38,11 @@ mixin Resource {
 	** Defaults to 'null'.
 	virtual Resource? parent() { null }
 	
+	** If generating child resources is in-efficient, override this method for optimisation.   
+	** 
+	** Defaults to 'children.size > 0'. 
+	virtual Bool hasChildren() { children.size > 0 }
+	
 	** The Views that may display this resource.
 	**
 	** Defaults to empty list.

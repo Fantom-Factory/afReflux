@@ -4,6 +4,37 @@ using concurrent::Actor
 
 ** (Service) -
 ** Maintains a cache of Images, ensuring they are disposed of properly.
+** 
+** A common usage is to create an 'Icons' class in your project that keeps tabs on the file mappings:
+** 
+** pre>
+** using afIoc::Inject
+** using afReflux::Images
+** using gfx::Image
+** 
+** class Icons {
+**     @Inject private Images images
+**     
+**     private new make(|This| in) { in(this) }
+**     
+**     Image icoImage1() { get("image1.png") }
+**     Image icoImage2() { get("image2.png") }
+**     Image icoImage3() { get("image3.png") }
+** 
+**     Image get(Str name) {
+**         images[`fan://${typeof.pod.name}/res/icons/${name}`]
+**     }
+** }
+** <pre
+** 
+** Then the icons may be referenced with:
+** 
+**   icon := icons.icoImage1
+** 
+** Don't forget to add the image directory to 'resDirs' in the 'build.fan':
+** 
+**   resDirs = [`res/icons/`]
+** 
 mixin Images {
 
 	** Returns the image at the given URI, storing it in the cache.
