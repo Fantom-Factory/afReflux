@@ -9,7 +9,7 @@ Modelled after an internet browser, Reflux lets you explore and edit resources v
  - **Customisation** - All aspects of a Reflux application may be customised.
  - **Context sensitive commands** - Global commands may be enabled / disabled.
  - **Browser session** - A consistent means to store session data.
- - **New FWT widgets** - Fancy tabs and a working web browser.
+ - **New FWT widgets** - Fancy tabs, trees and a working web browser.
 
 Reflux was inspired by Fantom's core 'flux' library.
 
@@ -135,7 +135,7 @@ Panels are automatically added to the 'View -> Panels' menu. If the panel does n
 Note that Panels are not displayed by default; but the user's display settings are saved from one session to the next. To force the user to always start with the panel displayed, show it programmatically on application startup:
 
 pre>
-Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
+RefluxBuilder(AppModule#).start |Reflux reflux, Window window| {
     reflux.showPanel(MyPanel#)
 }
 <pre
@@ -483,7 +483,7 @@ using gfx
 
 class Example {
     Void main() {
-        Reflux.start("Example", [AppModule#]) |Reflux reflux, Window window| {
+        RefluxBuilder(AppModule#).start |Reflux reflux, Window window| {
             reflux.showPanel(EventsPanel#)
             reflux.showPanel(AlienAlertPanel#)
             reflux.load("example:Fantom")
@@ -664,6 +664,8 @@ Release Notes [#releaseNotes]
 *****************************
 v0.0.6 [#v0.0.6]
 ================
+ - New: Use 'RefluxBuilder' to build and launch Reflux applications.
+ - New: Added a 'ResourceTree' widget and corresponding 'Resource.children()' and 'Resource.parent()' methods.
  - Bug: Default 'View.refresh()' could cause a 'NullErr'.
 
 v0.0.4 [#v0.0.4]

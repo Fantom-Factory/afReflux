@@ -29,47 +29,6 @@ mixin Reflux {
     abstract Panel hidePanel(Type panelType)
 
     abstract Void copyToClipboard(Str text)
-
-
-    ** Use to launch a Reflux application. Example:
-    **
-    **   Reflux.start("Example App", [AppModule#]) |Reflux reflux, Window window| {
-    **       reflux.showPanel(MyPanel#)
-    **       ...
-    **   }
-    static Void start(Str appName, Type[] modules, |Reflux, Window|? onOpen := null) {
-        bob := RegistryBuilder()
-
-        // try to dig out the project name
-        projName := modules.first?.pod?.meta?.get("proj.name")
-        version  := modules.first?.pod?.version
-        if (projName != null && version != null)
-            bob["afIoc.bannerText"] = "$projName v$version"
-
-        registry := bob
-            .addModule(RefluxModule#)
-            .addModules(modules)
-            .set("afReflux.appName", appName)
-            .build.startup
-        reflux   := (Reflux) registry.serviceById(Reflux#.qname)
-        frame    := (Frame)  reflux.window
-
-        // onActive -> onFocus -> onOpen
-        frame.onOpen.add {
-            // Give the widgets a chance to display themselves and set defaults
-            Desktop.callLater(50ms) |->| {
-                // load the session before we start loading URIs and opening tabs
-                session := (Session) registry.serviceById(Session#.qname)
-                session.load
-
-                // once we've all started up and settled down, load URIs from the command line
-                onOpen?.call(reflux, frame)
-            }
-        }
-
-        frame.open
-        registry.shutdown
-    }
 }
 
 internal class RefluxImpl : Reflux, RefluxEvents {

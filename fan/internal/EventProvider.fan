@@ -14,8 +14,8 @@ internal const class EventProvider : DependencyProvider {
 	
 	override Bool canProvide(InjectionCtx injectionCtx) {
 		injectionCtx.fieldFacets.any { it.typeof == Inject# } && 
-		injectionCtx.injectingIntoType.pod.name != "afIoc" && 
-		injectionCtx.injectingIntoType != EventTypes# &&
+		injectionCtx.targetType.pod.name != "afIoc" && 
+		injectionCtx.targetType != EventTypes# &&
 		injectionCtx.dependencyType != EventTypes# &&
 		eventTypes.eventTypes.contains(injectionCtx.dependencyType.toNonNullable)
 	}
