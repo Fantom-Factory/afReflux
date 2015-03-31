@@ -2,6 +2,7 @@ using afIoc
 using fwt
 using gfx
 
+** (Service) - 
 ** A wrapper around the FWT Dialog class that allows you to redefine / intercept the commands by 
 ** overriding the service.
 @NoDoc
@@ -29,21 +30,21 @@ class Dialogues {
 	private new make(|This|in) { in(this) }
 	
 	** Open an error message box.
-	Obj? openErr(Str msg, Obj? details := null, Command[]? commands := null) {
+	virtual Obj? openErr(Str msg, Obj? details := null, Command[]? commands := null) {
 		openMsgBox(Dialogues#.pod, "err", msg, details, commands ?: [ok])
 	}
 	
 	** Open a warning message box.
-	Obj? openWarn(Str msg, Obj? details := null, Command[]? commands := null) {
+	virtual Obj? openWarn(Str msg, Obj? details := null, Command[]? commands := null) {
 		openMsgBox(Dialogues#.pod, "warn", msg, details, commands ?: [ok])
 	}
 	
 	** Open a question message box.
-	Obj? openQuestion(Str msg, Obj? details := null, Command[]? commands := null) {
+	virtual Obj? openQuestion(Str msg, Obj? details := null, Command[]? commands := null) {
 		openMsgBox(Dialogues#.pod, "question", msg, details, commands ?: [ok])
 	}
 		
-	Str? openPromptStr(Str msg, Str def := "", Int prefCols := 20) {
+	virtual Str? openPromptStr(Str msg, Str def := "", Int prefCols := 20) {
 		field := Text { it.text = def; it.prefCols = prefCols }
 		pane  := GridPane {
 			numCols = 2
@@ -58,7 +59,7 @@ class Dialogues {
 		return field.text
 	}
 
-	Obj? openMsgBox(Pod pod, Str keyBase, Obj body, Obj? details := null, Command[]? commands := null) {
+	virtual Obj? openMsgBox(Pod pod, Str keyBase, Obj body, Obj? details := null, Command[]? commands := null) {
 		Dialog.openMsgBox(pod, keyBase, reflux.window, body, details, commands ?: [ok])
 	}
 }
