@@ -31,10 +31,6 @@ using afIoc
 ** }
 ** <pre
 ** 
-** To prevent short lived processes from constantly flashing dialogues at the user, 'ProgressDialogues' are not displayed straight away.
-** Instead they are only displayed if, after a short duration has elapsed (500ms by default), the process is still active. 
-** See `displayAfterDuration` for details.
-** 
 ** 
 ** 
 ** Processing
