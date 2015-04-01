@@ -41,12 +41,11 @@ internal class RefluxImpl : Reflux, RefluxEvents {
     @Inject private Session         session
     @Inject override Registry       registry
             override View?          activeView
-//  @Autobuild { implType=Frame# }
             override Window         window
 
-    new make(EventHub eventHub, |This| in) { in(this)
+    new make(EventHub eventHub, |This| in) { 
+		in(this)
         eventHub.register(this)
-        // FIXME: IoC Err - autobuild builds twice
         window = registry.autobuild(Frame#, [this])
     }
 
