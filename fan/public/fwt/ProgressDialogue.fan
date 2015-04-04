@@ -7,6 +7,8 @@ using afIoc
 ** (Widget) - 
 ** A dialogue window that displays an updatable progress bar.
 ** 
+** ![Progress Dialogue]`http://static.alienfactory.co.uk/fantom-docs/afReflux.progressDialogue.png`
+**
 ** Sample usage:
 ** pre>
 ** dialogue := ProgressDialogue()
@@ -17,7 +19,7 @@ using afIoc
 **     it.closeWhenFinished = false
 ** }
 ** 
-** dialogue.open(window) |ProgressWorker worker| {
+** dialogue.open(reflux.window) |ProgressWorker worker| {
 **     worker.update(1, 4, "Processing...")
 **     Actor.sleep(2sec)
 ** 
@@ -41,7 +43,10 @@ using afIoc
 ** The callback func is processed in its own thread. This keeps the UI thread free to update the progress dialogue as needed.
 ** To update other UI components from within the callback func, use 'Desktop':
 ** 
+**   registry := this.registry
 **   Desktop.callAsync |->| {
+**       reflux := (Reflux) registry.serviceById(Reflux#.qname)
+**       reflux.refresh
 **       ...
 **   }  
 ** 
@@ -97,13 +102,16 @@ class ProgressDialogue {
 			v := &text = it
 			if (_textWidget != null) {
 				safeWidget := Unsafe(_textWidget)
-				Desktop.callAsync |->| { safeWidget.val->text = v }
+				Desktop.callAsync |->| {
+					safeWidget.val->text = _padToFiveLines(v)
+					if (v.splitLines.size > 5)
+						safeWidget.val->pack
+				}
 			}
 		}
 	}
 	
-	** The text displayed in the details box. 
-	** This is appended with text given to 'ProgessWorker'.
+	** The text displayed in the details panel. 
 	Str detailText := "" {
 		set {
 			v := &detailText = it
@@ -252,13 +260,14 @@ class ProgressDialogue {
 		}		
 	}
 	
-	private Window _createDialogue(Window window)	{
-		_textWidget = Label { it.text = this.&text }
+	private Window _createDialogue(Window window) {
+		t := this.text
+		_textWidget = Label { it.text = _padToFiveLines(t) }
 
 		bodyAndImage := (Widget) _textWidget
 		
 		if (image != null) {
-			_imageWidget = Label { it.image = this.&image } 
+			_imageWidget = Label { it.image = this.&image }
 			bodyAndImage = GridPane {
 				numCols		= 2
 				expandCol	= 1
@@ -344,7 +353,12 @@ class ProgressDialogue {
 				_cancelCmd			= null
 			}
 		}
-	}	
+	}
+	
+	static Str _padToFiveLines(Str text) {
+		noOfLines := text.splitLines.size
+		return (noOfLines < 5) ? text + "".padl(5 - noOfLines, '\n') : text
+	}
 }
 
 
@@ -376,13 +390,15 @@ class ProgressWorker {
 	}
 
 	** The message displayed in the progress dialogue. 
-	** When set, it is appended to the text in the details section.
 	Str text {
 		get { dialogue.text }
-		set { 
-			dialogue.text = it 
-			dialogue.detailText += dialogue.detailText.isEmpty ? it : "\n" + it
-		}
+		set { dialogue.text = it } 
+	}
+
+	** The text displayed in the details panel. 
+	Str detailText {
+		get { dialogue.detailText }
+		set { dialogue.detailText = it }
 	}
 
 	** Returns 'true' if the user clicked the Cancel button.
@@ -396,14 +412,17 @@ class ProgressWorker {
 	}
 	
 	** Updates the progress bar to show work done.
-	** 'msg' is optional and just sets the dialogue text.
+	** 'msg' is optional and sets the dialogue text and is appended to the detail text.
 	** 
 	** If the dialogue has been cancelled then this throws a 'CancelledErr'. 
 	Void update(Int workDone, Int workTotal, Str? msg := null) {
 		if (cancelled) throw CancelledErr("Progress dialogue cancelled.")
 
 		// set text first so it may be overwritten should an Err occur later
-		this.text = msg
+		if (msg != null) {
+			this.text = msg
+			this.detailText += detailText.isEmpty ? msg : "\n" + msg
+		}
 
 		safeProgress := Unsafe(progressWidget)
 		Desktop.callAsync |->| {
