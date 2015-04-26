@@ -662,11 +662,16 @@ Have fun!
 
 Release Notes [#releaseNotes]
 *****************************
+v0.0.10 [#v0.0.10]
+==================
+ - Chg: 'ProgressDialogue.open()' now returns what the worker returns.
+ - Bug: 'Browser' incorrectly decoded hyperlink URIs.
+
 v0.0.8 [#v0.0.8]
 ================
  - New: 'ProgressDialogue' widget for showing the progress of work.
  - Chg: Added default param 'skipEventRaising' to 'Errors.add()'.
- 
+
 v0.0.6 [#v0.0.6]
 ================
  - New: Use 'RefluxBuilder' to build and launch Reflux applications.

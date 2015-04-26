@@ -19,7 +19,7 @@ using afIoc
 **     it.closeWhenFinished = false
 ** }
 ** 
-** dialogue.open(reflux.window) |ProgressWorker worker| {
+** result := dialogue.open(reflux.window) |ProgressWorker worker->Obj?| {
 **     worker.update(1, 4, "Processing...")
 **     Actor.sleep(2sec)
 ** 
@@ -30,6 +30,7 @@ using afIoc
 **     Actor.sleep(2sec)
 ** 
 **     worker.update(4, 4, "Done.")
+**     return "result!"
 ** }
 ** <pre
 ** 
@@ -41,6 +42,9 @@ using afIoc
 ** The work func should then make repeated calls to 'ProgressWorker.update()' to update the dialogue and progress bar.
 **  
 ** The callback func is processed in its own thread. This keeps the UI thread free to update the progress dialogue as needed.
+** 
+** Note that this means the worker function should be immutatble.
+** 
 ** To update other UI components from within the callback func, use 'Desktop':
 ** 
 **   registry := this.registry
@@ -50,7 +54,7 @@ using afIoc
 **       ...
 **   }  
 ** 
-** 
+**
 ** 
 ** Cancelling
 ** ==========
@@ -162,15 +166,19 @@ class ProgressDialogue {
 	
 	** Creates and displays a progress dialogue. 
 	** All work is done inside the given callback in a separate thread.
-	Void open(Window parent, |ProgressWorker| callback) {
+	**
+	** This call blocks until the work is finished and returns what the function returns.
+	Obj? open(Window parent, |ProgressWorker->Obj?| callback) {
 		if (_inProgress || _textWidget != null)
 			throw Err("ProcessDialogue is already open")
 
-		diag := _createDialogue(parent)
+		future := (Future?) null
+		diag   := _createDialogue(parent)
 		diag.onOpen.add |Event e| {
-			_doWork(ActorPool(), diag, callback)
+			future = _doWork(ActorPool(), diag, callback)
 		}
 		diag.open
+		return future.get
 	}
 
 	** Hook for handling cancelled events from the user.
@@ -199,19 +207,20 @@ class ProgressDialogue {
 		}
 	}
 
-	private Void _doWork(ActorPool actorPool, Window window, |ProgressWorker| callback) {
+	private Future _doWork(ActorPool actorPool, Window window, |ProgressWorker->Obj?| callback) {
 		winRef  := Unsafe(window)
 		diagRef := Unsafe(this)
 		// do the work in a separate thread so the UI thread is free to update the dialogue
-		Synchronized(actorPool).async |->| {
+		return Synchronized(actorPool).async |->Obj?| {
 			diag 	:= (ProgressDialogue) diagRef.val
 			worker	:= ProgressWorker(diag, diag._progressWidget)
 			((ProgressDialogueCancelCommand) diag._cancelCmd).worker = worker
 
 			cwfBackup := diag.closeWhenFinished
 			diag._inProgress = true
+			result := null
 			try {
-				callback(worker)
+				result = callback(worker)
 				
 				// the callback func may check the cancelled flag and return nicely = no CancelledErr!
 				if (worker.cancelled) {
@@ -241,7 +250,9 @@ class ProgressDialogue {
 			
 			// clean up
 			diag.closeWhenFinished	= cwfBackup
-		}		
+			
+			return result
+		}
 	}
 	
 	private static Void _disableCancelButton(Unsafe diagRef) {
