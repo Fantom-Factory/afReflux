@@ -13,11 +13,11 @@ internal const class EventProvider : DependencyProvider {
 	new make(|This|in) { in(this) }
 	
 	override Bool canProvide(InjectionCtx injectionCtx) {
-		injectionCtx.fieldFacets.any { it.typeof == Inject# } && 
-		injectionCtx.targetType.pod.name != "afIoc" && 
-		injectionCtx.targetType != EventTypes# &&
-		injectionCtx.dependencyType != EventTypes# &&
-		eventTypes.eventTypes.contains(injectionCtx.dependencyType.toNonNullable)
+		(
+			(injectionCtx.injectionKind.isFieldInjection && injectionCtx.fieldFacets.any { it.typeof == Inject# }) || (!injectionCtx.injectionKind.isFieldInjection))
+		&& 
+			(injectionCtx.dependencyType != EventTypes# && eventTypes.eventTypes.contains(injectionCtx.dependencyType.toNonNullable)
+		)
 	}
 
 	override Obj? provide(InjectionCtx injectionCtx) {
