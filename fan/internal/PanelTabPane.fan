@@ -33,9 +33,6 @@ internal class PanelTabPane : ContentPane {
 				panelTabs.first.addToTabPane
 				tuple.addToTabPane
 
-				// fudge for HtmlView which need to be refreshed when moved into a tab
-				panelTabs.first.panel.onActivate()
-
 			default:
 				tuple.addToTabPane
 		}
@@ -72,9 +69,6 @@ internal class PanelTabPane : ContentPane {
 
 				// need to activate this ourselves because there's no TabPane select event
 				activate(panelTabs.first.panel)
-
-				// fudge for HtmlView which need to be refreshed when moved out from a tab
-				panelTabs.first.panel.onActivate()
 
 			default:
 				tuple.removeFromTabPane
