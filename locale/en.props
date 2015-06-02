@@ -3,8 +3,18 @@
 
 afReflux.cmdSave.name				= Save
 afReflux.cmdSave.accelerator		= Ctrl+S
+afReflux.cmdSaveAs.name				= Save As...
+afReflux.cmdSaveAll.name			= Save All
+afReflux.cmdSaveAll.accelerator		= Ctrl+Shift+S
 afReflux.cmdExit.name				= Exit
 afReflux.cmdAbout.name				= About
+
+afReflux.cmdCut.name				= Cut
+afReflux.cmdCut.accelerator			= Ctrl+X
+afReflux.cmdCopy.name				= Copy
+afReflux.cmdCopy.accelerator		= Ctrl+C
+afReflux.cmdPaste.name				= Paste
+afReflux.cmdPaste.accelerator		= Ctrl+V
 
 afReflux.cmdRefresh.name			= Refresh
 afReflux.cmdRefresh.accelerator		= F5

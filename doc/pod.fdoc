@@ -662,6 +662,10 @@ Have fun!
 
 Release Notes [#releaseNotes]
 *****************************
+v0.0.12 [#v0.0.12]
+==================
+ - Chg: Added Cut, Copy and Paste global commands.
+
 v0.0.10 [#v0.0.10]
 ==================
  - Chg: 'ProgressDialogue.open()' now returns what the worker returns.

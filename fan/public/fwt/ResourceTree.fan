@@ -37,7 +37,7 @@ class ResourceTree {
 	}
 
 	** Creates a 'ResourceTree'.
-	new make(|This|in) {
+	new make(|This|? in := null) {
 		tree = Tree()
 		in(this)
 		tree.onAction.add |Event e| {
@@ -69,7 +69,7 @@ class ResourceTree {
 	**
 	** Event fields:
 	**	 - 'Event.data': the 'Resource' actioned
-	EventListeners onAction() { EventListeners() }
+	once EventListeners onAction() { EventListeners() }
 
 	** Callback when selected nodes change.
 	**
