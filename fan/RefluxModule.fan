@@ -49,10 +49,16 @@ class RefluxModule {
 	@Contribute { serviceType=GlobalCommands# }
 	static Void contributeGlobalCommands(Configuration config) {
 		config["afReflux.cmdSave"]			= config.autobuild(SaveCommand#)
+		config["afReflux.cmdSaveAs"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
+		config["afReflux.cmdSaveAll"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
 		config["afReflux.cmdExit"]			= config.autobuild(ExitCommand#)
 		config["afReflux.cmdAbout"]			= config.autobuild(AboutCommand#)
 		config["afReflux.cmdRefresh"]		= config.autobuild(RefreshCommand#)
 		
+		config["afReflux.cmdCut"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
+		config["afReflux.cmdCopy"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
+		config["afReflux.cmdPaste"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
+
 		config["afReflux.cmdNavUp"]			= config.autobuild(NavUpCommand#)
 		config["afReflux.cmdNavHome"]		= config.autobuild(NavHomeCommand#)
 		config["afReflux.cmdNavBackward"]	= config.autobuild(NavBackwardCommand#)
@@ -63,12 +69,6 @@ class RefluxModule {
 
 		config["afReflux.cmdUndo"]			= config.autobuild(UndoCommand#)
 		config["afReflux.cmdRedo"]			= config.autobuild(RedoCommand#)
-
-//	  config["afReflux.cmdSaveAs"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
-//	  config["afReflux.cmdSaveAll"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
-//	  config["afReflux.cmdCut"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
-//	  config["afReflux.cmdCopy"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
-//	  config["afReflux.cmdPaste"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
 	}
 	
 	@Contribute { serviceType=RegistryShutdown# }
@@ -146,6 +146,10 @@ class RefluxModule {
 		config["afReflux.cmdUndo"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdUndo"].command)
 		config["afReflux.cmdRedo"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdRedo"].command)
 		config["separator.01"]		= MenuItem { it.mode = MenuItemMode.sep }
+		config["afReflux.cmdCut"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdCut"].command)
+		config["afReflux.cmdCopy"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdCopy"].command)
+		config["afReflux.cmdPaste"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdPaste"].command)
+		config["separator.02"]		= MenuItem { it.mode = MenuItemMode.sep }
 	}
 
 	@Contribute { serviceId="afReflux.viewMenu" }

@@ -66,8 +66,13 @@ internal class EclipseIcons {
 		"cmdUndo"				: `undo_edit.gif`,
 		"cmdRedo"				: `redo_edit.gif`,
 		
+		"cmdCut"				: `cut_edit.gif`,
+		"cmdCopy"				: `copy_edit.gif`,
+		"cmdPaste"				: `paste_edit.gif`,
+
 		"cmdToggleView"			: ``,
 
 		"icoErrorsPanel"		: `error_log.gif`
+		
 	]
 }
