@@ -7,6 +7,7 @@ using fwt
 ** 'GlobalCommands' must be *autobuilt* by IoC. 
 ** Contribute 'GlobalCommand' instances to the 'GlobalCommands' service in your 'AppModule':
 ** 
+**   syntax: fantom
 **   @Contribute { serviceType=GlobalCommands# }
 **   static Void contributeGlobalCommands(Configuration config) {
 **       config["myGlobCmd"] = config.autobuild(MyGlobalCommand#)
@@ -14,6 +15,7 @@ using fwt
 ** 
 ** Use the contribution Id to access the command in the 'GlobalCommands' service:
 ** 
+**   syntax: fantom
 **   globalCommands.get("myGlobCmd")
 ** 
 **   globalCommands["myGlobCmd"]

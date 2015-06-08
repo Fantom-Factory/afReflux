@@ -5,6 +5,8 @@
 ** To handle these events, just implement this mixin and override the methods you want!
 ** You also need to registry yourself with the 'EventHub'. You can do this in the ctor:
 ** 
+**   syntax: fantom
+** 
 **   class MyService : RefluxEvents {
 **       new make(EventHub eventHub) {
 **           eventHub.register(this)

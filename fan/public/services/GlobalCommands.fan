@@ -6,6 +6,7 @@ mixin GlobalCommands {
 	
 	** Returns the command that was contributed with the given id.
 	** 
+	**   syntax: fantom
 	**   myCmd := globalCommands.get("myCmd")
 	** 
 	**   myCmd := globalCommands["myCmd"]

@@ -11,6 +11,8 @@ using gfx
 ** 
 ** Use the 'html' and 'url' fields to load content into the browser:
 ** 
+**   syntax: fantom
+** 
 **   browser.html = "<html><body>Fantom-Factory<body></html>"
 ** 
 **   browser.url = `http://www.fantomfactory.org/`

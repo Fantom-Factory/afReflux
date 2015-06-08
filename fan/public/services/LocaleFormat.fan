@@ -4,6 +4,7 @@
 ** 
 ** Override the default implementation with your own. In your 'AppModule':
 **
+**   syntax: fantom
 **   static Void defineServices(ServiceDefinitions defs) {
 **       defs.overrideByType(LocaleFormat#).withImpl(MyLocaleFormatImpl#)
 **   }

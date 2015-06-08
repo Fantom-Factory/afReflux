@@ -11,6 +11,8 @@ using fwt
 ** Because 'ResourceTree' does not extend 'fwt:Widget' it can not be added directly. 
 ** Instead, add the 'tree' field which returns the wrapped FWT Tree instance.
 ** 
+**   syntax: fantom
+** 
 **   tree := ResourceTree()
 **   ContentPane() {
 **       it.content = tree.tree

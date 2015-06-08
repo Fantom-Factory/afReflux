@@ -6,7 +6,7 @@
 
 ## Overview
 
-`Reflux` is a framework for creating simple FWT desktop applications.
+Reflux is a framework for creating simple FWT desktop applications.
 
 Modelled after an internet browser, Reflux lets you explore and edit resources via URIs. It expands upon Fantom's FWT by adding:
 
@@ -33,35 +33,35 @@ To use in a [Fantom](http://fantom.org/) project, add a dependency to `build.fan
 
 ## Documentation
 
-Full API & fandocs are available on the [Status302 repository](http://repo.status302.com/doc/afReflux/).
+Full API & fandocs are available on the [Fantom Pod Repository](http://pods.fantomfactory.org/pods/afReflux/).
 
 ## Quick Start
 
-1). Create a text file called `Example.fan` and copy this [Example Reflux Code](#exampleCode)
+1. Create a text file called `Example.fan` and copy this [Example Reflux Code](#exampleCode)
+2. Run `Example.fan` as a Fantom script from the command line:
 
-2). Run `Example.fan` as a Fantom script from the command line:
+        C:\> fan Example.fan
+        
+        [afIoc] Adding module definition for afReflux::RefluxModule
+        [afIoc] Adding module definition for ExampleView_0::AppModule
+        
+           ___    __                 _____        _
+          / _ |  / /_____  _____    / ___/__  ___/ /_________  __ __
+         / _  | / // / -_|/ _  /===/ __// _ \/ _/ __/ _  / __|/ // /
+        /_/ |_|/_//_/\__|/_//_/   /_/   \_,_/__/\__/____/_/   \_, /
+                                    Alien-Factory IoC v2.0.8 /___/
+        
+        IoC Registry built in 216ms and started up in 10ms
 
-```
-C:\> fan Example.fan
 
-[afIoc] Adding module definition for afReflux::RefluxModule
-[afIoc] Adding module definition for ExampleView_0::AppModule
-[afIoc]
 
-   ___    __                 _____        _
-  / _ |  / /_____  _____    / ___/__  ___/ /_________  __ __
- / _  | / // / -_|/ _  /===/ __// _ \/ _/ __/ _  / __|/ // /
-/_/ |_|/_//_/\__|/_//_/   /_/   \_,_/__/\__/____/_/   \_, /
-                            Alien-Factory IoC v2.0.2 /___/
+  ![Example Screenshot](http://pods.fantomfactory.org/pods/afReflux/doc/example.png)
 
-IoC Registry built in 216ms and started up in 10ms
-```
 
-![Example Screenshot](http://static.alienfactory.co.uk/fantom-docs/afReflux.example.png)
 
 ## Usage
 
-`Reflux` takes the internet browser strategy of labelling everything with a URI. Be it a file, an internet resource, or a database entity - if it can be identified by a URI then it may presented and edited in Reflux.
+Reflux takes the internet browser strategy of labelling everything with a URI. Be it a file, an internet resource, or a database entity - if it can be identified by a URI then it may presented and edited in Reflux.
 
 A Reflux application is made up of:
 
@@ -71,19 +71,19 @@ A Reflux application is made up of:
 - Panels
 - Views
 
-![Screenshot of the Alien-Factory Explorer application](http://static.alienfactory.co.uk/fantom-docs/afReflux.afExplorer.png)
+![Screenshot of the Alien-Factory Explorer application](http://pods.fantomfactory.org/pods/afReflux/doc/afExplorer.png)
 
 URIs are typed into the address bar. The typed URI is then resolved to a `Resource`. Resource objects hold meta data that describe how it should be displayed / interacted with. Views are used to view and / or edit resources. Panels are extra tabs that show arbitrary data.
 
 The menu and tool bars are customisable via IoC contributions. Global commands wrap standard FWT commands to make them context sensitive; for example, the Save global command is only enabled when the current view is dirty.
 
-Note that Reflux itself is just a toolkit. See the [Alien-Factory Explorer](http://www.fantomfactory.org/pods/afExplorer) application for a concrete example of Reflux use.
+Note that Reflux itself is just a toolkit. See the [Alien-Factory Explorer](http://pods.fantomfactory.org/pods/afExplorer) application for a concrete example of Reflux use.
 
 ### Explorer
 
-[Alien-Factory Explorer](http://www.fantomfactory.org/pods/afExplorer) is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
+[Alien-Factory Explorer](http://pods.fantomfactory.org/pods/afExplorer) is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
 
-Install `Explorer` with [fanr](http://fantom.org/doc/docFanr/Tool.html#install):
+Install `Explorer` with [fanr](http://fantom.org/doc/docFanr/Tool.html):
 
     C:\> fanr install -r http://repo.status302.com/fanr/ afExplorer
 
@@ -93,9 +93,9 @@ Start the `Explorer` application from the command line:
 
 ## Panels
 
-[Panels](http://repo.status302.com/doc/afReflux/Panel.html) are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shuts down.
+[Panels](http://pods.fantomfactory.org/pods/afReflux/api/Panel) are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shuts down.
 
-To create a custom panel, first create a class that extends [Panel](http://repo.status302.com/doc/afReflux/Panel.html). Panels must set the `content` field in order to display anything. This example just sets its FWT content to a yellow label:
+To create a custom panel, first create a class that extends [Panel](http://pods.fantomfactory.org/pods/afReflux/api/Panel). Panels must set the `content` field in order to display anything. This example just sets its FWT content to a yellow label:
 
 ```
 class MyPanel : Panel {
@@ -124,7 +124,7 @@ Panels need to be *autobuilt* so IoC injects all the dependencies (via that it-b
 
 Panels are automatically added to the `View -> Panels` menu. If the panel does not set a name it defaults the Panel's type, minus any `Panel` suffix. When displayed, our simple panel should look like:
 
-![Screenshot of Panel Example](http://static.alienfactory.co.uk/fantom-docs/afReflux.panelExample.png)
+![Screenshot of Panel Example](http://pods.fantomfactory.org/pods/afReflux/doc/panelExample.png)
 
 Note that Panels are not displayed by default; but the user's display settings are saved from one session to the next. To force the user to always start with the panel displayed, show it programmatically on application startup:
 
@@ -147,9 +147,9 @@ Panels are automatically added to the `EventHub` - see [Eventing](#eventing) for
 
 ## Views
 
-[Views](http://repo.status302.com/doc/afReflux/View.html) are `Panels` that are associated with an (editable) resource. They are displayed in the centre of the Window.
+[Views](http://pods.fantomfactory.org/pods/afReflux/api/View) are `Panels` that are associated with an (editable) resource. They are displayed in the centre of the Window.
 
-Custom views must extends [View](http://repo.status302.com/doc/afReflux/View.html), which in turn extends `Panel`. Like panels, views must set the `content` field to display anything. This example view just displays the resource name in a green box:
+Custom views must extends [View](http://pods.fantomfactory.org/pods/afReflux/api/View), which in turn extends `Panel`. Like panels, views must set the `content` field to display anything. This example view just displays the resource name in a green box:
 
 ```
 class MyView : View {
@@ -203,7 +203,7 @@ It holds it's name, has a *database* icon and the `viewTypes()` method says it s
 
 Should `viewTypes()` return more than one type, the user may cycle between them using drop down in the address bar or an `F12` shortcut. This useful for toggling between view and edit modes.
 
-It is the job of [UriResolvers](http://repo.status302.com/doc/afReflux/UriResolver.html) to convert URI strings, as entered in the address bar, into resource instances. The following URI resolver will convert any URI with the scheme `example:` into a `MyResource` object:
+It is the job of [UriResolvers](http://pods.fantomfactory.org/pods/afReflux/api/UriResolver) to convert URI strings, as entered in the address bar, into resource instances. The following URI resolver will convert any URI with the scheme `example:` into a `MyResource` object:
 
 ```
 class MyResolver : UriResolver {
@@ -236,7 +236,7 @@ When `example:foo-bar` is entered into the address bar, the following should hap
 
 And this should be displayed:
 
-![Screenshot of View Example](http://static.alienfactory.co.uk/fantom-docs/afReflux.viewExample.png)
+![Screenshot of View Example](http://pods.fantomfactory.org/pods/afReflux/doc/viewExample.png)
 
 ## Menu Bar
 
@@ -425,7 +425,7 @@ Because it is common for them to receive events, all instances of `Panels`, `Vie
 
 ## Example Code
 
-Following is a basic Reflux app that incorporates ideas and example code shown in previous sections. When learning Reflux, it is suggested that you start here and then look at the source code of the [Explorer](http://www.fantomfactory.org/pods/afExplorer) application.
+Following is a basic Reflux app that incorporates ideas and example code shown in previous sections. When learning Reflux, it is suggested that you start here and then look at the source code of the [Explorer](http://pods.fantomfactory.org/pods/afExplorer) application.
 
 The sample application contains:
 
@@ -437,7 +437,7 @@ The sample application contains:
 
 As you will see, the **Launch Nukes** global command is only active when the Alien Attack panel is *not* displayed.
 
-![Example Screenshot](http://static.alienfactory.co.uk/fantom-docs/afReflux.example.png)
+![Example Screenshot](http://pods.fantomfactory.org/pods/afReflux/doc/example.png)
 
 Things to try:
 

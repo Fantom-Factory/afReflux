@@ -6,6 +6,7 @@ using fwt
 ** 
 ** 'RefluxCommands' and their subclasses must be created by IoC to ensure dependency injection:
 ** 
+**   syntax: fantom
 **   registry.autobuild(MyRefluxCommand#, [...ctor args...])
 ** 
 class RefluxCommand : Command {
@@ -16,6 +17,8 @@ class RefluxCommand : Command {
 	** Convenience ctor with default params for use by subclasses.
 	** 
 	** pre>
+	** syntax: fantom
+	** 
 	** class MyRefluxCommand : RefluxCommand {
 	**     new make(|This|in) : super.make(in, "My Command") { ... }
 	** }
@@ -27,6 +30,7 @@ class RefluxCommand : Command {
 
 	** Creates an 'RefluxCommand'. Should be done via IoC:
 	** 
+	**   syntax: fantom
 	**   registry.autobuild(MyCommand#, ["Command Name", cmdImage, invokeFunc])
 	@Inject
 	new makeViaIoc(Str? name, Image? icon, |Event event|? onInvoke, |This|in) : super.make(name ?: "", icon, onInvoke) {
