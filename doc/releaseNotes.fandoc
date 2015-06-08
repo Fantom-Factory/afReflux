@@ -1,0 +1,39 @@
+Versions
+********
+
+v0.0.12
+=======
+ - Chg: Added New, Cut, Copy and Paste global commands.
+
+v0.0.10
+=======
+ - Chg: 'ProgressDialogue.open()' now returns what the worker returns.
+ - Chg: Removed 'PanelTabPane' *fudge* for Explorer's 'HtmlView'.
+ - Bug: 'Browser' incorrectly decoded hyperlink URIs.
+
+v0.0.8
+======
+ - New: 'ProgressDialogue' widget for showing the progress of work.
+ - Chg: Added default param 'skipEventRaising' to 'Errors.add()'.
+
+v0.0.6
+======
+ - New: Use 'RefluxBuilder' to build and launch Reflux applications.
+ - New: Added a 'ResourceTree' widget and corresponding 'Resource.children()' and 'Resource.parent()' methods.
+ - Bug: Default 'View.refresh()' could cause a 'NullErr'.
+
+v0.0.4
+======
+ - New: 'View.onDrop()' event handler for FWT file drops.
+ - New: 'Dialogues' service so calls may be intercepted.
+ - Chg: 'Panel.refresh()' now takes an optional resource hint.
+ - Chg: Toned down the alerting on 'UnresolvedErrs'.
+ - Chg: Preferences are cached on name, not type, to allow multiple prefs of same type.
+ - Bug: Reflux now explicitly depends on Fantom 1.0.67 - Thanks 'LightDye'!
+ - Bug: 'NullErr' if you tried to remove a GlobalCommand invoker that didn't exist.
+ - Bug: Views are asked if they wish to close on application exit. (Again!)
+
+v0.0.2
+======
+ - New: Initial release.
+

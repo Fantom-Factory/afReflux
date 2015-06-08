@@ -3,6 +3,8 @@ using fwt
 
 ** Use to build and launch a Reflux application. Example:
 **
+**   syntax: fantom
+** 
 **   RefluxBuilder(AppModule#).start() |Reflux reflux, Window window| {
 **	   reflux.showPanel(MyPanel#)
 **	   ...

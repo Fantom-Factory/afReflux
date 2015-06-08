@@ -3,6 +3,8 @@
 ** 
 ** 'UriResolver' implementations should be contributed to the 'UriResolvers' service:
 ** 
+**   syntax: fantom
+** 
 **   @Contribute { serviceType=UriResolvers# }
 ** 	 internal static Void contributeUriResolvers(Configuration config) {
 ** 	     resolver := MyUriResolver()
@@ -11,6 +13,8 @@
 ** 
 ** If your resolver requires dependencies to be injected then it should be *autobuilt*.
 ** It is also good practice to contribute the instance with an ID, so others may override it if they wish:
+** 
+**   syntax: fantom
 ** 
 **   @Contribute { serviceType=UriResolvers# }
 ** 	 internal static Void contributeUriResolvers(Configuration config) {

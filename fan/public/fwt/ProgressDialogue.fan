@@ -11,6 +11,8 @@ using afIoc
 **
 ** Sample usage:
 ** pre>
+** syntax: fantom
+** 
 ** dialogue := ProgressDialogue()
 ** 
 ** dialogue.with {
@@ -47,6 +49,8 @@ using afIoc
 ** 
 ** To update other UI components from within the callback func, use 'Desktop':
 ** 
+**   syntax: fantom
+** 
 **   registry := this.registry
 **   Desktop.callAsync |->| {
 **       reflux := (Reflux) registry.serviceById(Reflux#.qname)
@@ -78,10 +82,12 @@ using afIoc
 ** 
 ** If the 'ProgressDialogue' is autobuilt then the error is added to the 'Errors' service.
 ** 
+**   syntax: fantom
 **   dialogue := (ProgressDialogue) registry.autobuild(ProgressDialogue#)
 ** 
 ** or the dialogue may be set as an IoC field:
 ** 
+**   syntax: fantom
 **   @Autobuild ProgressDialogue dialogue
 ** 
 class ProgressDialogue {

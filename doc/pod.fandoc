@@ -1,6 +1,6 @@
-Overview [#overview]
-********************
-'Reflux' is a framework for creating simple FWT desktop applications.
+Overview
+********
+Reflux is a framework for creating simple FWT desktop applications.
 
 Modelled after an internet browser, Reflux lets you explore and edit resources via URIs. It expands upon Fantom's FWT by adding:
 
@@ -17,53 +17,32 @@ Reflux was inspired by Fantom's core 'flux' library.
 
 
 
-Install [#install]
-******************
-Install '@{project.name}' with the Fantom Repository Manager ( [fanr]`docFanr::Tool.install` ):
+Quick Start
+***********
+1. Create a text file called 'Example.fan' and copy this [Example Reflux Code]`#exampleCode`
 
-  C:\> fanr install -r http://repo.status302.com/fanr/ @{pod.name}
+2. Run 'Example.fan' as a Fantom script from the command line:
 
-To use in a [Fantom]`http://fantom.org/` project, add a dependency to 'build.fan':
+    C:\> fan Example.fan
 
-  depends = ["sys 1.0", ..., "@{pod.name} @{pod.version}"]
+    [afIoc] Adding module definition for afReflux::RefluxModule
+    [afIoc] Adding module definition for ExampleView_0::AppModule
 
+       ___    __                 _____        _
+      / _ |  / /_____  _____    / ___/__  ___/ /_________  __ __
+     / _  | / // / -_|/ _  /===/ __// _ \/ _/ __/ _  / __|/ // /
+    /_/ |_|/_//_/\__|/_//_/   /_/   \_,_/__/\__/____/_/   \_, /
+                                Alien-Factory IoC v2.0.8 /___/
 
+    IoC Registry built in 216ms and started up in 10ms
 
-Documentation [#documentation]
-******************************
-Full API & fandocs are available on the [Status302 repository]`http://repo.status302.com/doc/@{pod.name}/`.
-
-
-
-Quick Start [#quickStart]
-*************************
-1). Create a text file called 'Example.fan' and copy this [Example Reflux Code]`#exampleCode`
-
-2). Run 'Example.fan' as a Fantom script from the command line:
-
-pre>
-C:\> fan Example.fan
-
-[afIoc] Adding module definition for afReflux::RefluxModule
-[afIoc] Adding module definition for ExampleView_0::AppModule
-[afIoc]
-
-   ___    __                 _____        _
-  / _ |  / /_____  _____    / ___/__  ___/ /_________  __ __
- / _  | / // / -_|/ _  /===/ __// _ \/ _/ __/ _  / __|/ // /
-/_/ |_|/_//_/\__|/_//_/   /_/   \_,_/__/\__/____/_/   \_, /
-                            Alien-Factory IoC v2.0.2 /___/
-
-IoC Registry built in 216ms and started up in 10ms
-<pre
-
-![Example Screenshot]`http://static.alienfactory.co.uk/fantom-docs/afReflux.example.png`
+  ![Example Screenshot]`example.png`
 
 
 
-Usage [#usage]
-**************
-'Reflux' takes the internet browser strategy of labelling everything with a URI. Be it a file, an internet resource, or a database entity - if it can be identified by a URI then it may presented and edited in Reflux.
+Usage
+*****
+Reflux takes the internet browser strategy of labelling everything with a URI. Be it a file, an internet resource, or a database entity - if it can be identified by a URI then it may presented and edited in Reflux.
 
 A Reflux application is made up of:
 
@@ -73,7 +52,7 @@ A Reflux application is made up of:
  - Panels
  - Views
 
-![Screenshot of the Alien-Factory Explorer application]`http://static.alienfactory.co.uk/fantom-docs/afReflux.afExplorer.png`
+![Screenshot of the Alien-Factory Explorer application]`afExplorer.png`
 
 URIs are typed into the address bar. The typed URI is then resolved to a 'Resource'. Resource objects hold meta data that describe how it should be displayed / interacted with. Views are used to view and / or edit resources. Panels are extra tabs that show arbitrary data.
 
@@ -83,11 +62,11 @@ Note that Reflux itself is just a toolkit. See the [Alien-Factory Explorer]`pod:
 
 
 
-Explorer [#afExplorer]
-====================================
+Explorer
+========
 [Alien-Factory Explorer]`pod:afExplorer` is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
 
-Install 'Explorer' with [fanr]`docFanr::Tool.install`:
+Install 'Explorer' with [fanr]`docFanr::Tool#install`:
 
   C:\> fanr install -r http://repo.status302.com/fanr/ afExplorer
 
@@ -97,13 +76,15 @@ Start the 'Explorer' application from the command line:
 
 
 
-Panels [#Panels]
-****************
+Panels
+******
 [Panels]`Panel` are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shuts down.
 
 To create a custom panel, first create a class that extends `Panel`. Panels must set the 'content' field in order to display anything. This example just sets its FWT content to a yellow label:
 
 pre>
+syntax: fantom
+
 class MyPanel : Panel {
     new make(|This| in) : super(in) {
         content = Label() {
@@ -117,6 +98,8 @@ class MyPanel : Panel {
 Note that the Panel's ctor must take an 'it-block' parameter and pass it up to the superclass to be executed. This is so IoC can inject all those lovely dependencies. Now contribute an instance of the panel to the 'Panels' service in your 'AppModule':
 
 pre>
+syntax: fantom
+
 class AppModule {
     @Contribute { serviceType=Panels# }
     static Void contributePanels(Configuration config) {
@@ -130,11 +113,13 @@ Panels need to be *autobuilt* so IoC injects all the dependencies (via that it-b
 
 Panels are automatically added to the 'View -> Panels' menu. If the panel does not set a name it defaults the Panel's type, minus any 'Panel' suffix. When displayed, our simple panel should look like:
 
-![Screenshot of Panel Example]`http://static.alienfactory.co.uk/fantom-docs/afReflux.panelExample.png`
+![Screenshot of Panel Example]`panelExample.png`
 
 Note that Panels are not displayed by default; but the user's display settings are saved from one session to the next. To force the user to always start with the panel displayed, show it programmatically on application startup:
 
 pre>
+syntax: fantom
+
 RefluxBuilder(AppModule#).start |Reflux reflux, Window window| {
     reflux.showPanel(MyPanel#)
 }
@@ -153,13 +138,15 @@ Panels are automatically added to the 'EventHub' - see [Eventing]`#eventing` for
 
 
 
-Views [#views]
-**************
+Views
+*****
 [Views]`View` are 'Panels' that are associated with an (editable) resource. They are displayed in the centre of the Window.
 
 Custom views must extends `View`, which in turn extends 'Panel'. Like panels, views must set the 'content' field to display anything. This example view just displays the resource name in a green box:
 
 pre>
+syntax: fantom
+
 class MyView : View {
     Label label
 
@@ -187,11 +174,13 @@ Resources decide how they want to be displayed, so to display our view we need t
 
 
 
-Resolving URIs [#resolvingURIs]
-*******************************
+Resolving URIs
+**************
 Lets take this simple resource object:
 
 pre>
+syntax: fantom
+
 class MyResource : Resource {
     override Uri    uri
     override Str    name
@@ -216,6 +205,8 @@ Should 'viewTypes()' return more than one type, the user may cycle between them 
 It is the job of [UriResolvers]`UriResolver` to convert URI strings, as entered in the address bar, into resource instances. The following URI resolver will convert any URI with the scheme 'example:' into a 'MyResource' object:
 
 pre>
+syntax: fantom
+
 class MyResolver : UriResolver {
     @Inject Registry registry
 
@@ -232,6 +223,8 @@ class MyResolver : UriResolver {
 To use 'MyResolver' it must be contributed to the 'UriResolvers' service in the 'AppModule':
 
 pre>
+syntax: fantom
+
 @Contribute { serviceType=UriResolvers# }
 static Void contributeUriResolvers(Configuration config) {
     config["myResolver"] = config.autobuild(MyResolver#)
@@ -246,12 +239,12 @@ When 'example:foo-bar' is entered into the address bar, the following should hap
 
 And this should be displayed:
 
-![Screenshot of View Example]`http://static.alienfactory.co.uk/fantom-docs/afReflux.viewExample.png`
+![Screenshot of View Example]`viewExample.png`
 
 
 
-Menu Bar [#menuBar]
-*******************
+Menu Bar
+********
 Reflux comes with a pre-configured menu bar which is suitable for most applications. However it may be altered via IoC contributions.
 
 Each main Reflux menu is a standard FWT Menu instance, but is also configured as an IoC service and contributed to 'afReflux.menuBar'. The menus use the following service IDs:
@@ -266,6 +259,8 @@ Each main Reflux menu is a standard FWT Menu instance, but is also configured as
 So, removing the history menu is as simple as:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceId="afReflux.menuBar" }
 static Void contributeMenuBar(Configuration config) {
     config.remove("afReflux.historyMenu")
@@ -275,6 +270,8 @@ static Void contributeMenuBar(Configuration config) {
 And to add your own menu:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceId="afReflux.menuBar" }
 static Void contributeMenuBar(Configuration config) {
     config["example"] = Menu() { it.text = "Example"}
@@ -284,6 +281,8 @@ static Void contributeMenuBar(Configuration config) {
 Use IoC ordering constraints to further position the menu:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceId="afReflux.menuBar" }
 static Void contributeMenuBar(Configuration config) {
     menu := Menu() { it.text = "Example"}
@@ -296,11 +295,13 @@ static Void contributeMenuBar(Configuration config) {
 
 
 
-Menu Items [#menuItems]
-=======================
+Menu Items
+==========
 The menus services take contributions of 'MenuItems', so to add a *Hello Mum!* command to the edit menu:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceId="afReflux.editMenu" }
 static Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
@@ -313,6 +314,8 @@ Note that while a standard FWT command is used above, it is recommended that 'Re
 Use IoC ordering constraints to further position any contributed commands / menu items. For example, to place the *Hello Mum!* command as the first item:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceId="afReflux.editMenu" }
 static Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
@@ -326,11 +329,13 @@ When ordering menu items commands consult the source code of 'RefluxModule' to f
 
 
 
-Tool Bar [#toolBar]
-*******************
+Tool Bar
+********
 The tool bar may be configured in much the same way as the menu bar, with IoC contributions. To add fwt 'Button' objects, contribute them to the 'afReflux.toolBar' service:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceId="afReflux.toolBar" }
 static Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
@@ -342,14 +347,16 @@ To remove or position buttons in the tool bar, consult the 'RefluxModule' source
 
 
 
-Global Commands [#globalCommands]
-*********************************
+Global Commands
+***************
 Global commands are wrappers around standard fwt commands that may be accessed from the 'GlobalCommands' service.
 They are generally added to menus and tool bars. For the accelerator (keyboard shortcuts) to work, they need to be added to a menu bar.
 
 Global command instances should be contributed to the 'GlobalCommands' service:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceType=GlobalCommands# }
 static Void contributeGlobalCommands(Configuration config) {
     config["myGlobCmd"] = config.autobuild(MyGlobalCommand#)
@@ -359,6 +366,8 @@ static Void contributeGlobalCommands(Configuration config) {
 Global commands are disabled by default. It is up to 'Views' and 'Panels' (or any service) to add enabler functions that dictate when the command should be active. This way, global commands may be decoupled from their context sensitivity. For example, to only enable 'myGlobCmd' when 'MyPanel' is active:
 
 pre>
+syntax: fantom
+
 class MyPanel : Panel {
     @Inject GlobalCommands globalCommands
 
@@ -386,11 +395,13 @@ Reflux eventing allows different parts of the application to communicate with ot
 
 
 
-Define [#eventDefine]
-=====================
+Define
+======
 Reflux events are defined by a 'mixin'. The mixin should define *virtual* (or *abstract*) methods, these are the *events*. As such, it is convention that they are named 'onXXXX()':
 
 pre>
+syntax: fantom
+
 mixin MyEvents {
     virtual Void onMyEvent(Str stuff) { }
 
@@ -403,6 +414,8 @@ Note that event methods should not return anything (they're strictly fire and fo
 For 'MyEvents' to be recognised as an event type it needs to be contributed to the 'EventTypes' service:
 
 pre>
+syntax: fantom
+
 @Contribute { serviceType=EventTypes# }
 static Void contributeEventHub(Configuration config) {
     config.add(MyEvents#)
@@ -411,11 +424,13 @@ static Void contributeEventHub(Configuration config) {
 
 
 
-Fire [#eventFire]
-=================
+Fire
+====
 Reflux creates a instance of the event mixin that can be injected into your components and services. To fire an event, just call the method.
 
 pre>
+syntax: fantom
+
 class MyService {
     @Inject MyEvents myEvents
 
@@ -429,11 +444,13 @@ class MyService {
 
 
 
-Handle [#eventHandle]
-=======================
+Handle
+======
 Multiple classes may handle events. For a class to so, it must first register itself with the 'EventHub' service. When an event is fired, each registered class is scanned to see if it implements the appropriate event mixin. If it does, the event method is called:
 
 pre>
+syntax: fantom
+
 class MyOtherService : MyEvents {
 
     new make(EventHub eventHub) {
@@ -466,7 +483,7 @@ The sample application contains:
 
 As you will see, the **Launch Nukes** global command is only active when the Alien Attack panel is *not* displayed.
 
-![Example Screenshot]`http://static.alienfactory.co.uk/fantom-docs/afReflux.example.png`
+![Example Screenshot]`example.png`
 
 Things to try:
 
@@ -476,6 +493,8 @@ Things to try:
 Example.fan
 
 pre>
+syntax: fantom
+
 using afIoc
 using afReflux
 using fwt
@@ -658,43 +677,4 @@ class MyView : View {
 
 Have fun!
 
-
-
-Release Notes [#releaseNotes]
-*****************************
-v0.0.12 [#v0.0.12]
-==================
- - Chg: Added Cut, Copy and Paste global commands.
-
-v0.0.10 [#v0.0.10]
-==================
- - Chg: 'ProgressDialogue.open()' now returns what the worker returns.
- - Chg: Removed 'PanelTabPane' *fudge* for Explorer's 'HtmlView'.
- - Bug: 'Browser' incorrectly decoded hyperlink URIs.
-
-v0.0.8 [#v0.0.8]
-================
- - New: 'ProgressDialogue' widget for showing the progress of work.
- - Chg: Added default param 'skipEventRaising' to 'Errors.add()'.
-
-v0.0.6 [#v0.0.6]
-================
- - New: Use 'RefluxBuilder' to build and launch Reflux applications.
- - New: Added a 'ResourceTree' widget and corresponding 'Resource.children()' and 'Resource.parent()' methods.
- - Bug: Default 'View.refresh()' could cause a 'NullErr'.
-
-v0.0.4 [#v0.0.4]
-================
- - New: 'View.onDrop()' event handler for FWT file drops.
- - New: 'Dialogues' service so calls may be intercepted.
- - Chg: 'Panel.refresh()' now takes an optional resource hint.
- - Chg: Toned down the alerting on 'UnresolvedErrs'.
- - Chg: Preferences are cached on name, not type, to allow multiple prefs of same type.
- - Bug: Reflux now explicitly depends on Fantom 1.0.67 - Thanks 'LightDye'!
- - Bug: 'NullErr' if you tried to remove a GlobalCommand invoker that didn't exist.
- - Bug: Views are asked if they wish to close on application exit. (Again!)
-
-v0.0.2 [#v0.0.2]
-================
- - New: Initial release.
 

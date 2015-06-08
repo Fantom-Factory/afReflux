@@ -11,8 +11,8 @@ class Build : BuildPod {
 		meta = [
 			"proj.name"		: "Reflux",
 			"afIoc.module"	: "afReflux::RefluxModule",
-			"tags"			: "system",
-			"repo.private"	: "true"
+			"repo.tags"		: "system",
+			"repo.public"	: "false"
 		]
 
 		depends = [	
@@ -29,7 +29,7 @@ class Build : BuildPod {
 		]
 
 		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`]
-		resDirs = [`locale/`, `res/icons-eclipse/`]
+		resDirs = [`doc/`, `locale/`, `res/icons-eclipse/`]
 		
 		javaDirs = [`java/`]
 	}

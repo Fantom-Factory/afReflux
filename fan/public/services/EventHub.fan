@@ -8,6 +8,7 @@ using fwt
 ** To receive events, classes must first register themselves with 'EventHub'. 
 ** Given 'MyEvents' is an event mixin: 
 ** 
+**   syntax: fantom
 **   class MyService : MyEvents {
 **       new make(EventHub eventHub) {
 **           eventHub.register(this)

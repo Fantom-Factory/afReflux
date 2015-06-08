@@ -14,11 +14,13 @@ mixin Preferences {
 
 	** Returns an instance of the given preferences object.
 	**
+	**   syntax: fantom
 	**   preferences.loadPrefs(MyPrefs#, "myPrefs.fog")
 	abstract Obj loadPrefs(Type prefsType, Str? name := null)
 
 	** Saves the given preference instance.
 	**
+	**   syntax: fantom
 	**   preferences.savePrefs(myPrefs, "myPrefs.fog")
 	abstract Void savePrefs(Obj prefs, Str? name := null)
 

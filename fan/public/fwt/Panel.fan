@@ -8,9 +8,11 @@ using fwt
 **
 ** 'Panel' implementations should be *autobuilt* and contributed to the 'Panels' service:
 **
+**   syntax: fantom
+** 
 **   @Contribute { serviceType=Panels# }
 **   static Void contributePanels(Configuration config) {
-**     config["myPanel"] = config.autobuild(MyPanel#)
+**       config["myPanel"] = config.autobuild(MyPanel#)
 **   }
 **
 ** 'Panels' are automatically added to the 'EventHub', so to receive events they only need to implement the required event mixin.

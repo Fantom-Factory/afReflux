@@ -8,6 +8,8 @@ using concurrent::Actor
 ** A common usage is to create an 'Icons' class in your project that keeps tabs on the file mappings:
 ** 
 ** pre>
+** syntax: fantom
+** 
 ** using afIoc::Inject
 ** using afReflux::Images
 ** using gfx::Image
@@ -29,9 +31,13 @@ using concurrent::Actor
 ** 
 ** Then the icons may be referenced with:
 ** 
+**   syntax: fantom
+** 
 **   icon := icons.icoImage1
 ** 
 ** Don't forget to add the image directory to 'resDirs' in the 'build.fan':
+** 
+**   syntax: fantom
 ** 
 **   resDirs = [`res/icons/`]
 ** 

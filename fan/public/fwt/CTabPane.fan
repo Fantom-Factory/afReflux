@@ -11,7 +11,7 @@ using fwt
 **  - may be curved
 **  - may be aligned on the bottom 
 ** 
-** ![CTabs]`doc/afReflux.ctabs.png`
+** ![CTabs]`ctabs.png`
 ** 
 ** ![CTabs]`http://www.javalobby.org/images/postings/rj/fancy_tabs/5.gif`
 ** 

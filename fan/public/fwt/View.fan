@@ -18,6 +18,8 @@ abstract class View : Panel {
 
 	** Subclasses should define the following ctor:
 	**
+	**   syntax: fantom
+	** 
 	**   new make(|This| in) : super(in) { ... }
 	protected new make(|This| in) : super(in) { }
 
