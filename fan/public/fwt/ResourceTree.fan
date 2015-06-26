@@ -13,19 +13,20 @@ using fwt
 ** 
 **   syntax: fantom
 ** 
-**   tree := ResourceTree()
+**   tree := ResourceTree(reflux)
 **   ContentPane() {
 **       it.content = tree.tree
 **   }
 class ResourceTree {
+	private Reflux reflux
 	
 	** The underlying FWT Tree widget.
 	Tree tree
 
 	** The model that customises the look of the tree. Leave as is for default behaviour.
-	ResourceTreeModel model := ResourceTreeModel() {
+	ResourceTreeModel model := ResourceTreeModelImpl() {
 		set {
-			tree.model = TreeModelAdapter(roots, it)
+			tree.model = TreeModelAdapter(reflux, roots, it)
 			&model = it			
 		}
 	}
@@ -33,13 +34,20 @@ class ResourceTree {
 	** The root resources of the tree.
 	Resource[] roots := Resource#.emptyList {
 		set {
-			tree.model = TreeModelAdapter(it, model)
+			tree.model = TreeModelAdapter(reflux, it, model)
 			&roots = it
 		}
 	}
 
-	** Creates a 'ResourceTree'.
-	new make(|This|? in := null) {
+	** Creates a 'ResourceTree'. Use the ctor to pass in a tree:
+	**   syntax: fantom
+	**   ResourceTree(reflux) {
+	**       it.tree = Tree {
+	**           it.border = false
+	**       }
+	**   }
+	new make(Reflux reflux, |This|? in := null) {
+		this.reflux = reflux
 		tree = Tree()
 		in(this)
 		tree.onAction.add |Event e| {
@@ -101,13 +109,13 @@ class ResourceTree {
 	
 	** Updates the specified resource from the model before showing it.
 	Void refreshNode(Resource resource) {
-		node := findNodePath(resource)
+		node := findNodePath(resource.uri.toStr)
 
 		if (node.getSafe(-2) != null) {	// null for root nodes
 			node.getSafe(-2).refresh
 			tree.refreshNode(node.getSafe(-2))
 		} else {
-			tree.model = TreeModelAdapter(roots, model)
+			tree.model = TreeModelAdapter(reflux, roots, model)
 			tree.refreshAll					
 		}
 		
@@ -119,29 +127,29 @@ class ResourceTree {
 	** Scrolls and expands the tree until the 'Resource' is visible.
 	** This also selects the resource in the tree.
 	Void showNode(Resource resource) {
-		path := findNodePath(resource)
+		path := findNodePath(resource.uri.toStr)
 		path.eachRange(0..-2) { tree.setExpanded(it, true) }
 		tree.show(path.last)
 		tree.select(path.last)
 	}
 
-	private TreeNode[] findNodePath(Resource resource) {
-		resPath		:= path(resource)
+	private TreeNode[] findNodePath(Str strRes) {
+		resPath		:= path(strRes)
 		nodePath	:= TreeNode[,]
 		nodes		:= treeModel.roots
-		resPath.each |Resource s, i| {
-			node := nodes.find { it.resource == resPath[i] }
+		resPath.each |Str s, i| {
+			node := nodes.find { it.resource.uri.toStr == resPath[i] }
 			nodePath.add(node)
 			nodes = node.children
 		}
 		return nodePath
 	}
 
-	private Resource[] path(Resource? r) {
-		path	:= Resource[,]
+	private Str[] path(Str? r) {
+		path	:= Str[,]
 		while (r != null) {
 			path.add(r)
-			r = r.parent
+			r = reflux.resolve(r).parent
 		}
 		return path.reverse
 	}
@@ -152,7 +160,7 @@ class ResourceTree {
 }
 
 ** A model to customise the look of a 'ResourceTree'.
-class ResourceTreeModel {
+mixin ResourceTreeModel {
 
 	** Get the text to display.
 	** Defaults to 'resource.name'.
@@ -182,36 +190,41 @@ class ResourceTreeModel {
 	** If no children return an empty list.
 	** 
 	** Defaults to 'resource.children'.
-	virtual Resource[] children(Resource resource) { resource.children }
-
+	virtual Str[] children(Resource resource) { resource.children }
 }
+
+internal class ResourceTreeModelImpl : ResourceTreeModel { }
 
 internal class TreeModelAdapter : TreeModel {
 	override TreeNode[] roots
-	ResourceTreeModel model
+	ResourceTreeModel 	model
+	Reflux				reflux
 	
-	new make(Resource[] roots, ResourceTreeModel model) {
-		this.roots = TreeNode.map(null, roots)
-		this.model = model
+	new make(Reflux reflux, Resource[] roots, ResourceTreeModel model) {
+		this.reflux	= reflux
+		this.roots	= TreeNode.map(reflux, null, roots)
+		this.model	= model
 	}
 
-	override Str	text		(Obj n) { model.text(res(n)) }
-	override Image?	image		(Obj n) { model.image(res(n)) }
-	override Font?	font		(Obj n) { model.font(res(n)) }
-	override Color?	fg			(Obj n) { model.fg(res(n)) }
-	override Color?	bg			(Obj n) { model.bg(res(n)) }
-	override Bool	hasChildren	(Obj n) { node(n).hasChildren }
-	override Obj[]	children	(Obj n) { node(n).children }
+	override Str	text		(Obj n) { model.text(res(n))	}
+	override Image?	image		(Obj n) { model.image(res(n))	}
+	override Font?	font		(Obj n) { model.font(res(n))	}
+	override Color?	fg			(Obj n) { model.fg(res(n))		}
+	override Color?	bg			(Obj n) { model.bg(res(n))		}
+	override Bool	hasChildren	(Obj n) { node(n).hasChildren	}
+	override Obj[]	children	(Obj n) { node(n).children		}
 	
 	Resource res(TreeNode n) { n.resource }
 	TreeNode node(TreeNode n) { n }
 }
 
 internal class TreeNode {
-	TreeNode? parent
-	Resource resource
+	Reflux 		reflux
+	TreeNode?	parent
+	Resource	resource
 	
-	new make(TreeNode? parent, Resource resource) {
+	new make(Reflux reflux, TreeNode? parent, Resource resource) {
+		this.reflux = reflux
 		this.parent = parent
 		this.resource = resource
 	}
@@ -221,7 +234,7 @@ internal class TreeNode {
 	TreeNode[]? children {
 		get {
 			if (&children == null)
-				&children = map(this, resource.children)
+				&children = map(reflux, this, resource.children.map { resource.resolveChild(it) ?: reflux.resolve(it) })
 			return &children
 		}
 	}
@@ -229,10 +242,10 @@ internal class TreeNode {
 	Void refresh() {
 		children = null
 	}
-
+	
 //	override Str toStr() { return resource.toStr }
 
-	static TreeNode[] map(TreeNode? parent, Resource[] resources) {
-		resources.map { TreeNode(parent, it) }
+	static TreeNode[] map(Reflux reflux, TreeNode? parent, Resource[] resources) {
+		resources.map { TreeNode(reflux, parent, it) }
 	}
 }

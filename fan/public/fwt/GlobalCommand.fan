@@ -23,6 +23,26 @@ using fwt
 ** 'GlobalCommands' are disabled by default. To enable, add an enabler function or enable the fwt command directly. 
 ** 
 ** 'GlobalCommands' are automatically added to the 'EventHub', so to receive events they only need to implement the required event mixin.
+** 
+** Reflux defines the following 'GlobalCommands':
+**  - 'afReflux.cmdAbout'
+**  - 'afReflux.cmdCopy'
+**  - 'afReflux.cmdCut'
+**  - 'afReflux.cmdExit'
+**  - 'afReflux.cmdNavBackward'
+**  - 'afReflux.cmdNavClear'
+**  - 'afReflux.cmdNavForward'
+**  - 'afReflux.cmdNavHome'
+**  - 'afReflux.cmdNavUp'
+**  - 'afReflux.cmdNew'
+**  - 'afReflux.cmdPaste'
+**  - 'afReflux.cmdRedo'
+**  - 'afReflux.cmdRefresh'
+**  - 'afReflux.cmdSave'
+**  - 'afReflux.cmdSaveAll'
+**  - 'afReflux.cmdSaveAs'
+**  - 'afReflux.cmdToggleView'
+**  - 'afReflux.cmdUndo'
 class GlobalCommand {
 	@Inject private RefluxIcons		_refluxIcons
 	@Inject private Registry		_registry

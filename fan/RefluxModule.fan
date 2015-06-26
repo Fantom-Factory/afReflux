@@ -48,6 +48,7 @@ class RefluxModule {
 
 	@Contribute { serviceType=GlobalCommands# }
 	static Void contributeGlobalCommands(Configuration config) {
+		config["afReflux.cmdNew"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdNew"])
 		config["afReflux.cmdSave"]			= config.autobuild(SaveCommand#)
 		config["afReflux.cmdSaveAs"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
 		config["afReflux.cmdSaveAll"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
@@ -136,9 +137,10 @@ class RefluxModule {
 
 	@Contribute { serviceId="afReflux.fileMenu" }
 	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.cmdSave"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
-		config["separator.01"]		= MenuItem { it.mode = MenuItemMode.sep }
-		config["afReflux.cmdExit"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
+		config["afReflux.cmdSave"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
+		config["afReflux.cmdSaveAs"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSaveAs"].command)
+		config["separator.01"]			= MenuItem { it.mode = MenuItemMode.sep }
+		config["afReflux.cmdExit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
 	}
 
 	@Contribute { serviceId="afReflux.editMenu" }

@@ -29,14 +29,22 @@ mixin Resource {
 	virtual Menu populatePopup(Menu menu) { menu }
 
 	** Return child resources. Used by 'ResourceTree'.
+	** The returned strings should be resolvable by 'Reflux'.  
 	** 
 	** Defaults to empty list.
-	virtual Resource[] children() { Resource#.emptyList }
+	virtual Str[] children() { Str#.emptyList }
+
+	** Override to manually resolve children. If 'null' is returned, the child is resolved through Reflux.
+	** Overriding this method is an optional optimisation hook.
+	virtual Resource? resolveChild(Str childUri) { null }
 	
-	** Return the parent resource. Root resources should return 'null'. Used by 'ResourceTree'.
+	** Return the parent resource. Root resources should return 'null'. 
+	** The returned string should be resolvable by 'Reflux'.  
+	** 
+	** Used by 'ResourceTree'.
 	** 
 	** Defaults to 'null'.
-	virtual Resource? parent() { null }
+	virtual Str? parent() { null }
 	
 	** If generating child resources is in-efficient, override this method for optimisation.   
 	** 
@@ -48,17 +56,17 @@ mixin Resource {
 	** Defaults to empty list.
 	virtual Type[] viewTypes() { Type#.emptyList }
 
-	@NoDoc
+	** Compares the resource URIs (minus any frags).
 	override Bool equals(Obj? that) {
 		Url(uri).minusFrag == Url((that as Resource)?.uri).minusFrag
 	}
 
-	@NoDoc
+	** Returns a hash of the resource URI (minus any frag).
 	override Int hash() {
 		Url(uri).minusFrag.hash
 	}
 
-	@NoDoc
+	** Returns a comparison of the resource URIs (minus any frags).
 	override Int compare(Obj that) {
 		uri <=> (that as Resource)?.uri
 	}
