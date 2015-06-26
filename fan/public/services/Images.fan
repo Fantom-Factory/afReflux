@@ -43,7 +43,7 @@ using concurrent::Actor
 ** 
 mixin Images {
 
-	** Returns the image at the given URI, storing it in the cache.
+	** Returns (and caches) the image at the given URI.
 	@Operator
 	abstract Image? get(Uri uri, Bool checked := true)
 
@@ -59,7 +59,7 @@ mixin Images {
 	** Useful for generating *disabled* icons.
 	abstract Image? getFaded(Uri uri, Bool checked := true)
 
-	** Returns (and caches) the image at the given URI ensuring that it is fully loaded and that
+	** Returns (and does not cache) the image at the given URI ensuring that it is fully loaded and that
 	** its 'size()' is available.
 	abstract Image? load(Uri uri, Bool checked := true)
 
@@ -134,7 +134,7 @@ class ImagesImpl : Images {
 				Actor.sleep(20ms)
 			}
 			if (image.size.w == 0 || image.size.h == 0)
-				throw Err("Loading image `${uri}` took too long... (>${maxLoadTime.toLocale})")
+				throw Err("Loading image `${uri}` took too long... (>${maxLoadTime.toLocale}) - w=${image.size.w} h=${image.size.h}")
 
 		} catch (Err err) {
 			// beware: org.eclipse.swt.SWTException: Unsupported or unrecognized format

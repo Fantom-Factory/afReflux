@@ -3,6 +3,7 @@ Versions
 
 v0.0.12
 =======
+ - Chg: 'Resource.children()' and 'Resource.parent()' now return strings, not resources.
  - Chg: Added New, Cut, Copy and Paste global commands.
 
 v0.0.10
