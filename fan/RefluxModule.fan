@@ -51,7 +51,7 @@ class RefluxModule {
 		config["afReflux.cmdNew"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdNew"])
 		config["afReflux.cmdSave"]			= config.autobuild(SaveCommand#)
 		config["afReflux.cmdSaveAs"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
-		config["afReflux.cmdSaveAll"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAll"])
+		config["afReflux.cmdSaveAll"]		= config.autobuild(SaveAllCommand#)
 		config["afReflux.cmdExit"]			= config.autobuild(ExitCommand#)
 		config["afReflux.cmdAbout"]			= config.autobuild(AboutCommand#)
 		config["afReflux.cmdRefresh"]		= config.autobuild(RefreshCommand#)
@@ -139,6 +139,7 @@ class RefluxModule {
 	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
 		config["afReflux.cmdSave"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
 		config["afReflux.cmdSaveAs"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSaveAs"].command)
+		config["afReflux.cmdSaveAll"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSaveAll"].command)
 		config["separator.01"]			= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.cmdExit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
 	}
@@ -206,6 +207,7 @@ class RefluxModule {
 	@Contribute { serviceId="afReflux.toolBar" }
 	static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
 		config["afReflux.cmdSave"]			= toolBarCommand(globalCmds["afReflux.cmdSave"].command)
+		config["afReflux.cmdSaveAll"]		= toolBarCommand(globalCmds["afReflux.cmdSaveAll"].command)
 		config["separator.01"]				= Button { mode = ButtonMode.sep }
 		config["afReflux.cmdNavBackward"]	= toolBarCommand(globalCmds["afReflux.cmdNavBackward"].command)
 		config["afReflux.cmdNavForward"]	= toolBarCommand(globalCmds["afReflux.cmdNavForward"].command)
