@@ -108,8 +108,8 @@ class ResourceTree {
 	}
 	
 	** Updates the specified resource from the model before showing it.
-	Void refreshNode(Resource resource) {
-		node := findNodePath(resource.uri.toStr)
+	Void refreshNode(Str resourceUri) {
+		node := findNodePath(resourceUri)
 
 		if (node.getSafe(-2) != null) {	// null for root nodes
 			node.getSafe(-2).refresh
@@ -120,36 +120,38 @@ class ResourceTree {
 		}
 		
 		Desktop.callLater(50ms) |->| {
-			showNode(resource)
+			showNode(resourceUri)
 		}
 	}
 	
 	** Scrolls and expands the tree until the 'Resource' is visible.
 	** This also selects the resource in the tree.
-	Void showNode(Resource resource) {
-		path := findNodePath(resource.uri.toStr)
+	Void showNode(Str resourceUri) {
+		path := findNodePath(resourceUri)
 		path.eachRange(0..-2) { tree.setExpanded(it, true) }
 		tree.show(path.last)
 		tree.select(path.last)
 	}
 
-	private TreeNode[] findNodePath(Str strRes) {
-		resPath		:= path(strRes)
+	private TreeNode[] findNodePath(Str resourceUri) {
+		resPath		:= path(resourceUri)
 		nodePath	:= TreeNode[,]
 		nodes		:= treeModel.roots
-		resPath.each |Str s, i| {
-			node := nodes.find { it.resource.uri.toStr == resPath[i] }
+		resPath.each |Str path| {
+			node := nodes.find { it.resource.uri.toStr == path }
+			if (node == null)
+				throw ArgErr("Could not find node in tree: $path")
 			nodePath.add(node)
 			nodes = node.children
 		}
 		return nodePath
 	}
 
-	private Str[] path(Str? r) {
+	private Str[] path(Str? resourceUri) {
 		path	:= Str[,]
-		while (r != null) {
-			path.add(r)
-			r = reflux.resolve(r).parent
+		while (resourceUri != null) {
+			path.add(resourceUri)
+			resourceUri = reflux.resolve(resourceUri).parent
 		}
 		return path.reverse
 	}
