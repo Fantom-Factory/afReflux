@@ -59,8 +59,14 @@ abstract class View : Panel {
 	**
 	** By default this calls 'load()'.
 	override Void refresh(Resource? resource := null) {
-		if (resource != null && resource == this.resource)
+		if (resource != null && resource == this.resource) {
 			load(resource)
+			return
+		}
+		if (resource == null && this.resource != null) {
+			load(this.resource)
+			return			
+		}
 	}
 
 	** Callback when the View should save its resource. Only called when 'isDirty' is 'true'.

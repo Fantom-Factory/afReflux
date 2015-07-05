@@ -70,9 +70,10 @@ mixin Images {
 
 @NoDoc	// so maxLoadTime may be overridden
 class ImagesImpl : Images {
-	private Uri:Image	images		:= Uri:Image[:]
-	private Uri:Image	fadedImages	:= Uri:Image[:]
-	private Image[]		extra		:= Image[,]
+	private Uri:Image		images		:= Uri:Image[:]
+	private Uri:Image		fadedImages	:= Uri:Image[:]
+	private Image[]			extra		:= Image[,]
+	private Uri:DateTime	fileCache	:= Uri:DateTime[:]
 
 			Duration maxLoadTime	:= 200ms
 
@@ -82,7 +83,7 @@ class ImagesImpl : Images {
 		if (images.containsKey(uri))
 			return images[uri]
 
-		image := Image.make(uri, checked)
+		image := makeImage(uri, checked)
 
 		if (image != null)
 			images[uri] = image
@@ -122,7 +123,7 @@ class ImagesImpl : Images {
 
 	override Image? load(Uri uri, Bool checked := true) {
 		// we may cache an image produced from load, but don't bother caching it itself
-		image := Image(uri, checked)
+		image := makeImage(uri, checked)
 
 		if (image == null)
 			return null
@@ -144,6 +145,26 @@ class ImagesImpl : Images {
 		}
 
 		return image
+	}
+	
+	** Fantom has some sort of internal Image caching going on - so we cache bust the URI if needed
+	private Image? makeImage(Uri uri, Bool checked := true) {
+		try {
+			f := (File?) uri.get
+			if (f == null || !f.exists) throw UnresolvedErr("file does not exist: ${f?.normalize ?: uri}")
+			
+			lastUpdated := fileCache.getOrAdd(uri) { f.modified }
+			if (f.modified > lastUpdated) {
+				fileCache[uri] = f.modified
+				uri = uri.plusQuery(["bustCache":Int.random(0..9999).toStr])
+			}
+			
+			return Image(uri, checked)
+
+		} catch (Err e) {
+			if (checked) throw e
+			return null
+		}		
 	}
 
 	override Void disposeAll() {

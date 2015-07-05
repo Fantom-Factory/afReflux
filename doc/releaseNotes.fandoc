@@ -8,6 +8,7 @@ v0.0.12
  - Chg: Added 'onRefresh(Resource? resource)' event.
  - Chg: 'Resource.children()' and 'Resource.parent()' now return strings, not resources.
  - Chg: Added New, Cut, Copy and Paste global commands.
+ - Chg: Added cache busting when loading images.
 
 v0.0.10
 =======
