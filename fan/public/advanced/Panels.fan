@@ -19,4 +19,11 @@ class Panels {
 	Type[] panelTypes() {
 		panelMap.keys
 	}
+	
+	Void refreshPanels(Resource? resource := null) {
+		panels.each {
+			if (it.isShowing)
+				it.refresh(resource)
+		}
+	}
 }
