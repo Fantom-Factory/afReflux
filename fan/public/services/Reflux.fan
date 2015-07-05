@@ -24,6 +24,8 @@ mixin Reflux {
 	abstract Bool closeView(View view, Bool force)	  // currently, only activeView is available, need views()
 	abstract Void replaceView(View view, Type viewType) // currently, only activeView is available, need views()
 
+	abstract Void saveAll()
+	
 	abstract Panel? getPanel(Type panelType, Bool checked := true)
 	abstract Panel showPanel(Type panelType)
 	abstract Panel hidePanel(Type panelType)
@@ -150,6 +152,12 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		return panel
 	}
 
+	override Void saveAll() {
+		frame.dirtyViews.each |view| {
+			view.save
+		}		
+	}
+	
 	override Void exit() {
 		// only active and close what we have to - we don't want refresh flashes causing an epi-fit!
 		frame.dirtyViews.each |view| {
