@@ -128,6 +128,10 @@ internal class PanelTabPane : ContentPane {
 			}
 		}
 	}
+	
+	Panel[] panels() {
+		panelTabs.map { it.panel }
+	}
 }
 
 internal class PanelTabTuple {

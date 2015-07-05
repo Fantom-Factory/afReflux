@@ -43,7 +43,7 @@ internal class Frame : Window, RefluxEvents {
 				},
 				panelTabs[Halign.right],
 			}
-}
+		}
 
 		this.onClose.add |Event e| { if (!closing) reflux.exit }
 
@@ -91,6 +91,10 @@ internal class Frame : Window, RefluxEvents {
 		view := viewTabs.load(resource, ctx)
 		update(resource, false)
 		return view
+	}
+	
+	Void refreshViews(Resource? resource) {
+		viewTabs.panels.each { it.refresh(resource) }
 	}
 
 	override Void onViewActivated(View view) {

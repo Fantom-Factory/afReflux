@@ -22,6 +22,8 @@ mixin RefluxEvents {
 	virtual Void onSaveSession(Str:Obj? session) { }
 	
 	virtual Void onLoad(Resource resource)	{ }
+
+	virtual Void onRefresh(Resource? resource)	{ }
 	
 	virtual Void onError(Error error)	{ }
 
