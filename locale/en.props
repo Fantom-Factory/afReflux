@@ -1,6 +1,8 @@
 
 // ---- Global Commands ----
 
+afReflux.cmdNew.name				= New
+afReflux.cmdNew.accelerator			= Ctrl+N
 afReflux.cmdSave.name				= Save
 afReflux.cmdSave.accelerator		= Ctrl+S
 afReflux.cmdSaveAs.name				= Save As...
