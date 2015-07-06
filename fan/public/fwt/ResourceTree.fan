@@ -133,10 +133,32 @@ class ResourceTree {
 		tree.select(path.last)
 	}
 
+	** Get and set the selected nodes.
+	** 
+	** Convenience for 'tree.selected()'
+	Resource[] selected {
+		get {
+			((TreeNode[]) tree.selected).map { it.resource }
+		}
+		set {
+			tree.selected = it.map { findNode(it.uri.toStr) }
+		}
+	}
+
+	** Return the resource at the specified coordinate relative to this widget. 
+	** Return 'null' if no resource at given coordinate.
+	Resource? nodeAt(Point pos) {
+		((TreeNode?) tree.nodeAt(pos))?.resource
+	}
+	
+	private TreeNode findNode(Str resourceUri) {
+		findNodePath(resourceUri).last
+	}
+
 	private TreeNode[] findNodePath(Str resourceUri) {
-		resPath		:= path(resourceUri)
 		nodePath	:= TreeNode[,]
-		nodes		:= treeModel.roots
+		nodes		:= (TreeNode[]) tree.model.roots
+		resPath		:= path(resourceUri)
 		resPath.each |Str path| {
 			node := nodes.find { it.resource.uri.toStr == path }
 			if (node == null)
@@ -188,7 +210,7 @@ mixin ResourceTreeModel {
 	** Defaults to 'resource.hasChildren'.
 	virtual Bool hasChildren(Resource resource) { resource.hasChildren }
 
-	** Get the children of the specified node.
+	** Returns the children (resource URIs) of the specified node.
 	** If no children return an empty list.
 	** 
 	** Defaults to 'resource.children'.
