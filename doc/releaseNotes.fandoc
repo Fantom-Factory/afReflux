@@ -7,7 +7,7 @@ v0.0.12
  - New: 'TreeResource.selected' and 'TreeResource.nodeAt()'.
  - Chg: Refreshing a resource also refreshes *all* Views.
  - Chg: Added 'onRefresh(Resource? resource)' event.
- - Chg: 'Resource.children()' and 'Resource.parent()' now return strings, not resources.
+ - Chg: 'Resource.children()' and 'Resource.parent()' now return Uri, not resources.
  - Chg: Added New, Cut, Copy and Paste global commands.
  - Chg: Added cache busting when loading images.
 
