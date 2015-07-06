@@ -4,6 +4,7 @@ Versions
 v0.0.12
 =======
  - New: Implemented 'Save All' global command.
+ - New: 'TreeResource.selected' and 'TreeResource.nodeAt()'.
  - Chg: Refreshing a resource also refreshes *all* Views.
  - Chg: Added 'onRefresh(Resource? resource)' event.
  - Chg: 'Resource.children()' and 'Resource.parent()' now return strings, not resources.
