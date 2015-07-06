@@ -137,10 +137,12 @@ class RefluxModule {
 
 	@Contribute { serviceId="afReflux.fileMenu" }
 	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
+		config["afReflux.cmdNew"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdNew"].command)
+		config["separator.01"]			= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.cmdSave"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
 		config["afReflux.cmdSaveAs"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSaveAs"].command)
 		config["afReflux.cmdSaveAll"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSaveAll"].command)
-		config["separator.01"]			= MenuItem { it.mode = MenuItemMode.sep }
+		config["separator.02"]			= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.cmdExit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
 	}
 
