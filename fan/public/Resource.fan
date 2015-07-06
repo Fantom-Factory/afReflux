@@ -32,19 +32,27 @@ mixin Resource {
 	** The returned strings should be resolvable by 'Reflux'.  
 	** 
 	** Defaults to empty list.
-	virtual Str[] children() { Str#.emptyList }
+	virtual Uri[] children() { Uri#.emptyList }
 
-	** Override to manually resolve children. If 'null' is returned, the child is resolved through Reflux.
+	** Override to manually resolve children. 
+	** Do this if you have cached values for the children, or want to override with a 'once' method.
+	** If 'null' is returned, the child is resolved through Reflux.
 	** Overriding this method is an optional optimisation hook.
-	virtual Resource? resolveChild(Str childUri) { null }
-	
+	virtual Resource? resolveChild(Uri childUri) { null }
+
+	** Override to manually resolve the parent. 
+	** Do this if you have a cached value, or want to override with a 'once' method.
+	** If 'null' is returned, the parent is resolved through Reflux.
+	** Overriding this method is an optional optimisation hook.
+	virtual Resource? resolveParent() { null }
+
 	** Return the parent resource. Root resources should return 'null'. 
 	** The returned string should be resolvable by 'Reflux'.  
 	** 
 	** Used by 'ResourceTree'.
 	** 
 	** Defaults to 'null'.
-	virtual Str? parent() { null }
+	virtual Uri? parent() { null }
 	
 	** If generating child resources is in-efficient, override this method for optimisation.   
 	** 

@@ -5,7 +5,7 @@ using fwt
 ** [Tree]`fwt::Tree` widget with the following enhancements:
 ** 
 **  - A 'Resource' specific tree model. 
-**  - Hassle free 'refreshNode()' and 'showNode()' methods that just work.
+**  - Hassle free 'refreshResource()' and 'showResource()' methods that just work.
 **  - Event data return the 'Resource' that's been actioned.
 **  
 ** Because 'ResourceTree' does not extend 'fwt:Widget' it can not be added directly. 
@@ -45,7 +45,11 @@ class ResourceTree {
 	**       it.tree = Tree {
 	**           it.border = false
 	**       }
+	**       it.roots = myRoots
+	**       it.model = MyModel()
 	**   }
+	** 
+	** Note that, as shown above, the 'tree' must be set before the model and / or roots. 
 	new make(Reflux reflux, |This|? in := null) {
 		this.reflux = reflux
 		tree = Tree()
@@ -107,30 +111,41 @@ class ResourceTree {
 		tree.refreshAll		
 	}
 	
-	** Updates the specified resource from the model before showing it.
-	Void refreshNode(Str resourceUri) {
-		node := findNodePath(resourceUri)
+	** Updates the specified resource in the model before showing it.
+	Void refreshResource(Resource resource) {
+		path := findNodePath(resource)
 
-		if (node.getSafe(-2) != null) {	// null for root nodes
-			node.getSafe(-2).refresh
-			tree.refreshNode(node.getSafe(-2))
+		if (path.getSafe(-2) != null) {	// null for root nodes
+			path.getSafe(-2).refresh
+			tree.refreshNode(path.getSafe(-2))
 		} else {
 			tree.model = TreeModelAdapter(reflux, roots, model)
 			tree.refreshAll					
 		}
 		
 		Desktop.callLater(50ms) |->| {
-			showNode(resourceUri)
-		}
+			showResource(resource)
+		}		
+	}
+
+	** Updates the specified resource in the model before showing it.
+	Void refreshResourceUri(Uri resourceUri) {
+		refreshResource(reflux.resolve(resourceUri.toStr))
 	}
 	
 	** Scrolls and expands the tree until the 'Resource' is visible.
 	** This also selects the resource in the tree.
-	Void showNode(Str resourceUri) {
-		path := findNodePath(resourceUri)
+	Void showResource(Resource resource) {
+		path := findNodePath(resource)
 		path.eachRange(0..-2) { tree.setExpanded(it, true) }
 		tree.show(path.last)
 		tree.select(path.last)
+	}
+	
+	** Scrolls and expands the tree until the 'Resource' is visible.
+	** This also selects the resource in the tree.
+	Void showResourceUri(Uri resourceUri) {
+		showResource(reflux.resolve(resourceUri.toStr))
 	}
 
 	** Get and set the selected nodes.
@@ -141,26 +156,26 @@ class ResourceTree {
 			((TreeNode[]) tree.selected).map { it.resource }
 		}
 		set {
-			tree.selected = it.map { findNode(it.uri.toStr) }
+			tree.selected = it.map { findNode(it) }
 		}
 	}
 
-	** Return the resource at the specified coordinate relative to this widget. 
-	** Return 'null' if no resource at given coordinate.
-	Resource? nodeAt(Point pos) {
+	** Return the 'Resource' at the specified coordinate relative to this widget. 
+	** Return 'null' if there is no 'Resource' at given coordinate.
+	Resource? resourceAt(Point pos) {
 		((TreeNode?) tree.nodeAt(pos))?.resource
 	}
 	
-	private TreeNode findNode(Str resourceUri) {
-		findNodePath(resourceUri).last
+	private TreeNode findNode(Resource resource) {
+		findNodePath(resource).last
 	}
 
-	private TreeNode[] findNodePath(Str resourceUri) {
+	private TreeNode[] findNodePath(Resource resource) {
 		nodePath	:= TreeNode[,]
 		nodes		:= (TreeNode[]) tree.model.roots
-		resPath		:= path(resourceUri)
-		resPath.each |Str path| {
-			node := nodes.find { it.resource.uri.toStr == path }
+		resPath		:= path(resource)
+		resPath.each |Uri path| {
+			node := nodes.find { it.resource.uri == path }
 			if (node == null)
 				throw ArgErr("Could not find node in tree: $path")
 			nodePath.add(node)
@@ -169,11 +184,16 @@ class ResourceTree {
 		return nodePath
 	}
 
-	private Str[] path(Str? resourceUri) {
-		path	:= Str[,]
-		while (resourceUri != null) {
-			path.add(resourceUri)
-			resourceUri = reflux.resolve(resourceUri).parent
+	private Uri[] path(Resource? resource) {
+		path	:= Uri[,]
+		while (resource != null) {
+			path.add(resource.uri)
+			next := resource.resolveParent
+			if (next == null) {
+				parent := resource.parent
+				next = (parent == null) ? null : reflux.resolve(parent.toStr)
+			}
+			resource = next
 		}
 		return path.reverse
 	}
@@ -214,7 +234,7 @@ mixin ResourceTreeModel {
 	** If no children return an empty list.
 	** 
 	** Defaults to 'resource.children'.
-	virtual Str[] children(Resource resource) { resource.children }
+	virtual Uri[] children(Resource resource) { resource.children }
 }
 
 internal class ResourceTreeModelImpl : ResourceTreeModel { }
@@ -258,7 +278,7 @@ internal class TreeNode {
 	TreeNode[]? children {
 		get {
 			if (&children == null)
-				&children = map(reflux, this, resource.children.map { resource.resolveChild(it) ?: reflux.resolve(it) })
+				&children = map(reflux, this, resource.children.map { resource.resolveChild(it) ?: reflux.resolve(it.toStr) })
 			return &children
 		}
 	}
