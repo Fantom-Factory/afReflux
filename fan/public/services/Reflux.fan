@@ -11,6 +11,7 @@ mixin Reflux {
 
 	abstract RefluxPrefs preferences()
 
+	** Refreshes the resource in all 'Views' and 'Panels', and fires a 'refresh' event.
 	abstract Void refresh(Resource? resource := null)
 	abstract Window window()
 	abstract Void exit()

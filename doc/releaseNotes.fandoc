@@ -1,6 +1,10 @@
 Versions
 ********
 
+v0.0.14
+=======
+ - Bug: Minor refresh tweaks.
+
 v0.0.12
 =======
  - New: Implemented 'Save All' global command.
