@@ -89,7 +89,7 @@ internal class Frame : Window, RefluxEvents {
 
 	View? load(Resource resource, LoadCtx ctx) {
 		view := viewTabs.load(resource, ctx)
-		update(resource, false)
+		update(view, resource, false)
 		return view
 	}
 	
@@ -98,11 +98,11 @@ internal class Frame : Window, RefluxEvents {
 	}
 
 	override Void onViewActivated(View view) {
-		update(view.resource, view.isDirty)
+		update(view, view.resource, view.isDirty)
 	}
 
 	override Void onViewModified(View view) {
-		update(view.resource, view.isDirty)
+		update(view, view.resource, view.isDirty)
 	}
 
 	override Void onLoadSession(Str:Obj? session) {
@@ -120,8 +120,9 @@ internal class Frame : Window, RefluxEvents {
 		super.close(result)
 	}
 
-	private Void update(Resource? resource, Bool isDirty) {
-		if (resource == null) return
+	private Void update(View view, Resource? resource, Bool isDirty) {
+		if (!view.isActive || resource == null)
+			return
 		this.title = "${appName} - ${resource.name}"
 		if (isDirty)
 			title += " *"

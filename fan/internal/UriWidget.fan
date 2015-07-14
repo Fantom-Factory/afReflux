@@ -92,21 +92,23 @@ internal class UriWidget : Canvas, RefluxEvents {
 	}
 	
 	override Void onLoad(Resource resource) {
-		update(resource)
+		update(reflux.activeView, resource)
 	}
 
 	override Void onViewActivated(View view) {
-		update(view.resource)
+		update(view, view.resource)
 	}
 
 	override Void onViewModified(View view) {
-		update(view.resource)
+		update(view, view.resource)
 	}
 	
-	private Void update(Resource? resource) {
-		if (resource == null) return
-		text.text = resource.displayName
-		icon = resource.icon
-		repaint
+	private Void update(View? view, Resource? resource) {
+		if (view?.isActive ?: true) {
+			if (resource == null) return
+			text.text = resource.displayName
+			icon = resource.icon
+			repaint
+		}
 	}
 }
