@@ -129,9 +129,6 @@ abstract class Panel {
 	**
 	** Simple Err handling without fuss!
 	override Obj? trap(Str name, Obj?[]? args := null) {
-		if (name.startsWith("on"))
-			_log.debug("${name} - $this")
-
 		retVal := null
 		try retVal = super.trap(name, args)
 		catch (Err err) {
