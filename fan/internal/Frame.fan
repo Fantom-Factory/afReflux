@@ -120,8 +120,8 @@ internal class Frame : Window, RefluxEvents {
 		super.close(result)
 	}
 
-	private Void update(View view, Resource? resource, Bool isDirty) {
-		if (!view.isActive || resource == null)
+	private Void update(View? view, Resource? resource, Bool isDirty) {
+		if (view == null || !view.isActive || resource == null)
 			return
 		this.title = "${appName} - ${resource.name}"
 		if (isDirty)
