@@ -28,7 +28,9 @@ mixin Reflux {
 	abstract Void saveAll()
 	
 	abstract Panel? getPanel(Type panelType, Bool checked := true)
+	** Shows the panel, or if the panel is already showing, activates it.
 	abstract Panel showPanel(Type panelType)
+	** Hides the panel. 
 	abstract Panel hidePanel(Type panelType)
 
 	abstract Void copyToClipboard(Str text)
@@ -128,8 +130,10 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	override Panel showPanel(Type panelType) {
 		panel := getPanel(panelType)
 
-		if (panel.isShowing)
+		if (panel.isShowing) {
+			frame.activatePanel(panel, prefAlign(panel))
 			return panel
+		}
 
 		frame.showPanel(panel, prefAlign(panel))
 
