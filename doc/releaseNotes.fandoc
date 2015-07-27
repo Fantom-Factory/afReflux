@@ -3,6 +3,8 @@ Versions
 
 v0.0.14
 =======
+ - Chg: 'Reflux.showPanel()' activates the panel should it already be showing.
+ - Chg: Fixed potential 'null' err when loading a resource.
  - Bug: Minor refresh tweaks.
 
 v0.0.12

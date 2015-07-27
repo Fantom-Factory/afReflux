@@ -75,6 +75,10 @@ internal class Frame : Window, RefluxEvents {
 		panelTabs[prefAlign].addTab(panel).activate(panel)
 	}
 
+	Void activatePanel(Panel panel, Obj prefAlign) {
+		panelTabs[prefAlign].activate(panel)
+	}
+
 	Void hidePanel(Panel panel, Obj prefAlign) {
 		panelTabs[prefAlign].activate(null).removeTab(panel)
 	}
