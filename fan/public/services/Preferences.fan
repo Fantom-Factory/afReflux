@@ -9,7 +9,10 @@ using afIoc
 **
 **   %FAN_HOME%/etc/<app-name>/xxx.fog
 **
-** Preference instances must be serializable.
+** Note that 'Preference' instances must be serializable and have an it-block ctor:
+**   
+**   new make(|This| f) { f(this) }
+** 
 mixin Preferences {
 
 	** Returns an instance of the given preferences object.
