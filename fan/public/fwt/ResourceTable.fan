@@ -23,6 +23,8 @@ class ResourceTable {
 	Table table
 
 	** The model that customises the look of the table. Leave as is for default behaviour.
+	** 
+	** You should call 'refreshAll' after setting a new model.
 	ResourceTableModel model := ResourceTableModelImpl() {
 		set {
 			table.model = TableModelAdapter(reflux, roots, it)
@@ -31,6 +33,8 @@ class ResourceTable {
 	}
 	
 	** The root resources of the table.
+	** 
+	** You should call 'refreshAll' after setting new roots.
 	Resource[] roots := Resource#.emptyList {
 		set {
 			table.model = TableModelAdapter(reflux, it, model)
