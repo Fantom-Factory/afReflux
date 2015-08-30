@@ -24,6 +24,8 @@ class ResourceTree {
 	Tree tree
 
 	** The model that customises the look of the tree. Leave as is for default behaviour.
+	** 
+	** You should call 'refreshAll' after setting a new model.
 	ResourceTreeModel model := ResourceTreeModelImpl() {
 		set {
 			tree.model = TreeModelAdapter(reflux, roots, it)
@@ -32,6 +34,8 @@ class ResourceTree {
 	}
 	
 	** The root resources of the tree.
+	** 
+	** You should call 'refreshAll' after setting new roots.
 	Resource[] roots := Resource#.emptyList {
 		set {
 			tree.model = TreeModelAdapter(reflux, it, model)
