@@ -73,10 +73,10 @@ class ResourceTree {
 			e.data = node?.resource
 			onPopup.fire(e)
 			e.data = node
-		}
+		}		
 	}
 
-	** Callback when node is double clicked or Return/Enter key is pressed.
+	** Callback when a node is double clicked or Return/Enter key is pressed.
 	**
 	** Event id fired:
 	**	 - 'EventId.modified'
@@ -98,6 +98,12 @@ class ResourceTree {
 	** If the callback wishes to display a popup, then set the 'Event.popup' field with menu to open.
 	** If multiple callbacks are installed, the first one to return a nonnull popup consumes the event.
 	**
+	** To show a menu created from the 'Resource', add the following:
+	** 
+	**   tree.onPopup.add |Event event| {
+	**       event.popup = (event.data as Resource)?.populatePopup(Menu())
+	**   }
+	** 
 	** Event id fired:
 	**	 - 'EventId.popup'
 	**
@@ -164,6 +170,16 @@ class ResourceTree {
 	** Return 'null' if there is no 'Resource' at given coordinate.
 	Resource? resourceAt(Point pos) {
 		((TreeNode?) tree.nodeAt(pos))?.resource
+	}
+	
+	** Return the expanded state for this 'Resource'.
+	Bool isExpanded(Resource resource) {
+		tree.isExpanded(findNode(resource))
+	}
+
+	** Set the expanded state for this 'Resource'.
+	Void setExpanded(Resource resource, Bool expanded) {
+		tree.setExpanded(findNode(resource), expanded)
 	}
 	
 	private TreeNode findNode(Resource resource) {
