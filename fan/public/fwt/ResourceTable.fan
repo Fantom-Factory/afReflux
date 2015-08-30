@@ -58,24 +58,21 @@ class ResourceTable {
 		table = Table()
 		in(this)
 		table.onAction.add |Event e| {
-			index := (Int?) e.data
-			e.data = index != null ? roots[index] : null
+			e.data = e.index != null ? roots[e.index] : null
 			onAction.fire(e)
-			e.data = index
+			e.data = null
 		}
 
 		table.onSelect.add |Event e| {
-			index := (Int?) e.data
-			e.data = index != null ? roots[index] : null
+			e.data = e.index != null ? roots[e.index] : null
 			onSelect.fire(e)
-			e.data = index
+			e.data = null
 		}
 
 		table.onPopup.add |Event e| {
-			index := (Int?) e.data
-			e.data = index != null ? roots[index] : null
+			e.data = e.index != null ? roots[e.index] : null
 			onPopup.fire(e)
-			e.data = index
+			e.data = null
 		}
 	}
 
