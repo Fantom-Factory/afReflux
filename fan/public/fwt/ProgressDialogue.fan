@@ -2,7 +2,7 @@ using gfx
 using fwt
 using concurrent
 using afConcurrent
-using afIoc
+using afIoc3
 
 ** (Widget) - 
 ** A dialogue window that displays an updatable progress bar.

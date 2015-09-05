@@ -1,4 +1,4 @@
-using afIoc
+using afIoc3
 
 ** Views are 'Panels' that are associated with an (editable) resource.
 **
