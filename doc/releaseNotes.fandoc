@@ -3,7 +3,7 @@ Versions
 
 v0.0.14
 =======
- - New: 'ResourceTable' fwt widgit and corresponding 'ResourceTableModel'.
+ - New: 'ResourceTable' fwt widgit and corresponding 'ResourceTableModel' class.
  - New: 'ResourceTree.isExpanded()' and 'ResourceTree.setExpanded()'.
  - New: Added 'EventHub.deregister()'.
  - Chg: 'Reflux.showPanel()' activates the panel should it already be showing.
