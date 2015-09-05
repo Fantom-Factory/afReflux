@@ -1,4 +1,4 @@
-using afIoc
+using afIoc3
 using fwt
 
 internal class RedoCommand : GlobalCommand, RefluxEvents {

@@ -1,4 +1,4 @@
-using afIoc
+using afIoc3
 
 ** (Service) - 
 ** A general dumping ground for data to be saved between applications.

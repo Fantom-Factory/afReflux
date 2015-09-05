@@ -1,4 +1,4 @@
-using afIoc
+using afIoc3
 
 ** (Service) -
 ** Loads / saves and maintains a cache of preference objects.

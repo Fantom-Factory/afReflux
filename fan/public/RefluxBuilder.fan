@@ -1,4 +1,4 @@
-using afIoc
+using afIoc3
 using fwt
 
 ** Use to build and launch a Reflux application. Example:
