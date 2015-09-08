@@ -6,7 +6,7 @@ using fwt
 mixin Reflux {
 
 	// TODO: Fandoc this class
-	abstract Registry registry()
+	abstract Scope scope()
 	abstract Void callLater(Duration delay, |->| f)
 
 	abstract RefluxPrefs preferences()
@@ -44,14 +44,14 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private Panels			panels
 	@Inject private History			history
 	@Inject private Session			session
-	@Inject override Registry		registry
+	@Inject override Scope			scope
 			override View?			activeView
 			override Window			window
 
 	new make(EventHub eventHub, |This| in) { 
 		in(this)
 		eventHub.register(this)
-		window = registry.autobuild(Frame#, [this])
+		window = scope.build(Frame#, [this])
 	}
 
 	override RefluxPrefs preferences() {

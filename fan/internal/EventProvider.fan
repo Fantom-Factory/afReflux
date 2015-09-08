@@ -12,16 +12,19 @@ internal const class EventProvider : DependencyProvider {
 	
 	new make(|This|in) { in(this) }
 	
-	override Bool canProvide(InjectionCtx injectionCtx) {
-		(
-			(injectionCtx.injectionKind.isFieldInjection && injectionCtx.fieldFacets.any { it.typeof == Inject# }) || (!injectionCtx.injectionKind.isFieldInjection))
-		&& 
-			(injectionCtx.dependencyType != EventTypes# && eventTypes.eventTypes.contains(injectionCtx.dependencyType.toNonNullable)
-		)
+	override Bool canProvide(Scope currentScope, InjectionCtx ctx) {
+		if (ctx.isFieldInjection && !ctx.field.hasFacet(Inject#))
+			return false
+
+		if (ctx.isMethodInjection && ctx.isMethodArgReserved)
+			return false
+
+		dependencyType := (ctx.field?.type ?: ctx.methodParam?.type).toNonNullable
+		return dependencyType != EventTypes# && eventTypes.eventTypes.contains(dependencyType)
 	}
 
-	override Obj? provide(InjectionCtx injectionCtx) {
-		eventType := injectionCtx.dependencyType.toNonNullable
+	override Obj? provide(Scope currentScope, InjectionCtx ctx) {
+		eventType := (ctx.field?.type ?: ctx.methodParam?.type).toNonNullable
 		
 		return cache.getOrAdd(eventType) |->Obj| {
 			model	:= PlasticClassModel("${eventType.name}Impl", false).extend(eventType)
@@ -36,7 +39,7 @@ internal const class EventProvider : DependencyProvider {
 			
 			implType := compiler.compileModel(model)
 			
-			return registry.autobuild(implType)
+			return currentScope.build(implType)
 		}
 	}
 }

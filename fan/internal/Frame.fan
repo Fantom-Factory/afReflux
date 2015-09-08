@@ -11,23 +11,26 @@ internal class Frame : Window, RefluxEvents {
 	private SashPane			sash1
 	private SashPane			sash2
 
-	internal new make(Reflux reflux, Registry registry, RegistryMeta regMeta) : super() {
-		this.appName= regMeta[RefluxConstants.meta_appName]
-		this.title	= regMeta[RefluxConstants.meta_appName]
+	// FIXME: re-instate RegistryMeta
+//	internal new make(Reflux reflux, Registry registry, RegistryMeta regMeta) : super() {
+//		this.appName= regMeta[RefluxConstants.meta_appName]
+//		this.title	= regMeta[RefluxConstants.meta_appName]
+	internal new make(Reflux reflux, Scope scope) : super() {
+		this.appName= "FIXME"
 		this.icon	= Image(`fan://icons/x32/flux.png`)
 		this.size	= Size(640, 480)
 
-		eventHub	:= (EventHub) registry.serviceById(EventHub#.qname)
+		eventHub	:= (EventHub) scope.resolveById(EventHub#.qname)
 		eventHub.register(this)
 
-		panelTabs[Halign.left]	= registry.autobuild(PanelTabPane#, [false, false])
-		panelTabs[Halign.right]	= registry.autobuild(PanelTabPane#, [false, false])
-		panelTabs[Valign.bottom]= registry.autobuild(PanelTabPane#, [false, true])
-		viewTabs				= registry.autobuild(ViewTabPane#,  [reflux])
+		panelTabs[Halign.left]	= scope.build(PanelTabPane#, [false, false])
+		panelTabs[Halign.right]	= scope.build(PanelTabPane#, [false, false])
+		panelTabs[Valign.bottom]= scope.build(PanelTabPane#, [false, true])
+		viewTabs				= scope.build(ViewTabPane#,  [reflux])
 
-		navBar := (RefluxBar) registry.autobuild(RefluxBar#)
+		navBar := (RefluxBar) scope.build(RefluxBar#)
 
-		this.menuBar	= registry.serviceById("afReflux.menuBar")
+		this.menuBar	= scope.resolveById("afReflux.menuBar")
 
 		this.content 	= EdgePane {
 			top = navBar
@@ -48,7 +51,7 @@ internal class Frame : Window, RefluxEvents {
 		this.onClose.add |Event e| { if (!closing) reflux.exit }
 
 		// Handle file drops -> open up FWT's back door!
-		dialogues := (Dialogues) registry.serviceById(Dialogues#.qname)
+		dialogues := (Dialogues) scope.resolveById(Dialogues#.qname)
 		this.onDrop = |Obj data| {
 			files 	:= (File[]) data
 			handled := reflux.activeView?.onDrop(files) ?: false

@@ -4,10 +4,10 @@ using fwt
 
 internal class RefluxBar : EdgePane {
 	
-	new make(Registry registry, |This|in) : super.make() {
+	new make(Scope scope, |This|in) : super.make() {
 		in(this)
 	
-		toolBar	:= (ToolBar?) registry.serviceById("afReflux.toolBar")
+		toolBar	:= (ToolBar?) scope.resolveById("afReflux.toolBar")
 		content	:= (Widget?) null
 		uriBar	:= toolBar.children.find { it.typeof == UriWidget# }
 
