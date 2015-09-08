@@ -17,6 +17,17 @@ mixin Errors {
 	abstract Void add(Err err, Bool skipEventRaising := false)
 }
 
+internal class ErrorsProxy : Errors {
+
+	@Inject { type=ErrorsImpl# }
+	private |->Errors| errorsFunc
+	
+	new make(|This|in) { in(this) }
+
+	override Error[] errors()									{ errorsFunc().errors() }
+	override Void add(Err err, Bool skipEventRaising := false)	{ errorsFunc().add(err, skipEventRaising) }
+}
+
 internal class ErrorsImpl : Errors {
 	@Inject private	RefluxEvents	refluxEvents
 			override Error[]		errors	:= Error[,]

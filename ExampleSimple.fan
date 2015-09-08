@@ -14,7 +14,7 @@ class Example {
 class AppModule {
     @Contribute { serviceType=Panels# }
     static Void contributePanels(Configuration config) {
-    	myPanel := config.autobuild(MyPanel#)
+    	myPanel := config.build(MyPanel#)
         config.add(myPanel)
     }
 }
