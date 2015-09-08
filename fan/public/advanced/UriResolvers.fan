@@ -1,10 +1,11 @@
 
-@NoDoc
+@NoDoc @Js
 mixin UriResolvers {
 	abstract Resource resolve(Str uri)
 }
 
 
+@Js
 internal class UriResolversImpl : UriResolvers {
 	private UriResolver[] resolvers
 	

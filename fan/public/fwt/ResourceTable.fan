@@ -16,6 +16,7 @@ using fwt
 **   ContentPane() {
 **       it.content = table.table
 **   }
+@Js
 class ResourceTable {
 	private Reflux reflux
 	
@@ -178,6 +179,7 @@ class ResourceTable {
 }
 
 ** A model to customise the look of a 'ResourceTable'.
+@Js
 mixin ResourceTableModel {
 
 	** Get number of columns in table.  Default returns 1.
@@ -223,8 +225,10 @@ mixin ResourceTableModel {
 	}
 }
 
+@Js
 internal class ResourceTableModelImpl : ResourceTableModel { }
 
+@Js
 internal class TableModelAdapter : TableModel {
 	Resource[]			roots
 	ResourceTableModel 	model

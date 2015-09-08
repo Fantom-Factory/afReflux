@@ -2,6 +2,7 @@ using afIoc3
 using gfx
 using fwt
 
+@Js
 internal class NavHomeCommand : GlobalCommand {
 	@Inject	private Reflux reflux
 	

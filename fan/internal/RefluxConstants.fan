@@ -1,4 +1,5 @@
 
+@Js
 internal mixin RefluxConstants {
 
 	static const Str	meta_appName	:= "afReflux.appName"

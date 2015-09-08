@@ -3,6 +3,7 @@ using fwt
 
 ** (Service) - 
 ** Maintains a history of View URIs.
+@Js
 mixin History {
 	
 	** Loads the previous history item.
@@ -29,6 +30,7 @@ mixin History {
 	abstract Void load(Resource resource, LoadCtx ctx)
 }
 
+@Js
 internal class HistoryImpl : History, RefluxEvents {
 			private	Resource[]	backStack		:= Resource[,]
 			private	Resource[]	forwardStack	:= Resource[,]
@@ -125,6 +127,7 @@ internal class HistoryImpl : History, RefluxEvents {
 	}
 }
 
+@Js
 internal class HistoryCommand : RefluxCommand {
 	new make(Resource resource, Reflux reflux, |This|in) : super.make(in) {
 		this.name = (resource.uri.toStr != resource.displayName) ? resource.displayName : Url(resource.uri).minusFrag.toStr

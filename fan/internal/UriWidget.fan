@@ -2,6 +2,7 @@ using afIoc3
 using gfx
 using fwt
 
+@Js
 internal class UriWidget : Canvas, RefluxEvents {
 	private const Insets textInsets := Insets(4,  4, 4, 22)
 	private const Insets viewInsets := Insets(4, 13, 4,  4)

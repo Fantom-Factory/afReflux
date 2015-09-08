@@ -2,7 +2,7 @@ using afIoc3
 using fwt
 using afPlastic
 
-@NoDoc	// Don't overwhelm the masses!
+@NoDoc	@Js	// Don't overwhelm the masses!
 const class EventTypes {
 	
 	const Type[]	eventTypes 

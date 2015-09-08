@@ -5,6 +5,7 @@ using afIoc3
 ** Errors are displayed in the 'ErrorsPanel'.
 ** 
 ** Errors are *not* persisted and are only held in memory. 
+@Js
 mixin Errors {
 	
 	** The list of errors.
@@ -17,6 +18,7 @@ mixin Errors {
 	abstract Void add(Err err, Bool skipEventRaising := false)
 }
 
+@Js
 internal class ErrorsProxy : Errors {
 
 	@Inject { type=ErrorsImpl# }
@@ -28,6 +30,7 @@ internal class ErrorsProxy : Errors {
 	override Void add(Err err, Bool skipEventRaising := false)	{ errorsFunc().add(err, skipEventRaising) }
 }
 
+@Js
 internal class ErrorsImpl : Errors {
 	@Inject private	RefluxEvents	refluxEvents
 			override Error[]		errors	:= Error[,]

@@ -1,6 +1,6 @@
 using afBeanUtils
 
-@NoDoc
+@NoDoc @Js
 class Panels {
 	Panel[] panels
 	private Type:Panel panelMap

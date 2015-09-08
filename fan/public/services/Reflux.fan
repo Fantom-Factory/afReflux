@@ -3,6 +3,7 @@ using gfx
 using fwt
 
 ** (Service) - The main API for managing a Reflux application.
+@Js
 mixin Reflux {
 
 	// TODO: Fandoc this class
@@ -36,6 +37,7 @@ mixin Reflux {
 	abstract Void copyToClipboard(Str text)
 }
 
+@Js
 internal class RefluxProxy : Reflux {
 
 	@Inject { type=RefluxImpl# }
@@ -69,6 +71,7 @@ internal class RefluxProxy : Reflux {
 	override Void copyToClipboard(Str text)								{ reflux().copyToClipboard(text) }
 }
 
+@Js
 internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private UriResolvers	uriResolvers
 	@Inject private RefluxEvents	refluxEvents
@@ -260,6 +263,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 }
 
 ** Contextual data for loading 'Resources'.
+@Js
 class LoadCtx {
 	** If 'true' then the resource is opened in a new View tab.
 	Bool	newTab

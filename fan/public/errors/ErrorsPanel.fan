@@ -6,6 +6,7 @@ using fwt
 // TODO: have 'Clear' command
 ** (Panel) -
 ** Displays the list of 'Errs' added to the 'Errors' service.
+@Js
 internal class ErrorsPanel : Panel, RefluxEvents {
 
 	@Inject private Registry		registry
@@ -50,6 +51,7 @@ internal class ErrorsPanel : Panel, RefluxEvents {
 	}
 }
 
+@Js
 internal class ErrorsPanelModel : TableModel {
 	@Inject LocaleFormat	locale
 	@Inject Errors			errors

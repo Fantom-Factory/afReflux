@@ -1,6 +1,7 @@
 using afIoc3
 using fwt
 
+@Js
 internal class ShowHidePanelCommand : RefluxCommand, RefluxEvents {
 	@Inject private Registry	reg
 	@Inject private Reflux		reflux

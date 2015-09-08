@@ -1,5 +1,6 @@
 
 ** A wrapper around a URI
+@Js
 internal class Url {
 	private Str?	scheme
 	private Str?	auth

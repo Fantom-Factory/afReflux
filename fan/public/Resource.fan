@@ -4,6 +4,7 @@ using fwt
 
 ** Resources are navigatable objects that may be represented by an URI.
 ** For example, the Explorer application has a 'FileResource' and a 'HttpResource'.
+@Js
 mixin Resource {
 
 	** The URI that equates to this resource.

@@ -1,5 +1,6 @@
 
 ** Represents an 'Err' displayed in the 'ErrorsPanel'. 
+@Js
 class Error {
 	@NoDoc // not used yet
 	const Int		id

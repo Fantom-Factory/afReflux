@@ -2,6 +2,7 @@ using afIoc3
 using gfx
 using fwt
 
+@Js
 internal class Frame : Window, RefluxEvents {
 
 	private Obj:PanelTabPane	panelTabs	:= [:]
