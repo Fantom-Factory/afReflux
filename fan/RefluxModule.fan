@@ -6,8 +6,10 @@ using fwt
 class RefluxModule {
 	
 	static Void defineServices(ServiceDefinitions defs) {
-		defs.add(Reflux#).withProxy
-		defs.add(Errors#).withProxy
+//		defs.add(Reflux#).withProxy
+//		defs.add(Errors#).withProxy
+		defs.add(Reflux#)	// TODO: proxy funcs
+		defs.add(Errors#)	// TODO: proxy funcs
 
 		defs.add(Images#)
 		defs.add(Preferences#)
@@ -19,13 +21,14 @@ class RefluxModule {
 		defs.add(RefluxIcons#)
 		defs.add(GlobalCommands#)
 		defs.add(History#)
-		defs.add(Session#).withCtorArgs(["sessionData.fog"])
+//		defs.add(Session#).withCtorArgs(["sessionData.fog"])
+		defs.add(Session#, null, ["sessionData.fog"])	// TODO: withCtorArgs
 		defs.add(Dialogues#)
 	}
 	
 	@Contribute { serviceType=Panels# }
 	static Void contributePanels(Configuration config) {
-		config.add(config.autobuild(ErrorsPanel#))
+		config.add(config.build(ErrorsPanel#))
 	}
 
 	@Contribute { serviceType=RefluxIcons# }
@@ -40,45 +43,47 @@ class RefluxModule {
 		config["afReflux.reflux"] = RefluxEvents#
 	}
 
-	@Contribute { serviceType=DependencyProviders# }
-	static Void contributeDependencyProviders(Configuration config) {
-		eventProvider := config.autobuild(EventProvider#)
-		config.set("afReflux.eventProvider", eventProvider).before("afIoc.serviceProvider")
-	}
+	// TODO: DependencyProviders
+//	@Contribute { serviceType=DependencyProviders# }
+//	static Void contributeDependencyProviders(Configuration config) {
+//		eventProvider := config.autobuild(EventProvider#)
+//		config.set("afReflux.eventProvider", eventProvider).before("afIoc.serviceProvider")
+//	}
 
 	@Contribute { serviceType=GlobalCommands# }
 	static Void contributeGlobalCommands(Configuration config) {
-		config["afReflux.cmdNew"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdNew"])
-		config["afReflux.cmdSave"]			= config.autobuild(SaveCommand#)
-		config["afReflux.cmdSaveAs"]		= config.autobuild(GlobalCommand#, ["afReflux.cmdSaveAs"])
-		config["afReflux.cmdSaveAll"]		= config.autobuild(SaveAllCommand#)
-		config["afReflux.cmdExit"]			= config.autobuild(ExitCommand#)
-		config["afReflux.cmdAbout"]			= config.autobuild(AboutCommand#)
-		config["afReflux.cmdRefresh"]		= config.autobuild(RefreshCommand#)
+		config["afReflux.cmdNew"]			= config.build(GlobalCommand#, ["afReflux.cmdNew"])
+		config["afReflux.cmdSave"]			= config.build(SaveCommand#)
+		config["afReflux.cmdSaveAs"]		= config.build(GlobalCommand#, ["afReflux.cmdSaveAs"])
+		config["afReflux.cmdSaveAll"]		= config.build(SaveAllCommand#)
+		config["afReflux.cmdExit"]			= config.build(ExitCommand#)
+		config["afReflux.cmdAbout"]			= config.build(AboutCommand#)
+		config["afReflux.cmdRefresh"]		= config.build(RefreshCommand#)
 		
-		config["afReflux.cmdCut"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdCut"])
-		config["afReflux.cmdCopy"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdCopy"])
-		config["afReflux.cmdPaste"]			= config.autobuild(GlobalCommand#, ["afReflux.cmdPaste"])
+		config["afReflux.cmdCut"]			= config.build(GlobalCommand#, ["afReflux.cmdCut"])
+		config["afReflux.cmdCopy"]			= config.build(GlobalCommand#, ["afReflux.cmdCopy"])
+		config["afReflux.cmdPaste"]			= config.build(GlobalCommand#, ["afReflux.cmdPaste"])
 
-		config["afReflux.cmdNavUp"]			= config.autobuild(NavUpCommand#)
-		config["afReflux.cmdNavHome"]		= config.autobuild(NavHomeCommand#)
-		config["afReflux.cmdNavBackward"]	= config.autobuild(NavBackwardCommand#)
-		config["afReflux.cmdNavForward"]	= config.autobuild(NavForwardCommand#)
-		config["afReflux.cmdNavClear"]		= config.autobuild(NavClearCommand#)
+		config["afReflux.cmdNavUp"]			= config.build(NavUpCommand#)
+		config["afReflux.cmdNavHome"]		= config.build(NavHomeCommand#)
+		config["afReflux.cmdNavBackward"]	= config.build(NavBackwardCommand#)
+		config["afReflux.cmdNavForward"]	= config.build(NavForwardCommand#)
+		config["afReflux.cmdNavClear"]		= config.build(NavClearCommand#)
 
-		config["afReflux.cmdToggleView"]	= config.autobuild(ToggleViewCommand#)
+		config["afReflux.cmdToggleView"]	= config.build(ToggleViewCommand#)
 
-		config["afReflux.cmdUndo"]			= config.autobuild(UndoCommand#)
-		config["afReflux.cmdRedo"]			= config.autobuild(RedoCommand#)
+		config["afReflux.cmdUndo"]			= config.build(UndoCommand#)
+		config["afReflux.cmdRedo"]			= config.build(RedoCommand#)
 	}
 	
-	@Contribute { serviceType=RegistryShutdown# }
-	internal static Void contributeRegistryShutdown(Configuration config, Registry registry) {
-		config["afReflux.disposeOfImages"] = |->| {
-			imgSrc := (Images) registry.dependencyByType(Images#)
-			imgSrc.disposeAll
-		}
-	}
+	// TODO: RegistryShutdown
+//	@Contribute { serviceType=RegistryShutdown# }
+//	internal static Void contributeRegistryShutdown(Configuration config, Registry registry) {
+//		config["afReflux.disposeOfImages"] = |->| {
+//			imgSrc := (Images) registry.dependencyByType(Images#)
+//			imgSrc.disposeAll
+//		}
+//	}
 
 
 
@@ -130,7 +135,7 @@ class RefluxModule {
 	}
 	
 	private static Void addNonEmptyMenu(Configuration config, Str menuId) {
-		menu := (Menu) config.registry.serviceById(menuId)
+		menu := (Menu) config.scope.resolveById(menuId)
 		if (!menu.children.isEmpty)
 			config[menuId] = menu
 	}
@@ -158,20 +163,20 @@ class RefluxModule {
 	}
 
 	@Contribute { serviceId="afReflux.viewMenu" }
-	static Void contributeViewMenu(Configuration config, Panels panels, Registry reg, GlobalCommands globalCmds) {
+	static Void contributeViewMenu(Configuration config, Panels panels, GlobalCommands globalCmds) {
 		
 		// only stick panels in a sub-menu should there be a few of them
 		if (panels.panels.size > 5) {   
 			panelsMenu := menu("afReflux.showPanelMenu")
 			panels.panels.each {
-				cmd := reg.autobuild(ShowHidePanelCommand#, [it])
+				cmd := config.build(ShowHidePanelCommand#, [it])
 				panelsMenu.add(MenuItem.makeCommand(cmd))
 			}
 			config["afReflux.panelMenu"] = panelsMenu
 
 		} else {
 			panels.panels.each {
-				cmd := reg.autobuild(ShowHidePanelCommand#, [it])
+				cmd := config.build(ShowHidePanelCommand#, [it])
 				config.add(MenuItem.makeCommand(cmd))
 			}	
 		}
@@ -215,7 +220,7 @@ class RefluxModule {
 		config["afReflux.cmdNavForward"]	= toolBarCommand(globalCmds["afReflux.cmdNavForward"].command)
 		config["afReflux.cmdNavUp"]			= toolBarCommand(globalCmds["afReflux.cmdNavUp"].command)
 		config["afReflux.cmdRefresh"]		= toolBarCommand(globalCmds["afReflux.cmdRefresh"].command)
-		config["afReflux.uriWidget"]		= config.autobuild(UriWidget#)
+		config["afReflux.uriWidget"]		= config.build(UriWidget#)
 		config["afReflux.cmdNavHome"]		= toolBarCommand(globalCmds["afReflux.cmdNavHome"].command)
 	}
 

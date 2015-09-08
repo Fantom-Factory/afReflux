@@ -48,23 +48,23 @@ class RefluxBuilder {
 			throw ArgErr("appModules must not be empty")
 		initModules(registryBuilder, appModules.first.qname, true)
 		initBanner()
-		registryBuilder.addModules(appModules)
+		registryBuilder.addModuleTypes(appModules)
 	}
 	
 	** Adds a module to the registry. 
 	** Any modules defined with the '@SubModule' facet are also added.
 	** 
-	** Convenience for 'registryBuilder.addModule()'
+	** Convenience for 'registryBuilder.addModuleType()'
 	This addModule(Type moduleType) {
-		registryBuilder.addModule(moduleType)
+		registryBuilder.addModuleType(moduleType)
 		return this
 	}
 	
 	** Adds many modules to the registry.
 	** 
-	** Convenience for 'registryBuilder.addModules()'
+	** Convenience for 'registryBuilder.addModuleTypes()'
 	This addModules(Type[] moduleTypes) {
-		registryBuilder.addModules(moduleTypes)
+		registryBuilder.addModuleTypes(moduleTypes)
 		return this
 	}
 	
@@ -82,16 +82,21 @@ class RefluxBuilder {
 	
 	Void start(|Reflux, Window|? onOpen := null) {
 		registry := registryBuilder.build.startup
-		reflux	 := (Reflux) registry.serviceById(Reflux#.qname)
+		
+//		uiScope
+//		registry.rootScope.createChildScope("thread") {   }
+		
+		reflux	 := (Reflux) registry.rootScope.resolveById(Reflux#.qname)
 		frame	 := (Frame)  reflux.window
 
 		// onActive -> onFocus -> onOpen
 		frame.onOpen.add {
 			// Give the widgets a chance to display themselves and set defaults
 			Desktop.callLater(50ms) |->| {
+				// FIXME: load the session 
 				// load the session before we start loading URIs and opening tabs
-				session := (Session) registry.serviceById(Session#.qname)
-				session.load
+//				session := (Session) scope.resolveById(Session#.qname)
+//				session.load
 
 				// once we've all started up and settled down, load URIs from the command line
 				onOpen?.call(reflux, frame)
@@ -103,9 +108,9 @@ class RefluxBuilder {
 	}
 	
 	private Void initBanner() {
-		pod := (Pod?) registryBuilder[RefluxConstants.meta_appPod]
+		pod := (Pod?) registryBuilder.options[RefluxConstants.meta_appPod]
 		ver  := pod?.version ?: "???"
-		registryBuilder["afIoc.bannerText"] = "$appName v$ver"
+		registryBuilder.options["afIoc.bannerText"] = "$appName v$ver"
 	}
 
 	private static Void initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
@@ -141,14 +146,14 @@ class RefluxBuilder {
 		}
 		if (mod != null) {
 			if (!bob.moduleTypes.contains(mod))
-				bob.addModule(mod)
+				bob.addModuleType(mod)
 		}
-		bob.addModules(mods)
+		bob.addModuleTypes(mods)
 		
 		// A simple thing - ensure the Reflux module is added! 
 		// (transitive dependencies are added explicitly via @SubModule)
 		if (!bob.moduleTypes.contains(RefluxModule#))
-			 bob.addModule(RefluxModule#)
+			 bob.addModuleType(RefluxModule#)
 
 		regOpts := bob.options
 		regOpts[RefluxConstants.meta_appName]	= (pod?.meta?.get("proj.name") ?: pod?.name) ?: "Unknown"

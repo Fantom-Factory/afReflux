@@ -34,8 +34,7 @@ internal class HistoryImpl : History, RefluxEvents {
 			private	Resource[]	forwardStack	:= Resource[,]
 			private Resource?	showing
 			override Resource[] history			:= Resource[,]
-	@Inject	private Registry	registry
-//	@Inject	private UriResolvers
+	@Inject	private Scope		scope
 	@Inject	private Reflux		reflux
 
 	new make(EventHub eventHub, |This|in) {
@@ -98,14 +97,14 @@ internal class HistoryImpl : History, RefluxEvents {
 	}
 	
 	private Void showHistoryMenu() {
-		historyMenu := (Menu) registry.serviceById("afReflux.historyMenu")		
+		historyMenu := (Menu) scope.resolveById("afReflux.historyMenu")		
 		((MenuItem[]) historyMenu.children).each { if (it.command is HistoryCommand) historyMenu.remove(it) }
 		
 		history := history.dup
 		history.insert(0, showing)
 		history = history.unique
 		if (history.size > 13) history.size = 13	// TODO: move to prefs
-		history.each { historyMenu.add(MenuItem.makeCommand(registry.autobuild(HistoryCommand#, [it]))) }		
+		history.each { historyMenu.add(MenuItem.makeCommand(scope.build(HistoryCommand#, [it]))) }		
 	}
 	
 	override Void onViewActivated(View view) {

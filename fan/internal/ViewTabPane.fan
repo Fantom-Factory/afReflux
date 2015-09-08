@@ -4,8 +4,8 @@ using gfx
 using fwt
 
 internal class ViewTabPane : PanelTabPane, RefluxEvents {
-	@Inject	private Registry		registry
-	@Inject	private Reflux			reflux
+	@Inject	private Scope	scope
+	@Inject	private Reflux	reflux
 
 	new make(Reflux reflux, |This|in) : super(false, false, in) {
 		this.tabPane.tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
@@ -29,7 +29,7 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 		tuple.panel.isShowing = false
 		tuple.panel->onHide
 
-		newView := (View) registry.autobuild(viewType)
+		newView := (View) scope.build(viewType)
 		newView._parentFunc = |->Widget| { tuple.tab ?: this }
 		tuple.swapPanel(newView)
 		if (panelTabs.size == 1) {
@@ -84,7 +84,7 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 
 		// create a new View
 		if (view == null || ctx.newTab) {
-			view = registry.autobuild(viewType)
+			view = scope.build(viewType)
 			super.addTab(view)
 		}
 

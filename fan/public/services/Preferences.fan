@@ -40,12 +40,18 @@ internal class PreferencesImpl : Preferences {
 			private static const Log 	log 	:= Preferences#.pod.log
 			private Str:CachedPrefs		cache	:= Str:CachedPrefs[:]
 			private Str					appName
-	@Inject private Registry			registry
+	@Inject private Scope				scope
 
-	private new make(RegistryMeta regMeta, |This| in) {
+	private new make(|This| in) {
 		in(this)
-		this.appName = regMeta[RefluxConstants.meta_appName].toStr.fromDisplayName
+		this.appName = "todoRegMeta"
 	}
+
+	// TODO: RegistryMeta
+//	private new make(RegistryMeta regMeta, |This| in) {
+//		in(this)
+//		this.appName = regMeta[RefluxConstants.meta_appName].toStr.fromDisplayName
+//	}
 
 	override Obj loadPrefs(Type prefsType, Str? name := null) {
 		name = name ?: "${prefsType.name}.fog"
@@ -61,7 +67,7 @@ internal class PreferencesImpl : Preferences {
 
 		if (prefs == null) {
 			log.debug("Making preferences: $prefsType.name")
-			prefs = registry.autobuild(prefsType)
+			prefs = scope.build(prefsType)
 		}
 
 		cache[name] = CachedPrefs(file, prefs)
@@ -109,7 +115,7 @@ internal class PreferencesImpl : Preferences {
 			if (file != null && file.exists) {
 				log.debug("Loading preferences: $file")
 				value = file.readObj
-				registry.injectIntoFields(value)
+				scope.inject(value)
 			}
 		} catch (Err e) {
 			log.err("Cannot load options: $file", e)
