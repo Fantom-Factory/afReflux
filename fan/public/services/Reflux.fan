@@ -36,6 +36,39 @@ mixin Reflux {
 	abstract Void copyToClipboard(Str text)
 }
 
+internal class RefluxProxy : Reflux {
+
+	@Inject { type=RefluxImpl# }
+	private |->Reflux| reflux
+	
+	new make(|This|in) { in(this) }
+
+	override Scope scope()												{ reflux().scope() }
+	override Void callLater(Duration delay, |->| f)						{ reflux().callLater(delay, f) }
+
+	override RefluxPrefs preferences()									{ reflux().preferences() }
+
+	override Void refresh(Resource? resource := null)					{ reflux().refresh(resource) }
+	override Window window()											{ reflux().window() }
+	override Void exit()												{ reflux().exit() }
+
+	override Resource resolve(Str uri)									{ reflux().resolve(uri) }
+
+	override Void load(Str uri, LoadCtx? ctx := null)					{ reflux().load(uri, ctx) }
+	override Void loadResource(Resource resource, LoadCtx? ctx := null)	{ reflux().loadResource(resource, ctx) }
+	override View? activeView()											{ reflux().activeView }
+	override Bool closeView(View view, Bool force)						{ reflux().closeView(view, force) }
+	override Void replaceView(View view, Type viewType)					{ reflux().replaceView(view, viewType) }
+
+	override Void saveAll()												{ reflux().saveAll }
+	
+	override Panel? getPanel(Type panelType, Bool checked := true)		{ reflux().getPanel(panelType, checked) }
+	override Panel showPanel(Type panelType)							{ reflux().showPanel(panelType) }
+	override Panel hidePanel(Type panelType)							{ reflux().hidePanel(panelType) }
+
+	override Void copyToClipboard(Str text)								{ reflux().copyToClipboard(text) }
+}
+
 internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private UriResolvers	uriResolvers
 	@Inject private RefluxEvents	refluxEvents
@@ -53,7 +86,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		eventHub.register(this)
 		window = scope.build(Frame#, [this])
 	}
-
+	
 	override RefluxPrefs preferences() {
 		prefsCache.loadPrefs(RefluxPrefs#, "afReflux.fog")
 	}

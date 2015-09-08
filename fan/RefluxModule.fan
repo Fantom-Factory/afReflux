@@ -6,10 +6,14 @@ using fwt
 class RefluxModule {
 	
 	static Void defineServices(ServiceDefinitions defs) {
-//		defs.add(Reflux#).withProxy
-//		defs.add(Errors#).withProxy
-		defs.add(Reflux#)	// TODO: proxy funcs
-		defs.add(Errors#)	// TODO: proxy funcs
+		
+		// Home made proxies
+		defs.add(Reflux#, RefluxProxy#)
+		defs.add(RefluxImpl#)
+		
+		// Home made proxies
+		defs.add(Errors#, ErrorsProxy#)
+		defs.add(ErrorsImpl#)
 
 		defs.add(Images#)
 		defs.add(Preferences#)
@@ -21,9 +25,10 @@ class RefluxModule {
 		defs.add(RefluxIcons#)
 		defs.add(GlobalCommands#)
 		defs.add(History#)
-//		defs.add(Session#).withCtorArgs(["sessionData.fog"])
-		defs.add(Session#, null, ["sessionData.fog"])	// TODO: withCtorArgs
+		defs.add(Session#).withCtorArgs(["sessionData.fog"])
 		defs.add(Dialogues#)
+		
+		defs.add(RefluxEvents#)		
 	}
 	
 	@Contribute { serviceType=Panels# }

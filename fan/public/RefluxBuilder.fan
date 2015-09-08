@@ -81,12 +81,17 @@ class RefluxBuilder {
 	}
 	
 	Void start(|Reflux, Window|? onOpen := null) {
+		
+		registryBuilder.addScope("uiThread", true)
+		
 		registry := registryBuilder.build.startup
 		
-//		uiScope
-//		registry.rootScope.createChildScope("thread") {   }
+		uiScope	:= (Scope?) null
+		registry.rootScope.createChildScope("uiThread") {
+			uiScope = it.jailBreak
+		}
 		
-		reflux	 := (Reflux) registry.rootScope.resolveById(Reflux#.qname)
+		reflux	 := (Reflux) uiScope.resolveById(Reflux#.qname)
 		frame	 := (Frame)  reflux.window
 
 		// onActive -> onFocus -> onOpen
