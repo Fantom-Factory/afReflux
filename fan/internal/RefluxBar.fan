@@ -2,6 +2,7 @@ using afIoc3
 using gfx
 using fwt
 
+@Js
 internal class RefluxBar : EdgePane {
 	
 	new make(Scope scope, |This|in) : super.make() {

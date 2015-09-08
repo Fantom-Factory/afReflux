@@ -18,6 +18,7 @@ using afIoc3
 ** 
 ** Note that instances of 'Panels', 'Views' and 'GlobalCommands' are automatically added 
 ** to 'EventHub' by default. 
+@Js
 mixin RefluxEvents {
 	virtual Void onLoadSession(Str:Obj? session) { }
 	virtual Void onSaveSession(Str:Obj? session) { }
@@ -41,6 +42,7 @@ mixin RefluxEvents {
 	virtual Void onViewModified		(View view) { }	// usually when the name / icon / dirty has changed
 }
 
+@Js
 internal class RefluxEventsImpl : RefluxEvents {
 
 	@Inject private |->EventHub| eventHub

@@ -2,6 +2,7 @@ using afIoc3
 
 ** (Service) - 
 ** A general dumping ground for data to be saved between applications.
+@Js
 mixin Session {
 	** The session data.
 	abstract Str:Obj? data
@@ -18,7 +19,7 @@ mixin Session {
 
 }
 
-@NoDoc	// so others can change the ctor argument
+@NoDoc	@Js	// so others can change the ctor argument
 class SessionImpl : Session {
 	@Inject private Preferences		preferences
 	@Inject private RefluxEvents	events

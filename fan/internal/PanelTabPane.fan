@@ -2,15 +2,24 @@ using afIoc3
 using gfx
 using fwt
 
+@Js
 internal class PanelTabPane : ContentPane {
-	CTabPane		tabPane		:= CTabPane() {
-		it.onSelect.add |e| { this->onSelect(e) }
-		it.onClose.add  |e| { this->onClose (e) }
-	}
+	Widget			tabPane
 	PanelTabTuple[]	panelTabs	:= PanelTabTuple[,]	// 'cos I can't use non-const Panel as a key
 	Bool			alwaysShowTabs	// TODO: implement alwaysShowTabs
 
 	new make(Bool visible, Bool alwaysShowTabs, |This|in) {
+		
+		if (Env.cur.runtime == "js")
+			tabPane	= TabPane() {
+				it.onSelect.add |e| { this->onSelect(e) }
+			}
+		else
+			tabPane	= CTabPane() {
+				it.onSelect.add |e| { this->onSelect(e) }
+				it.onClose.add  |e| { this->onClose (e) }
+			}
+		
 		in(this)
 		this.visible = visible
 		this.alwaysShowTabs = alwaysShowTabs
@@ -92,7 +101,7 @@ internal class PanelTabPane : ContentPane {
 
 		if (tuple != null) {
 			if (tuple.tab != null)
-				tabPane.selected = tuple.tab
+				tabPane->selected = tuple.tab
 			if (tuple.panel.isActive == false) {
 				tuple.panel.isActive = true
 				tuple.panel->onActivate
@@ -103,7 +112,7 @@ internal class PanelTabPane : ContentPane {
 	}
 
 	Void onSelect(Event? event)	{
-		selected := tabPane.selected
+		selected := tabPane->selected
 
 		if (selected != null) {
 			tuple := panelTabs.find { it.tab === selected }
@@ -134,21 +143,22 @@ internal class PanelTabPane : ContentPane {
 	}
 }
 
+@Js
 internal class PanelTabTuple {
-	CTabPane	tabPane
+	Widget		tabPane
 	Panel		panel
-	CTab?		tab
+	Widget?		tab
 
-	new make(Panel panel, CTabPane tabPane) {
+	new make(Panel panel, TabPane tabPane) {
 		this.tabPane = tabPane
 		this.panel = panel
 	}
 
 	This addToTabPane() {
-		tab	= CTab()
+		tab	= Env.cur.runtime == "js" ? Tab() : CTab()
 		tab.add(panel.content)
-		tab.text  = panel.name
-		tab.image = panel.icon
+		tab->text  = panel.name
+		tab->image = panel.icon
 		tabPane.add(tab)
 		return this
 	}
@@ -168,8 +178,8 @@ internal class PanelTabTuple {
 
 		if (tab != null) {
 			tab.add(newPanel.content)
-			tab.text  = newPanel.name
-			tab.image = newPanel.icon
+			tab->text  = newPanel.name
+			tab->image = newPanel.icon
 		}
 
 		return this

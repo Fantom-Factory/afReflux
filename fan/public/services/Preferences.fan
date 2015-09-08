@@ -13,6 +13,7 @@ using afIoc3
 **   
 **   new make(|This| f) { f(this) }
 ** 
+@Js
 mixin Preferences {
 
 	** Returns an instance of the given preferences object.
@@ -36,6 +37,7 @@ mixin Preferences {
 
 }
 
+@Js
 internal class PreferencesImpl : Preferences {
 			private static const Log 	log 	:= Preferences#.pod.log
 			private Str:CachedPrefs		cache	:= Str:CachedPrefs[:]
@@ -128,6 +130,7 @@ internal class PreferencesImpl : Preferences {
 	}
 }
 
+@Js
 internal class CachedPrefs {
   	private File? 		file
   	private DateTime? 	modied

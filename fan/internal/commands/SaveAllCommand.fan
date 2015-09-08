@@ -1,6 +1,7 @@
 using afIoc3
 using fwt
 
+@Js
 internal class SaveAllCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 			private Bool	doingIt

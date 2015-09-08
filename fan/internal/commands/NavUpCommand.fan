@@ -2,6 +2,7 @@ using afIoc3
 using gfx
 using fwt
 
+@Js
 internal class NavUpCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux reflux
 	

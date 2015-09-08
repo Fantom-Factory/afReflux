@@ -3,12 +3,14 @@ using afBeanUtils
 using gfx
 using fwt
 
+@Js
 internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	@Inject	private Scope	scope
 	@Inject	private Reflux	reflux
 
 	new make(Reflux reflux, |This|in) : super(false, false, in) {
-		this.tabPane.tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
+		if (Env.cur.runtime == "js")
+			this.tabPane->tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
 	}
 
 	@PostInjection

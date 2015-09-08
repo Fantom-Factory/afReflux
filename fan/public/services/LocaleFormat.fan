@@ -9,6 +9,7 @@
 **       defs.overrideByType(LocaleFormat#).withImpl(MyLocaleFormatImpl#)
 **   }
 ** 
+@Js
 mixin LocaleFormat {
 	
 	** Defaults to 'DateTime.tolocale()'.
@@ -34,4 +35,5 @@ mixin LocaleFormat {
 }
 
 ** The default implementation.
+@Js
 internal class LocaleFormatImpl : LocaleFormat { }

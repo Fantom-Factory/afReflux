@@ -1,5 +1,6 @@
 
-@NoDoc @Serializable
+@NoDoc @Js
+@Serializable
 class RefluxPrefs {
 	Uri			homeUri			:= `file:/`
 	Bool 		viewTabsOnTop	:= true

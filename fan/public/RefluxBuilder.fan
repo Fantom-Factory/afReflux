@@ -9,6 +9,7 @@ using fwt
 **	   reflux.showPanel(MyPanel#)
 **	   ...
 **   }
+@Js
 class RefluxBuilder {
 	private const static Log log := RefluxBuilder#.pod.log
 

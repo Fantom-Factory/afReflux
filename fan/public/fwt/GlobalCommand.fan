@@ -43,6 +43,7 @@ using fwt
 **  - 'afReflux.cmdSaveAs'
 **  - 'afReflux.cmdToggleView'
 **  - 'afReflux.cmdUndo'
+@Js
 class GlobalCommand {
 	@Inject private RefluxIcons		_refluxIcons
 	@Inject private Scope			_scope

@@ -41,6 +41,7 @@ using concurrent::Actor
 ** 
 **   resDirs = [`res/icons/`]
 ** 
+@Js
 mixin Images {
 
 	** Returns (and caches) the image at the given URI.

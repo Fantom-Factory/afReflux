@@ -3,6 +3,7 @@ using gfx
 using fwt
 
 ** The IoC Module definition for Reflux.
+@Js
 class RefluxModule {
 	
 	static Void defineServices(ServiceDefinitions defs) {
