@@ -102,6 +102,7 @@ internal class PanelTabPane : ContentPane {
 		if (tuple != null) {
 			if (tuple.tab != null)
 				tabPane->selected = tuple.tab
+
 			if (tuple.panel.isActive == false) {
 				tuple.panel.isActive = true
 				tuple.panel->onActivate

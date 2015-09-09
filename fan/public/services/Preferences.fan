@@ -44,16 +44,10 @@ internal class PreferencesImpl : Preferences {
 			private Str					appName
 	@Inject private Scope				scope
 
-	private new make(|This| in) {
+	private new make(RegistryMeta regMeta, |This| in) {
 		in(this)
-		this.appName = "todoRegMeta"
+		this.appName = regMeta[RefluxConstants.meta_appName].toStr.fromDisplayName
 	}
-
-	// TODO: RegistryMeta
-//	private new make(RegistryMeta regMeta, |This| in) {
-//		in(this)
-//		this.appName = regMeta[RefluxConstants.meta_appName].toStr.fromDisplayName
-//	}
 
 	override Obj loadPrefs(Type prefsType, Str? name := null) {
 		name = name ?: "${prefsType.name}.fog"
