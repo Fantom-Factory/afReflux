@@ -9,7 +9,8 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	@Inject	private Reflux	reflux
 
 	new make(Reflux reflux, |This|in) : super(false, false, in) {
-		if (Env.cur.runtime == "js")
+		if (Env.cur.runtime != "js")
+			// tabsValign only available in CTabPane
 			this.tabPane->tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
 	}
 

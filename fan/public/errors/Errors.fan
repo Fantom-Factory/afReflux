@@ -21,13 +21,18 @@ mixin Errors {
 @Js
 internal class ErrorsProxy : Errors {
 
-	@Inject { type=ErrorsImpl# }
-	private |->Errors| errorsFunc
+//	@Inject { type=ErrorsImpl# }
+//	private |->Errors| errorsFunc
+	@Inject private Scope scope
 	
 	new make(|This|in) { in(this) }
 
 	override Error[] errors()									{ errorsFunc().errors() }
 	override Void add(Err err, Bool skipEventRaising := false)	{ errorsFunc().add(err, skipEventRaising) }
+	
+	private Errors errorsFunc() {
+		scope.resolveByType(ErrorsImpl#)
+	}
 }
 
 @Js

@@ -69,7 +69,7 @@ mixin Images {
 	abstract Void disposeAll()
 }
 
-@NoDoc	// so maxLoadTime may be overridden
+@NoDoc	@Js // so maxLoadTime may be overridden
 class ImagesImpl : Images {
 	private Uri:Image		images		:= Uri:Image[:]
 	private Uri:Image		fadedImages	:= Uri:Image[:]
