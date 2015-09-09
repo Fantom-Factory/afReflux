@@ -44,10 +44,10 @@ class RefluxBuilder {
 	}
 
 	** Creates a 'BedSheetBuilder' with the given 'AppModules'.
-	new makeFromAppModules(Type[] appModules) {
+	new makeFromAppModules(Type[] appModules, Bool addPodDependencies := true) {
 		if (appModules.isEmpty)
 			throw ArgErr("appModules must not be empty")
-		initModules(registryBuilder, appModules.first.qname, true)
+		initModules(registryBuilder, appModules.first.qname, addPodDependencies)
 		initBanner()
 		registryBuilder.addModuleTypes(appModules)
 	}
@@ -122,7 +122,6 @@ class RefluxBuilder {
 	private static Void initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
 		Pod?  pod
 		Type? mod
-		Type[] mods := Type#.emptyList
 		
 		// Pod name given...
 		// lots of start up checks looking for pods and modules... 
@@ -130,8 +129,13 @@ class RefluxBuilder {
 		if (!moduleName.contains("::")) {
 			pod = Pod.find(moduleName, true)
 			log.info(LogMsgs.refluxBuilder_foundPod(pod))
-			mods = findModFromPod(pod)
+			mods := findModFromPod(pod)
 			mod = mods.first
+			
+			if (!transDeps)
+				log.info("Suppressing transitive dependencies...")
+			bob.addModulesFromPod(pod.name, transDeps)
+			bob.addModuleTypes(mods)
 		}
 
 		// AppModule name given...
@@ -139,22 +143,14 @@ class RefluxBuilder {
 			mod = Type.find(moduleName, true)
 			log.info(LogMsgs.refluxBuilder_foundType(mod))
 			pod = mod.pod
+			
+			if (!bob.moduleTypes.contains(mod))
+				bob.addModuleType(mod)
 		}
 
 		// we're screwed! No module = no web app!
 		if (mod == null)
 			log.warn(LogMsgs.refluxBuilder_noModuleFound)
-		
-		if (pod != null) {
-			if (!transDeps)
-				log.info("Suppressing transitive dependencies...")
-			bob.addModulesFromPod(pod.name, transDeps)
-		}
-		if (mod != null) {
-			if (!bob.moduleTypes.contains(mod))
-				bob.addModuleType(mod)
-		}
-		bob.addModuleTypes(mods)
 		
 		// A simple thing - ensure the Reflux module is added! 
 		// (transitive dependencies are added explicitly via @SubModule)

@@ -31,7 +31,8 @@ internal class Frame : Window, RefluxEvents {
 
 		navBar := (RefluxBar) scope.build(RefluxBar#)
 
-		this.menuBar	= scope.resolveById("afReflux.menuBar")
+		if (Env.cur.runtime != "js")
+			this.menuBar	= scope.resolveById("afReflux.menuBar")
 
 		this.content 	= EdgePane {
 			top = navBar

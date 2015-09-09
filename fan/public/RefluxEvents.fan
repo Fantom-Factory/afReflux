@@ -45,7 +45,8 @@ mixin RefluxEvents {
 @Js
 internal class RefluxEventsImpl : RefluxEvents {
 
-	@Inject private |->EventHub| eventHub
+//	@Inject private |->EventHub| eventHub
+	@Inject private Scope scope
 	
 	new make(|This|in) { in(this) }
 	
@@ -69,4 +70,8 @@ internal class RefluxEventsImpl : RefluxEvents {
 	override Void onViewActivated	(View view)		{ eventHub().fireEvent(RefluxEvents#onViewActivated,	[view]) }
 	override Void onViewDeactivated	(View view)		{ eventHub().fireEvent(RefluxEvents#onViewDeactivated,	[view]) } 
 	override Void onViewModified	(View view)		{ eventHub().fireEvent(RefluxEvents#onViewModified,		[view]) }
+
+	private EventHub eventHub() {
+		scope.resolveByType(EventHub#)
+	}
 }

@@ -149,7 +149,7 @@ internal class PanelTabTuple {
 	Panel		panel
 	Widget?		tab
 
-	new make(Panel panel, TabPane tabPane) {
+	new make(Panel panel, Widget tabPane) {
 		this.tabPane = tabPane
 		this.panel = panel
 	}
