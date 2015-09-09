@@ -49,7 +49,7 @@ class RefluxModule {
 		config["afReflux.reflux"] = RefluxEvents#
 	}
 
-	// TODO: DependencyProviders
+	// FIXME: DependencyProviders
 //	@Contribute { serviceType=DependencyProviders# }
 //	static Void contributeDependencyProviders(Configuration config) {
 //		eventProvider := config.autobuild(EventProvider#)
@@ -205,7 +205,7 @@ class RefluxModule {
 
 	@Contribute { serviceId="afReflux.helpMenu" }
 	static Void contributeHelpMenu(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.cmdAbout"]		 = MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
+		config["afReflux.cmdAbout"]			= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
 	}
 	
 

@@ -99,18 +99,23 @@ class RefluxBuilder {
 		frame.onOpen.add {
 			// Give the widgets a chance to display themselves and set defaults
 			Desktop.callLater(50ms) |->| {
-				// FIXME: load the session 
 				// load the session before we start loading URIs and opening tabs
-//				session := (Session) scope.resolveById(Session#.qname)
-//				session.load
+				session := (Session) uiScope.resolveById(Session#.qname)
+				session.load
 
 				// once we've all started up and settled down, load URIs from the command line
 				onOpen?.call(reflux, frame)
 			}
 		}
-
 		frame.open
-		registry.shutdown
+		
+		// see JS Window Events - http://fantom.org/forum/topic/1981
+		if (Env.cur.runtime == "js")
+			frame.onOpen.fire(Event() { it.id = EventId.open; it.widget = frame } )
+		
+		// JS is non-blocking - so don't shutdown the registry!
+		if (Env.cur.runtime != "js")
+			registry.shutdown
 	}
 	
 	private Void initBanner() {
@@ -157,8 +162,12 @@ class RefluxBuilder {
 		if (!bob.moduleTypes.contains(RefluxModule#))
 			 bob.addModuleType(RefluxModule#)
 
-		regOpts := bob.options
-		regOpts[RefluxConstants.meta_appName]	= (pod?.meta?.get("proj.name") ?: pod?.name) ?: "Unknown"
+		projName := (Str?) null
+		try pod?.meta?.get("proj.name")
+		catch { /* JS F4 Errs */ }
+
+		regOpts	 := bob.options
+		regOpts[RefluxConstants.meta_appName]	= (projName ?: pod?.name) ?: "Unknown"
 		regOpts[RefluxConstants.meta_appPod]	= pod
 		regOpts[RefluxConstants.meta_appModule]	= mod
 	}

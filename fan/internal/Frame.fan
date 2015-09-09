@@ -12,12 +12,9 @@ internal class Frame : Window, RefluxEvents {
 	private SashPane			sash1
 	private SashPane			sash2
 
-	// FIXME: re-instate RegistryMeta
-//	internal new make(Reflux reflux, Registry registry, RegistryMeta regMeta) : super() {
-//		this.appName= regMeta[RefluxConstants.meta_appName]
-//		this.title	= regMeta[RefluxConstants.meta_appName]
-	internal new make(Reflux reflux, Scope scope) : super() {
-		this.appName= "FIXME"
+	internal new make(Reflux reflux, Scope scope, RegistryMeta regMeta) : super() {
+		this.appName= regMeta[RefluxConstants.meta_appName]
+		this.title	= regMeta[RefluxConstants.meta_appName]
 		this.icon	= Image(`fan://icons/x32/flux.png`)
 		this.size	= Size(640, 480)
 
@@ -31,6 +28,7 @@ internal class Frame : Window, RefluxEvents {
 
 		navBar := (RefluxBar) scope.build(RefluxBar#)
 
+		// see http://fantom.org/forum/topic/2324
 		if (Env.cur.runtime != "js")
 			this.menuBar	= scope.resolveById("afReflux.menuBar")
 
