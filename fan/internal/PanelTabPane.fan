@@ -100,8 +100,11 @@ internal class PanelTabPane : ContentPane {
 		}
 
 		if (tuple != null) {
-			if (tuple.tab != null)
+			if (tuple.tab != null) {
 				tabPane->selected = tuple.tab
+				if (Env.cur.runtime == "js")
+					tabPane.relayout
+			}
 
 			if (tuple.panel.isActive == false) {
 				tuple.panel.isActive = true
