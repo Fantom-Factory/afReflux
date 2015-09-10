@@ -76,6 +76,29 @@ internal class Frame : Window, RefluxEvents {
 
 	Void showPanel(Panel panel, Obj prefAlign) {
 		panelTabs[prefAlign].addTab(panel).activate(panel)
+		
+		// in JS, empty panes don't collapse so set their weight to zero 
+		if (Env.cur.runtime == "js") {
+			weights := [20, 60, 20]
+			if (panelTabs[Halign.left].panelTabs.isEmpty) {
+				weights[0] = 0
+				weights[1] += 20
+			}
+			if (panelTabs[Halign.right].panelTabs.isEmpty) {
+				weights[1] += 20
+				weights[2] = 0
+			}
+			if (sash1.weights != weights)
+				sash1.weights = weights
+			
+			weights = [70, 30]
+			if (panelTabs[Valign.bottom].panelTabs.isEmpty) {
+				weights[0] += 30
+				weights[1] = 0
+			}
+			if (sash2.weights != weights)
+				sash2.weights = weights
+		}
 	}
 
 	Void activatePanel(Panel panel, Obj prefAlign) {

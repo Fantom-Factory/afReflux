@@ -226,7 +226,7 @@ class RefluxModule {
 		config["afReflux.cmdNavForward"]	= toolBarCommand(globalCmds["afReflux.cmdNavForward"].command)
 		config["afReflux.cmdNavUp"]			= toolBarCommand(globalCmds["afReflux.cmdNavUp"].command)
 		config["afReflux.cmdRefresh"]		= toolBarCommand(globalCmds["afReflux.cmdRefresh"].command)
-		config["afReflux.uriWidget"]		= config.build(UriWidget#)
+		config["afReflux.uriWidget"]		= Env.cur.runtime == "js" ? config.build(UriWidgetJs#) : config.build(UriWidget#)
 		config["afReflux.cmdNavHome"]		= toolBarCommand(globalCmds["afReflux.cmdNavHome"].command)
 	}
 

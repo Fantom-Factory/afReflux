@@ -150,6 +150,9 @@ class ImagesImpl : Images {
 	
 	** Fantom has some sort of internal Image caching going on - so we cache bust the URI if needed
 	private Image? makeImage(Uri uri, Bool checked := true) {
+		if (Env.cur.runtime == "js")
+			return Image(uri, checked)
+
 		try {
 			f := (File?) uri.get
 			if (f == null || !f.exists) throw UnresolvedErr("file does not exist: ${f?.normalize ?: uri}")

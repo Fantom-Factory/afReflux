@@ -113,3 +113,43 @@ internal class UriWidget : Canvas, RefluxEvents {
 		}
 	}
 }
+
+@Js
+internal class UriWidgetJs : ContentPane, RefluxEvents {
+
+	@Inject	private Reflux	reflux
+	
+	private Text	text := Text() {
+		it.border = false
+		it.onAction.add { this->onAction(it) }
+	}
+
+	new make(EventHub eventHub, |This|in) {
+		in(this)
+		eventHub.register(this)	
+		content = text
+	}
+	
+	Void onAction(Event event) {
+		reflux.load(text.text)
+	}
+	
+	override Void onLoad(Resource resource) {
+		update(reflux.activeView, resource)
+	}
+
+	override Void onViewActivated(View view) {
+		update(view, view.resource)
+	}
+
+	override Void onViewModified(View view) {
+		update(view, view.resource)
+	}
+	
+	private Void update(View? view, Resource? resource) {
+		if (view?.isActive ?: true) {
+			if (resource == null) return
+			text.text = resource.displayName
+		}
+	}
+}

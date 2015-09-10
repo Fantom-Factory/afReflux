@@ -10,14 +10,22 @@ internal class RefluxBar : EdgePane {
 	
 		toolBar	:= (ToolBar?) scope.resolveById("afReflux.toolBar")
 		content	:= (Widget?) null
-		uriBar	:= toolBar.children.find { it.typeof == UriWidget# }
+		uriBar	:= toolBar.children.find { it.typeof == UriWidget# || it.typeof == UriWidgetJs# }
 
 		if (uriBar == null) {
 			content = toolBar
 		} else {
-			// ToolBars can only show Buttons, so split it up into L and R toolbars
-			i := toolBar.children.indexSame(uriBar)
-			content = EdgePane {
+			
+//			if (Env.cur.runtime == "js") {
+//				toolBar.remove(uriBar)
+//				content = EdgePane {
+//					it.top = uriBar
+//					it.bottom = toolBar
+//				}
+//				
+//			} else {
+				// ToolBars can only show Buttons, so split it up into L and R toolbars
+				i := toolBar.children.indexSame(uriBar)
 				lKids := toolBar.children[0..<i]
 				rKids := toolBar.children[i+1..-1]
 
@@ -25,13 +33,15 @@ internal class RefluxBar : EdgePane {
 				
 				l := ToolBar().addAll(lKids)
 				r := ToolBar().addAll(rKids)
-				
-				it.left	  = l
-				it.center = uriBar
-				it.right  = r				
-			}
+
+				content = EdgePane {
+					it.left	  = l
+					it.center = uriBar
+					it.right  = r				
+				}				
+//			}
 		}
 		
-		center = InsetPane(2, 2) { content, }
+		center = Env.cur.runtime == "js" ? InsetPane(0, 0, 6, 0) { content, } : InsetPane(2, 2) { content, }
 	}	
 }

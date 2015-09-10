@@ -70,11 +70,12 @@ internal class EventHubImpl : EventHub {
 			?: throw ArgNotFoundErr("Method '${method.qname}' does not belong to an event type ", eventTypes.eventTypes)
 		
 		sinks := eventSinks.findAll { it.typeof.fits(method.parent) }
-		
+
 		sinks.each {
 			try	method.callOn(it, args)
-			catch (Err err)
+			catch (Err err) {
 				errors.add(err)
+			}
 		}
 	}
 	

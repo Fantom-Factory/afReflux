@@ -59,11 +59,14 @@ abstract class Panel {
 		set { &icon = it; if (content?.parent?.typeof?.qname == "fwt::Tab" || content?.parent?.typeof?.qname == "afReflux::CTab") content.parent->image = it; if (isShowing) this->onModify }
 	}
 
+	@Inject private EventHub eventHub
 	** Subclasses should define the following ctor:
 	**
 	**   new make(|This| in) : super(in) { ... }
 	new make(|This| in) {
 		in(this)
+		// also see RefluxCommand
+		_setup(eventHub)
 
 		baseName := typeof.name
 		if (baseName.endsWith("Panel"))
@@ -77,6 +80,7 @@ abstract class Panel {
 
 	@PostInjection
 	private Void _setup(EventHub eventHub) {
+		// also see RefluxCommand
 		eventHub.register(this, false)
 	}
 
@@ -134,7 +138,6 @@ abstract class Panel {
 
 		// FIXME: see super.trap() in Javascript - http://fantom.org/forum/topic/2457
 //		try retVal = super.trap(name, args)
-		
 		try retVal = this.typeof.method(name).callOn(this, args)
 		catch (Err err) {
 			// because we handle the err and return null, we want to make sure we only do it for fwt events
