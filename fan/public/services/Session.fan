@@ -37,7 +37,7 @@ class SessionImpl : Session {
 	override Void load() {
 		try {
 			file := preferences.findFile("sessionData.fog")
-			data = file.exists ? file.readObj : data
+			data = file != null && file.exists ? file.readObj : data
 		} catch (Err err)
 			errors.add(err)
 		
@@ -47,7 +47,7 @@ class SessionImpl : Session {
 	override Void save() {
 		events.onSaveSession(data)
 
-		try	preferences.findFile("sessionData.fog").writeObj(data, ["indent":2])
+		try	preferences.findFile("sessionData.fog")?.writeObj(data, ["indent":2])
 		catch (Err err)
 			errors.add(err)
 	}

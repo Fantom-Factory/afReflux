@@ -32,15 +32,15 @@ internal class Frame : Window, RefluxEvents {
 		if (Env.cur.runtime != "js")
 			this.menuBar	= scope.resolveById("afReflux.menuBar")
 
-		this.content 	= EdgePane {
+		this.content = EdgePane {
 			top = navBar
 			center = sash1 = SashPane {
 				it.orientation = Orientation.horizontal
-				it.weights = [200, 600, 200]
+				it.weights = [20, 60, 20]
 				panelTabs[Halign.left],
 				sash2 = SashPane {
 					it.orientation = Orientation.vertical
-					it.weights = [600, 200]
+					it.weights = [70, 30]
 					viewTabs,
 					panelTabs[Valign.bottom],
 				},
