@@ -159,7 +159,8 @@ internal class PanelTabTuple {
 		tab	= Env.cur.runtime == "js" ? Tab() : CTab()
 		tab.add(panel.content)
 		tab->text  = panel.name
-		tab->image = panel.icon
+		if (panel.icon != null)	// JS dies if null
+			tab->image = panel.icon
 		tabPane.add(tab)
 		return this
 	}
@@ -180,7 +181,8 @@ internal class PanelTabTuple {
 		if (tab != null) {
 			tab.add(newPanel.content)
 			tab->text  = newPanel.name
-			tab->image = newPanel.icon
+			if (panel.icon != null)	// JS dies if null
+				tab->image = newPanel.icon
 		}
 
 		return this

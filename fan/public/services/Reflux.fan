@@ -132,12 +132,14 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 
 		} catch { /* meh */ }
 
-		try {
 			resource := uriResolvers.resolve(uri)
 			loadResource(resource, ctx)
-		} catch (Err err) {
-			errors.add(err)
-		}
+//		try {
+//			resource := uriResolvers.resolve(uri)
+//			loadResource(resource, ctx)
+//		} catch (Err err) {
+//			errors.add(err)
+//		}
 	}
 
 	override Void loadResource(Resource resource, LoadCtx? ctx := null) {
