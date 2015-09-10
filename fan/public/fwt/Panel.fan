@@ -131,7 +131,11 @@ abstract class Panel {
 	** Simple Err handling without fuss!
 	override Obj? trap(Str name, Obj?[]? args := null) {
 		retVal := null
-		try retVal = super.trap(name, args)
+
+		// FIXME: see super.trap() in Javascript - http://fantom.org/forum/topic/2457
+//		try retVal = super.trap(name, args)
+		
+		try retVal = this.typeof.method(name).callOn(this, args)
 		catch (Err err) {
 			// because we handle the err and return null, we want to make sure we only do it for fwt events
 			if (name.startsWith("on") && typeof.method(name, false)?.returns == Void#) {

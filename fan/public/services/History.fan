@@ -84,7 +84,11 @@ internal class HistoryImpl : History, RefluxEvents {
 		}
 
 		history.insert(0, resource)
-		history = history.unique
+		
+		// FIXME: JS sys::NotImmutableErr: key is not immutable: refluxWeb::MyResource
+		if (Env.cur.runtime != "js")
+			history = history.unique
+		
 		if (history.size > 50) history.size = 50
 
 		showHistoryMenu
@@ -99,6 +103,9 @@ internal class HistoryImpl : History, RefluxEvents {
 	}
 	
 	private Void showHistoryMenu() {
+		// FIXME: JS casting issue
+		if (Env.cur.runtime == "js") return
+		
 		historyMenu := (Menu) scope.resolveById("afReflux.historyMenu")		
 		((MenuItem[]) historyMenu.children).each { if (it.command is HistoryCommand) historyMenu.remove(it) }
 		

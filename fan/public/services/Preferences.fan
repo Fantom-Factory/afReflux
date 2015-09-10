@@ -89,7 +89,7 @@ internal class PreferencesImpl : Preferences {
 	override File? findFile(Str name) {
 		pathUri := `etc/${appName}/${name}`
 		if (runtimeIsJs) {
-			log.info("File $pathUri does not exist in JS")
+			log.info("File $pathUri does not exist in Javascript land")
 			return null
 		}
 

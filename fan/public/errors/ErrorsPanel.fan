@@ -6,8 +6,8 @@ using fwt
 // TODO: have 'Clear' command
 ** (Panel) -
 ** Displays the list of 'Errs' added to the 'Errors' service.
-@Js
-internal class ErrorsPanel : Panel, RefluxEvents {
+@NoDoc @Js
+class ErrorsPanel : Panel, RefluxEvents {
 
 	@Inject private Registry		registry
 	@Inject private RefluxIcons		icons
