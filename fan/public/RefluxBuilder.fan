@@ -42,15 +42,6 @@ class RefluxBuilder {
 		initModules(registryBuilder, appModule.qname, true)
 		initBanner()
 	}
-
-	** Creates a 'BedSheetBuilder' with the given 'AppModules'.
-	new makeFromAppModules(Type[] appModules, Bool addPodDependencies := true) {
-		if (appModules.isEmpty)
-			throw ArgErr("appModules must not be empty")
-		initModules(registryBuilder, appModules.first.qname, addPodDependencies)
-		initBanner()
-		registryBuilder.addModuleTypes(appModules)
-	}
 	
 	** Adds a module to the registry. 
 	** Any modules defined with the '@SubModule' facet are also added.
@@ -58,14 +49,6 @@ class RefluxBuilder {
 	** Convenience for 'registryBuilder.addModuleType()'
 	This addModule(Type moduleType) {
 		registryBuilder.addModuleType(moduleType)
-		return this
-	}
-	
-	** Adds many modules to the registry.
-	** 
-	** Convenience for 'registryBuilder.addModuleTypes()'
-	This addModules(Type[] moduleTypes) {
-		registryBuilder.addModuleTypes(moduleTypes)
 		return this
 	}
 	
@@ -92,7 +75,7 @@ class RefluxBuilder {
 			uiScope = it.jailBreak
 		}
 		
-		reflux	 := (Reflux) uiScope.resolveById(Reflux#.qname)
+		reflux	 := (Reflux) uiScope.serviceById(Reflux#.qname)
 		frame	 := (Frame)  reflux.window
 
 		// onActive -> onFocus -> onOpen
@@ -100,7 +83,7 @@ class RefluxBuilder {
 			// Give the widgets a chance to display themselves and set defaults
 			Desktop.callLater(50ms) |->| {
 				// load the session before we start loading URIs and opening tabs
-				session := (Session) uiScope.resolveById(Session#.qname)
+				session := (Session) uiScope.serviceById(Session#.qname)
 				session.load
 
 				// once we've all started up and settled down, load URIs from the command line
@@ -140,7 +123,7 @@ class RefluxBuilder {
 			if (!transDeps)
 				log.info("Suppressing transitive dependencies...")
 			bob.addModulesFromPod(pod.name, transDeps)
-			bob.addModuleTypes(mods)
+			mods.each { bob.addModuleType(it) }
 		}
 
 		// AppModule name given...
@@ -149,8 +132,7 @@ class RefluxBuilder {
 			log.info(LogMsgs.refluxBuilder_foundType(mod))
 			pod = mod.pod
 			
-			if (!bob.moduleTypes.contains(mod))
-				bob.addModuleType(mod)
+			bob.addModuleType(mod)
 		}
 
 		// we're screwed! No module = no web app!
@@ -159,8 +141,7 @@ class RefluxBuilder {
 		
 		// A simple thing - ensure the Reflux module is added! 
 		// (transitive dependencies are added explicitly via @SubModule)
-		if (!bob.moduleTypes.contains(RefluxModule#))
-			 bob.addModuleType(RefluxModule#)
+		 bob.addModuleType(RefluxModule#)
 
 		projName := (Str?) null
 		try pod?.meta?.get("proj.name")

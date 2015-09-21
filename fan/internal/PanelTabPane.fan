@@ -102,8 +102,9 @@ internal class PanelTabPane : ContentPane {
 		if (tuple != null) {
 			if (tuple.tab != null) {
 				tabPane->selected = tuple.tab
-				if (Env.cur.runtime == "js")
-					tabPane.relayout
+				// see http://fantom.org/forum/topic/2459#c1
+//				if (Env.cur.runtime == "js")
+//					tabPane.relayout
 			}
 
 			if (tuple.panel.isActive == false) {

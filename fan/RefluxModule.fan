@@ -141,7 +141,7 @@ class RefluxModule {
 	}
 	
 	private static Void addNonEmptyMenu(Configuration config, Str menuId) {
-		menu := (Menu) config.scope.resolveById(menuId)
+		menu := (Menu) config.scope.serviceById(menuId)
 		if (!menu.children.isEmpty)
 			config[menuId] = menu
 	}

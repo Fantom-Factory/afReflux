@@ -106,7 +106,7 @@ internal class HistoryImpl : History, RefluxEvents {
 		// FIXME: JS casting issue
 		if (Env.cur.runtime == "js") return
 		
-		historyMenu := (Menu) scope.resolveById("afReflux.historyMenu")		
+		historyMenu := (Menu) scope.serviceById("afReflux.historyMenu")		
 		((MenuItem[]) historyMenu.children).each { if (it.command is HistoryCommand) historyMenu.remove(it) }
 		
 		history := history.dup
