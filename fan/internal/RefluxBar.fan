@@ -8,7 +8,7 @@ internal class RefluxBar : EdgePane {
 	new make(Scope scope, |This|in) : super.make() {
 		in(this)
 	
-		toolBar	:= (ToolBar?) scope.resolveById("afReflux.toolBar")
+		toolBar	:= (ToolBar?) scope.serviceById("afReflux.toolBar")
 		content	:= (Widget?) null
 		uriBar	:= toolBar.children.find { it.typeof == UriWidget# || it.typeof == UriWidgetJs# }
 

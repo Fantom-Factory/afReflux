@@ -31,7 +31,7 @@ internal class ErrorsProxy : Errors {
 	override Void add(Err err, Bool skipEventRaising := false)	{ errorsFunc().add(err, skipEventRaising) }
 	
 	private Errors errorsFunc() {
-		scope.resolveByType(ErrorsImpl#)
+		scope.serviceById(ErrorsImpl#.qname)
 	}
 }
 

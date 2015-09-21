@@ -18,7 +18,7 @@ internal class Frame : Window, RefluxEvents {
 		this.icon	= Image(`fan://icons/x32/flux.png`)
 		this.size	= Size(640, 480)
 
-		eventHub	:= (EventHub) scope.resolveById(EventHub#.qname)
+		eventHub	:= (EventHub) scope.serviceById(EventHub#.qname)
 		eventHub.register(this)
 
 		panelTabs[Halign.left]	= scope.build(PanelTabPane#, [false, false])
@@ -30,7 +30,7 @@ internal class Frame : Window, RefluxEvents {
 
 		// see http://fantom.org/forum/topic/2324
 		if (Env.cur.runtime != "js")
-			this.menuBar	= scope.resolveById("afReflux.menuBar")
+			this.menuBar	= scope.serviceById("afReflux.menuBar")
 
 		this.content = EdgePane {
 			top = navBar
@@ -51,7 +51,7 @@ internal class Frame : Window, RefluxEvents {
 		this.onClose.add |Event e| { if (!closing) reflux.exit }
 
 		// Handle file drops -> open up FWT's back door!
-		dialogues := (Dialogues) scope.resolveById(Dialogues#.qname)
+		dialogues := (Dialogues) scope.serviceById(Dialogues#.qname)
 		this.onDrop = |Obj data| {
 			files 	:= (File[]) data
 			handled := reflux.activeView?.onDrop(files) ?: false

@@ -74,7 +74,7 @@ internal class RefluxProxy : Reflux {
 	override Void copyToClipboard(Str text)								{ reflux().copyToClipboard(text) }
 	
 	private Reflux reflux() {
-		scope.resolveByType(RefluxImpl#)
+		scope.serviceById(RefluxImpl#.qname)
 	}
 }
 

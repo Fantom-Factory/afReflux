@@ -72,6 +72,6 @@ internal class RefluxEventsImpl : RefluxEvents {
 	override Void onViewModified	(View view)		{ eventHub().fireEvent(RefluxEvents#onViewModified,		[view]) }
 
 	private EventHub eventHub() {
-		scope.resolveByType(EventHub#)
+		scope.serviceById(EventHub#.qname)
 	}
 }
