@@ -16,15 +16,15 @@ internal const class EventProvider : DependencyProvider {
 		if (ctx.isFieldInjection && !ctx.field.hasFacet(Inject#))
 			return false
 
-		if (ctx.isMethodInjection && ctx.isMethodArgReserved)
+		if (ctx.isFuncInjection && ctx.isFuncArgReserved)
 			return false
 
-		dependencyType := (ctx.field?.type ?: ctx.methodParam?.type).toNonNullable
+		dependencyType := (ctx.field?.type ?: ctx.funcParam?.type).toNonNullable
 		return dependencyType != EventTypes# && eventTypes.eventTypes.contains(dependencyType)
 	}
 
 	override Obj? provide(Scope currentScope, InjectionCtx ctx) {
-		eventType := (ctx.field?.type ?: ctx.methodParam?.type).toNonNullable
+		eventType := (ctx.field?.type ?: ctx.funcParam?.type).toNonNullable
 		
 		return cache.getOrAdd(eventType) |->Obj| {
 			model	:= PlasticClassModel("${eventType.name}Impl", false).extend(eventType)

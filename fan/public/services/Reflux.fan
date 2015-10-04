@@ -40,12 +40,9 @@ mixin Reflux {
 @Js
 internal class RefluxProxy : Reflux {
 
-	// TODO: LazyFuncs in Javascript
-//	@Inject { type=RefluxImpl# }
-//	private |->Reflux| reflux
-//	override Scope scope()												{ reflux().scope() }
-	
-	@Inject override Scope scope
+	@Inject
+	private |->Reflux| reflux
+	override Scope scope()												{ reflux().scope() }
 	
 	new make(|This|in) { in(this) }
 
@@ -71,11 +68,7 @@ internal class RefluxProxy : Reflux {
 	override Panel showPanel(Type panelType)							{ reflux().showPanel(panelType) }
 	override Panel hidePanel(Type panelType)							{ reflux().hidePanel(panelType) }
 
-	override Void copyToClipboard(Str text)								{ reflux().copyToClipboard(text) }
-	
-	private Reflux reflux() {
-		scope.serviceById(RefluxImpl#.qname)
-	}
+	override Void copyToClipboard(Str text)								{ reflux().copyToClipboard(text) }	
 }
 
 @Js
