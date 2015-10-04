@@ -26,7 +26,7 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	View replaceView(View view, Type viewType) {
 		tuple := panelTabs.find { it.panel === view }
 		if (tuple == null)
-			throw ArgNotFoundErr("View '${view} not found", panelTabs.map { it.panel })
+			throw Env.cur.runtime == "js" ? ArgErr("View '${view} not found") : ArgNotFoundErr("View '${view} not found", panelTabs.map { it.panel })
 
 		activate(null)	// deactivate it if its showing
 		tuple.panel.isShowing = false
