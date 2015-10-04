@@ -48,7 +48,7 @@ class RefluxBuilder {
 	** 
 	** Convenience for 'registryBuilder.addModuleType()'
 	This addModule(Type moduleType) {
-		registryBuilder.addModuleType(moduleType)
+		registryBuilder.addModule(moduleType)
 		return this
 	}
 	
@@ -68,7 +68,7 @@ class RefluxBuilder {
 		
 		registryBuilder.addScope("uiThread", true)
 		
-		registry := registryBuilder.build.startup
+		registry := registryBuilder.build
 		
 		uiScope	:= (Scope?) null
 		registry.rootScope.createChildScope("uiThread") {
@@ -93,8 +93,8 @@ class RefluxBuilder {
 		frame.open
 		
 		// see JS Window Events - http://fantom.org/forum/topic/1981
-		if (Env.cur.runtime == "js")
-			frame.onOpen.fire(Event() { it.id = EventId.open; it.widget = frame } )
+//		if (Env.cur.runtime == "js")
+//			frame.onOpen.fire(Event() { it.id = EventId.open; it.widget = frame } )
 		
 		// JS is non-blocking - so don't shutdown the registry!
 		if (Env.cur.runtime != "js")
@@ -123,7 +123,7 @@ class RefluxBuilder {
 			if (!transDeps)
 				log.info("Suppressing transitive dependencies...")
 			bob.addModulesFromPod(pod.name, transDeps)
-			mods.each { bob.addModuleType(it) }
+			mods.each { bob.addModule(it) }
 		}
 
 		// AppModule name given...
@@ -132,7 +132,7 @@ class RefluxBuilder {
 			log.info(LogMsgs.refluxBuilder_foundType(mod))
 			pod = mod.pod
 			
-			bob.addModuleType(mod)
+			bob.addModule(mod)
 		}
 
 		// we're screwed! No module = no web app!
@@ -141,7 +141,7 @@ class RefluxBuilder {
 		
 		// A simple thing - ensure the Reflux module is added! 
 		// (transitive dependencies are added explicitly via @SubModule)
-		 bob.addModuleType(RefluxModule#)
+		 bob.addModule(RefluxModule#)
 
 		projName := (Str?) null
 		try pod?.meta?.get("proj.name")

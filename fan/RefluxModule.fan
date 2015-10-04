@@ -4,32 +4,40 @@ using fwt
 
 ** The IoC Module definition for Reflux.
 @Js
-class RefluxModule {
+const class RefluxModule {
 	
-	static Void defineServices(ServiceDefinitions defs) {
+	static Void defineServices(RegistryBuilder defs) {
 		
 		// Home made proxies
-		defs.add(Reflux#, RefluxProxy#)
-		defs.add(RefluxImpl#)
+		defs.addService(Reflux#, RefluxProxy#)
+		defs.addService(RefluxImpl#)
 		
 		// Home made proxies
-		defs.add(Errors#, ErrorsProxy#)
-		defs.add(ErrorsImpl#)
+		defs.addService(Errors#, ErrorsProxy#)
+		defs.addService(ErrorsImpl#)
 
-		defs.add(Images#)
-		defs.add(Preferences#)
-		defs.add(EventHub#)
-		defs.add(EventTypes#)
-		defs.add(Panels#)
-		defs.add(UriResolvers#)
-		defs.add(LocaleFormat#)
-		defs.add(RefluxIcons#)
-		defs.add(GlobalCommands#)
-		defs.add(History#)
-		defs.add(Session#).withCtorArgs(["sessionData.fog"])
-		defs.add(Dialogues#)
+		defs.addService(Images#)
+		defs.addService(Preferences#)
+		defs.addService(EventHub#)
+		defs.addService(EventTypes#)
+		defs.addService(Panels#)
+		defs.addService(UriResolvers#)
+		defs.addService(LocaleFormat#)
+		defs.addService(RefluxIcons#)
+		defs.addService(GlobalCommands#)
+		defs.addService(History#)
+		defs.addService(Session#).withCtorArgs(["sessionData.fog"])
+		defs.addService(Dialogues#)
 		
-		defs.add(RefluxEvents#)		
+		defs.addService(RefluxEvents#)
+		
+		
+		defs.onRegistryShutdown |config| {
+			config["afReflux.disposeOfImages"] = |->| {
+				imgSrc := (Images) config.scope.serviceByType(Images#)
+				imgSrc.disposeAll
+			}			
+		}
 	}
 	
 	@Contribute { serviceType=Panels# }
@@ -49,12 +57,14 @@ class RefluxModule {
 		config["afReflux.reflux"] = RefluxEvents#
 	}
 
-	// FIXME: DependencyProviders
-//	@Contribute { serviceType=DependencyProviders# }
-//	static Void contributeDependencyProviders(Configuration config) {
-//		eventProvider := config.autobuild(EventProvider#)
-//		config.set("afReflux.eventProvider", eventProvider).before("afIoc.serviceProvider")
-//	}
+	@Contribute { serviceType=DependencyProviders# }
+	static Void contributeDependencyProviders(Configuration config) {
+		// Plastic and dynamic compiling not available in JS
+		if (Env.cur.runtime != "js") {
+			eventProvider := config.build(EventProvider#)
+			config.set("afReflux.eventProvider", eventProvider).before("afIoc.serviceProvider")
+		}
+	}
 
 	@Contribute { serviceType=GlobalCommands# }
 	static Void contributeGlobalCommands(Configuration config) {
@@ -82,15 +92,6 @@ class RefluxModule {
 		config["afReflux.cmdRedo"]			= config.build(RedoCommand#)
 	}
 	
-	// TODO: RegistryShutdown
-//	@Contribute { serviceType=RegistryShutdown# }
-//	internal static Void contributeRegistryShutdown(Configuration config, Registry registry) {
-//		config["afReflux.disposeOfImages"] = |->| {
-//			imgSrc := (Images) registry.dependencyByType(Images#)
-//			imgSrc.disposeAll
-//		}
-//	}
-
 
 
 	// ---- Reflux Menu Bar -----------------------------------------------------------------------
