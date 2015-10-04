@@ -29,7 +29,7 @@ class RefluxBuilder {
 		private set { throw Err("Read only") }
 	}
 	
-	** Creates a 'BedSheetBuilder'. 
+	** Creates a 'RefluxBuilder'. 
 	** 'modOrPodName' may be a pod name or a qualified 'AppModule' type name. 
 	** 'addPodDependencies' is only used if a pod name is passed in.
 	new makeFromName(Str modOrPodName, Bool addPodDependencies := true) {
@@ -37,18 +37,21 @@ class RefluxBuilder {
 		initBanner()
 	}
 	
-	** Creates a 'BedSheetBuilder' from the given 'AppModule'.
+	** Creates a 'RefluxBuilder' from the given 'AppModule'.
 	new makeFromAppModule(Type appModule) {
 		initModules(registryBuilder, appModule.qname, true)
 		initBanner()
 	}
 	
-	** Adds a module to the registry. 
-	** Any modules defined with the '@SubModule' facet are also added.
-	** 
-	** Convenience for 'registryBuilder.addModuleType()'
-	This addModule(Type moduleType) {
-		registryBuilder.addModule(moduleType)
+	** Adds an IoC module to the registry. 
+	This addModule(Obj module) {
+		registryBuilder.addModule(module)
+		return this
+	}
+	
+	** Adds many IoC modules to the registry. 
+	This addModules(Obj[] modules) {
+		registryBuilder.addModules(modules)
 		return this
 	}
 	
