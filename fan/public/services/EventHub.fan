@@ -1,5 +1,5 @@
 using afBeanUtils
-using afIoc3
+using afIoc
 using fwt
 
 ** (Service) - 

@@ -1,4 +1,4 @@
-using afIoc3
+using afIoc
 using afBeanUtils
 using gfx
 using fwt

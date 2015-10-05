@@ -1,4 +1,4 @@
-using afIoc3
+using afIoc
 using gfx
 
 @NoDoc	@Js	// Advanced use only!

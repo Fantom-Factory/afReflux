@@ -1,5 +1,6 @@
-using afIoc3
+using afIoc
 using fwt
+using afPlastic
 
 ** Use to build and launch a Reflux application. Example:
 **
@@ -33,14 +34,25 @@ class RefluxBuilder {
 	** 'modOrPodName' may be a pod name or a qualified 'AppModule' type name. 
 	** 'addPodDependencies' is only used if a pod name is passed in.
 	new makeFromName(Str modOrPodName, Bool addPodDependencies := true) {
-		initModules(registryBuilder, modOrPodName, addPodDependencies)
-		initBanner()
+		_initModules(registryBuilder, modOrPodName, addPodDependencies)
+		_initBanner()
 	}
 	
 	** Creates a 'RefluxBuilder' from the given 'AppModule'.
-	new makeFromAppModule(Type appModule) {
-		initModules(registryBuilder, appModule.qname, true)
-		initBanner()
+	new makeFromModule(Type appModule) {
+		_initModules(registryBuilder, appModule.qname, true)
+		_initBanner()
+	}
+	
+	** Creates a 'RefluxBuilder' from the given 'AppModule'.
+	new makeFromModules(Type[] modules) {
+		_initModules(registryBuilder, modules[0].qname, true)
+		_initBanner()
+		
+		if (modules.size > 1)
+			modules.eachRange(1..-1) {
+				addModule(it)
+			}
 	}
 	
 	** Adds an IoC module to the registry. 
@@ -75,7 +87,7 @@ class RefluxBuilder {
 		
 		uiScope	:= (Scope?) null
 		registry.rootScope.createChildScope("uiThread") {
-			uiScope = it.jailBreak
+			uiScope = registry.setDefaultScope(it.jailBreak)
 		}
 		
 		reflux	 := (Reflux) uiScope.serviceById(Reflux#.qname)
@@ -95,22 +107,18 @@ class RefluxBuilder {
 		}
 		frame.open
 		
-		// see JS Window Events - http://fantom.org/forum/topic/1981
-//		if (Env.cur.runtime == "js")
-//			frame.onOpen.fire(Event() { it.id = EventId.open; it.widget = frame } )
-		
 		// JS is non-blocking - so don't shutdown the registry!
 		if (Env.cur.runtime != "js")
 			registry.shutdown
 	}
 	
-	private Void initBanner() {
+	private Void _initBanner() {
 		pod := (Pod?) registryBuilder.options[RefluxConstants.meta_appPod]
 		ver  := pod?.version ?: "???"
 		registryBuilder.options["afIoc.bannerText"] = "$appName v$ver"
 	}
 
-	private static Void initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
+	private static Void _initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
 		Pod?  pod
 		Type? mod
 		
@@ -120,7 +128,7 @@ class RefluxBuilder {
 		if (!moduleName.contains("::")) {
 			pod = Pod.find(moduleName, true)
 			log.info(LogMsgs.refluxBuilder_foundPod(pod))
-			mods := findModFromPod(pod)
+			mods := _findModFromPod(pod)
 			mod = mods.first
 			
 			if (!transDeps)
@@ -144,7 +152,9 @@ class RefluxBuilder {
 		
 		// A simple thing - ensure the Reflux module is added! 
 		// (transitive dependencies are added explicitly via @SubModule)
-		 bob.addModule(RefluxModule#)
+		bob.addModule(RefluxModule#)
+		if (Env.cur.runtime != "js")
+			bob.addModule(PlasticModule#)
 
 		projName := (Str?) null
 		try pod?.meta?.get("proj.name")
@@ -157,7 +167,7 @@ class RefluxBuilder {
 	}
 
 	** Looks for an 'AppModule' in the given pod. 
-	private static Type[] findModFromPod(Pod pod) {
+	private static Type[] _findModFromPod(Pod pod) {
 		mods := Type#.emptyList
 		modNames := pod.meta["afIoc.module"]
 		if (modNames != null) {

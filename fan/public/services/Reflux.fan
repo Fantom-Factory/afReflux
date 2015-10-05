@@ -1,4 +1,4 @@
-using afIoc3
+using afIoc
 using gfx
 using fwt
 
@@ -40,18 +40,21 @@ mixin Reflux {
 @Js
 internal class RefluxProxy : Reflux {
 
-	@Inject
-	private |->Reflux| reflux
-	override Scope scope()												{ reflux().scope() }
+	Reflux?	refluxRef
+	
+	@Inject |->Scope| uiScope
+	@Inject |->RefluxImpl| reflux
 	
 	new make(|This|in) { in(this) }
+
+	override Scope scope()												{ uiScope() }
 
 	override Void callLater(Duration delay, |->| f)						{ reflux().callLater(delay, f) }
 
 	override RefluxPrefs preferences()									{ reflux().preferences() }
 
 	override Void refresh(Resource? resource := null)					{ reflux().refresh(resource) }
-	override Window window()											{ reflux().window() }
+	override Window window()											{ reflux().window }
 	override Void exit()												{ reflux().exit() }
 
 	override Resource resolve(Str uri)									{ reflux().resolve(uri) }
@@ -68,7 +71,13 @@ internal class RefluxProxy : Reflux {
 	override Panel showPanel(Type panelType)							{ reflux().showPanel(panelType) }
 	override Panel hidePanel(Type panelType)							{ reflux().hidePanel(panelType) }
 
-	override Void copyToClipboard(Str text)								{ reflux().copyToClipboard(text) }	
+	override Void copyToClipboard(Str text)								{ reflux().copyToClipboard(text) }
+	
+//	private Reflux reflux() {
+//		if (refluxRef == null)
+//			refluxRef = uiScope().serviceById(RefluxImpl#.qname)
+//		return refluxRef
+//	}
 }
 
 @Js

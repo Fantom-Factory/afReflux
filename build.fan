@@ -24,9 +24,8 @@ class Build : BuildPod {
 			// ---- Core ------------------------
 			"afBeanUtils  1.0.4  - 1.0", 
 			"afConcurrent 1.0.8  - 1.0", 
-			"afPlastic    1.0.18 - 1.0", 
-//			"afIoc        2.0.6  - 2.0"
-			"afIoc3       3.0.0  - 3.0"
+			"afPlastic    1.0.19 - 1.0", 
+			"afIoc        3.0.0  - 3.0"
 		]
 
 		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`]
