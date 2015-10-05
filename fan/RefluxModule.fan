@@ -1,4 +1,4 @@
-using afIoc3
+using afIoc
 using gfx
 using fwt
 
@@ -9,30 +9,29 @@ const class RefluxModule {
 	static Void defineServices(RegistryBuilder defs) {
 		
 		// Home made proxies
-		defs.addService(Reflux#, RefluxProxy#)
-		defs.addService(RefluxImpl#)
+		defs.addService(Reflux#, RefluxProxy#)	.withScope("uiThread")
+		defs.addService(RefluxImpl#)			.withScope("uiThread")
 		
 		// Home made proxies
-		defs.addService(Errors#, ErrorsProxy#)
-		defs.addService(ErrorsImpl#)
+		defs.addService(Errors#, ErrorsProxy#)	.withScope("uiThread")
+		defs.addService(ErrorsImpl#)			.withScope("uiThread")
 
-		defs.addService(Images#)
-		defs.addService(Preferences#)
-		defs.addService(EventHub#)
+		defs.addService(Images#)				.withScope("uiThread")
+		defs.addService(Preferences#)			.withScope("uiThread")
+		defs.addService(EventHub#)				.withScope("uiThread")
 		defs.addService(EventTypes#)
-		defs.addService(Panels#)
-		defs.addService(UriResolvers#)
-		defs.addService(LocaleFormat#)
-		defs.addService(RefluxIcons#)
-		defs.addService(GlobalCommands#)
-		defs.addService(History#)
-		defs.addService(Session#).withCtorArgs(["sessionData.fog"])
-		defs.addService(Dialogues#)
+		defs.addService(Panels#)				.withScope("uiThread")
+		defs.addService(UriResolvers#)			.withScope("uiThread")
+		defs.addService(LocaleFormat#)			.withScope("uiThread")
+		defs.addService(RefluxIcons#)			.withScope("uiThread")
+		defs.addService(GlobalCommands#)		.withScope("uiThread")
+		defs.addService(History#)				.withScope("uiThread")
+		defs.addService(Session#)				.withScope("uiThread").withCtorArgs(["sessionData.fog"])
+		defs.addService(Dialogues#)				.withScope("uiThread")
 		
-		defs.addService(RefluxEvents#)
+		defs.addService(RefluxEvents#)			.withScope("uiThread")
 		
-		
-		defs.onRegistryShutdown |config| {
+		defs.onScopeDestroy("uiThread") |config| {
 			config["afReflux.disposeOfImages"] = |->| {
 				imgSrc := (Images) config.scope.serviceByType(Images#)
 				imgSrc.disposeAll
@@ -62,7 +61,7 @@ const class RefluxModule {
 		// Plastic and dynamic compiling not available in JS
 		if (Env.cur.runtime != "js") {
 			eventProvider := config.build(EventProvider#)
-			config.set("afReflux.eventProvider", eventProvider).before("afIoc.serviceProvider")
+			config["afReflux.eventProvider"] = eventProvider
 		}
 	}
 

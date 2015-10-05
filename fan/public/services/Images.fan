@@ -1,4 +1,4 @@
-using afIoc3
+using afIoc
 using gfx::Image
 using concurrent::Actor
 
@@ -10,7 +10,7 @@ using concurrent::Actor
 ** pre>
 ** syntax: fantom
 ** 
-** using afIoc3::Inject
+** using afIoc::Inject
 ** using afReflux::Images
 ** using gfx::Image
 ** 

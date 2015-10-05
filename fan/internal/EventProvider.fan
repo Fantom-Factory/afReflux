@@ -1,4 +1,4 @@
-using afIoc3
+using afIoc
 using afPlastic
 using afConcurrent
 
@@ -7,10 +7,12 @@ internal const class EventProvider : DependencyProvider {
 	@Inject private const Registry 			registry
 	@Inject private const PlasticCompiler	compiler
 	@Inject private const EventTypes		eventTypes
-	@Inject { type=[Type:Obj]# }
 			private const LocalMap			cache
 	
-	new make(|This|in) { in(this) }
+	new make(|This|in) {
+		in(this)
+		this.cache = LocalMap(#cache.qname) { it.keyType = Type# }
+	}
 	
 	override Bool canProvide(Scope currentScope, InjectionCtx ctx) {
 		if (ctx.isFieldInjection && !ctx.field.hasFacet(Inject#))

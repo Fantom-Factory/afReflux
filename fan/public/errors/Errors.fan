@@ -1,4 +1,4 @@
-using afIoc3
+using afIoc
 
 ** (Service) - 
 ** Maintains a list of errors incurred by the application.

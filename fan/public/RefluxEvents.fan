@@ -1,4 +1,4 @@
-using afIoc3
+using afIoc
 
 ** (Events) -
 ** Events raised by Reflux.
