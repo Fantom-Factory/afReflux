@@ -91,6 +91,14 @@ Start the `Explorer` application from the command line:
 
     C:\> fan afExplorer
 
+## IoC Container
+
+Reflux is an IoC container. That is, it creates and looks after a `Registry` instance, using it to create classes and provide access to services.
+
+In a [Reflux](http://pods.fantomfactory.org/pods/afReflux) application all processing happens in the UI thread. As such, Reflux defines a single threaded scope called `uiThread` and all services are created from this. This means all your services can be non-const, and you don't have to even think about scopes.
+
+*Happy days!*
+
 ## Panels
 
 [Panels](http://pods.fantomfactory.org/pods/afReflux/api/Panel) are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shuts down.
@@ -422,6 +430,8 @@ class MyOtherService : MyEvents {
 Event methods may be `abstract`, but by making them `virtual` event handler classes are not forced to implement all the event methods.
 
 Because it is common for them to receive events, all instances of `Panels`, `Views` and `GlobalCommands` are automatically added to `EventHub` by default. Therefore to receive events, all they need to do is implement the event mixin.
+
+## Javascript
 
 ## Example Code
 
