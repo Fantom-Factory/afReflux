@@ -36,7 +36,7 @@ internal class Frame : Window, RefluxEvents {
 			top = navBar
 			center = sash1 = SashPane {
 				it.orientation = Orientation.horizontal
-				it.weights = [20, 60, 20]
+				it.weights = [25, 50, 25]
 				panelTabs[Halign.left],
 				sash2 = SashPane {
 					it.orientation = Orientation.vertical
@@ -79,13 +79,13 @@ internal class Frame : Window, RefluxEvents {
 		
 		// in JS, empty panes don't collapse so set their weight to zero 
 		if (Env.cur.runtime == "js") {
-			weights := [20, 60, 20]
+			weights := [25, 50, 25]
 			if (panelTabs[Halign.left].panelTabs.isEmpty) {
 				weights[0] = 0
-				weights[1] += 20
+				weights[1] += 25
 			}
 			if (panelTabs[Halign.right].panelTabs.isEmpty) {
-				weights[1] += 20
+				weights[1] += 25
 				weights[2] = 0
 			}
 			if (sash1.weights != weights)
