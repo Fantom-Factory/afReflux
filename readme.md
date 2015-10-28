@@ -431,8 +431,6 @@ Event methods may be `abstract`, but by making them `virtual` event handler clas
 
 Because it is common for them to receive events, all instances of `Panels`, `Views` and `GlobalCommands` are automatically added to `EventHub` by default. Therefore to receive events, all they need to do is implement the event mixin.
 
-## Javascript
-
 ## Example Code
 
 Following is a basic Reflux app that incorporates ideas and example code shown in previous sections. When learning Reflux, it is suggested that you start here and then look at the source code of the [Explorer](http://pods.fantomfactory.org/pods/afExplorer) application.
@@ -462,6 +460,7 @@ using afReflux
 using fwt
 using gfx
 
+@Js
 class Example {
     Void main() {
         RefluxBuilder(AppModule#).start |Reflux reflux, Window window| {
@@ -472,6 +471,7 @@ class Example {
     }
 }
 
+@Js
 class AppModule {
     @Contribute { serviceType=Panels# }
     static Void contributePanels(Configuration config) {
@@ -518,6 +518,7 @@ class AppModule {
     }
 }
 
+@Js
 class LaunchNukesCommand : GlobalCommand {
     new make(|This|in) : super.make("cmdLaunchNukes", in) {
         command.icon = Image(`fan://icons/x16/sun.png`)
@@ -529,6 +530,7 @@ class LaunchNukesCommand : GlobalCommand {
 }
 
 ** This panel lists all the events it receives
+@Js
 class EventsPanel : Panel, RefluxEvents {
     Table table
     EventsPanelModel model := EventsPanelModel()
@@ -559,6 +561,7 @@ class EventsPanel : Panel, RefluxEvents {
         table.refreshAll
     }
 }
+@Js
 class EventsPanelModel : TableModel {
     Str[][] events := Str[][,]
     override Int numCols() { 2 }
@@ -568,6 +571,7 @@ class EventsPanelModel : TableModel {
 }
 
 ** This panel, when active, enables the global cmdLaunchNukes command
+@Js
 class AlienAlertPanel : Panel {
     @Inject GlobalCommands globalCommands
 
@@ -593,6 +597,7 @@ class AlienAlertPanel : Panel {
     }
 }
 
+@Js
 class MyResolver : UriResolver {
     @Inject Registry registry
 
@@ -605,6 +610,7 @@ class MyResolver : UriResolver {
     }
 }
 
+@Js
 class MyResource : Resource {
     override Uri     uri
     override Str     name
@@ -621,6 +627,7 @@ class MyResource : Resource {
     }
 }
 
+@Js
 class MyView : View {
     Label label
 
@@ -636,6 +643,111 @@ class MyView : View {
     }
 }
 ```
+
+## Javascript
+
+Reflux is also available in Javascript, meaning it runs in an Internet Browser! Here's the above sample application:
+
+![Example Javascript Screenshot](http://pods.fantomfactory.org/pods/afReflux/doc/exampleJs.png)
+
+As great as it is, there are some known limitations, mostly around the limited FWT support in Javascript. Some of these include:
+
+- Menu Bars aren't available.
+- Right click context menu's are available.
+- Tabs don't have close buttons.
+- Custom Event classes aren't dynamically compiled.
+
+Still, it's a fantastic and easy way to kick start your web applications!
+
+### BedSheet
+
+For a Reflux application to run in a browser, it first needs to be served up by a web server. The easiest way to do this is with a [BedSheet](http://pods.fantomfactory.org/pods/afBedSheet) application, using [Duvet](http://pods.fantomfactory.org/pods/afDuvet) to inject your Reflux application into a web page.
+
+A simple bed app that does that is given below:
+
+`build.fan`
+
+```
+using build
+
+class Build : BuildPod {
+    new make() {
+        podName = "refluxWebApp"
+        summary = "Reflux Web Application"
+        version = Version("0.0.1")
+
+        depends = [
+            "sys        1.0.68 - 1.0",
+            "gfx        1.0.68 - 1.0",
+            "fwt        1.0.68 - 1.0",
+
+            // ---- Core ------------------------
+            "afIoc      3.0.0  - 3.0",
+            "afReflux   0.1.0  - 1.0",
+
+            // ---- Web -------------------------
+            "afBedSheet 1.5.0  - 1.5",
+            "afDuvet    1.1.0  - 1.1",
+            "afColdFeet 1.4.0  - 1.4"
+        ]
+
+        srcDirs = [`fan/`]
+    }
+}
+```
+
+`fan/Main.fan`
+
+```
+using afIoc::Contribute
+using afIoc::Configuration
+using afIoc::Inject
+using afBedSheet
+using afReflux::RefluxModule
+using afDuvet::HtmlInjector
+
+class Main {
+    Void main() {
+        BedSheetBuilder("refluxWeb")
+            .removeModule(RefluxModule#)
+            .startWisp(8069, true)
+    }
+}
+
+
+const class AppModule {
+    @Contribute { serviceType=Routes# }
+    static Void contributeRoutes(Configuration config) {
+        config.add(Route(`/`, IndexPage#html))
+    }
+}
+
+
+const class IndexPage {
+    @Inject private const HtmlInjector htmlInjector
+
+    new make(|This|in) { in(this) }
+
+    Text html() {
+        // inject the main method of your Reflux application here
+        htmlInjector.injectFantomMethod(Example#main)
+
+        return Text.fromHtml(
+            "<!DOCTYPE html>
+             <html>
+             <head>
+                 <title>Reflux - On a WebPage!</title>
+             </head>
+             <body>
+             </body>
+             </html>")
+    }
+}
+```
+
+Just substitute the above `Example#main` with the main method of your Reflux application. The Reflux application may be in the same, or a different pod.
+
+Oh, and don't forget to annotate the classes in your Reflux application with `@Js`!
 
 Have fun!
 
