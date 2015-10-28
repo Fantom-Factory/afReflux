@@ -24,7 +24,7 @@ class Build : BuildPod {
 			// ---- Core ------------------------
 			"afBeanUtils  1.0.4  - 1.0", 
 			"afConcurrent 1.0.8  - 1.0", 
-			"afPlastic    1.0.19 - 1.0", 
+			"afPlastic    1.1.0  - 1.1", 
 			"afIoc        3.0.0  - 3.0"
 		]
 
