@@ -32,8 +32,8 @@ const class RefluxModule {
 		defs.addService(RefluxEvents#)			.withScope("uiThread")
 		
 		defs.onScopeDestroy("uiThread") |config| {
-			config["afReflux.disposeOfImages"] = |->| {
-				imgSrc := (Images) config.scope.serviceByType(Images#)
+			config["afReflux.disposeOfImages"] = |Scope scope| {
+				imgSrc := (Images) scope.serviceByType(Images#)
 				imgSrc.disposeAll
 			}			
 		}
