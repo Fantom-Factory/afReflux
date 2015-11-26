@@ -80,7 +80,6 @@ class RefluxBuilder {
 	}
 	
 	Void start(|Reflux, Window|? onOpen := null) {
-		
 		registry := registryBuilder.build
 		
 		uiScope	:= (Scope?) null
@@ -116,8 +115,7 @@ class RefluxBuilder {
 		registryBuilder.options["afIoc.bannerText"] = "$appName v$ver"
 	}
 
-	@NoDoc	// used by afAlife
-	internal static Void _initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
+	private static Void _initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
 		Pod?  pod
 		Type? mod
 		
