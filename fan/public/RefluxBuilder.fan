@@ -116,7 +116,8 @@ class RefluxBuilder {
 		registryBuilder.options["afIoc.bannerText"] = "$appName v$ver"
 	}
 
-	private static Void _initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
+	@NoDoc	// used by afAlife
+	internal static Void _initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
 		Pod?  pod
 		Type? mod
 		
