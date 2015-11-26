@@ -81,8 +81,6 @@ class RefluxBuilder {
 	
 	Void start(|Reflux, Window|? onOpen := null) {
 		
-		registryBuilder.addScope("uiThread", true)
-		
 		registry := registryBuilder.build
 		
 		uiScope	:= (Scope?) null

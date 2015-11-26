@@ -7,7 +7,8 @@ using fwt
 const class RefluxModule {
 	
 	static Void defineServices(RegistryBuilder defs) {
-		
+		defs.addScope("uiThread", true)
+
 		// Home made proxies
 		defs.addService(Reflux#, RefluxProxy#)	.withScope("uiThread")
 		defs.addService(RefluxImpl#)			.withScope("uiThread")
