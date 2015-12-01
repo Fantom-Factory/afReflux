@@ -4,6 +4,7 @@ v0.1.0
 ======
  - New: Reflux now compiles to Javascript and runs in a browser!
  - Chg: Updated to use IoC v3.
+ - Bug: Errs thrown in an 'Errors' error handler could cause a stack overflow.
 
 v0.0.14
 =======
