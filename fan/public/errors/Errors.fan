@@ -21,25 +21,21 @@ mixin Errors {
 @Js
 internal class ErrorsProxy : Errors {
 
-//	@Inject { type=ErrorsImpl# }
-//	private |->Errors| errorsFunc
-	@Inject private Scope scope
+	@Inject { type=ErrorsImpl# }
+	private |->Errors| errorsFunc
 	
 	new make(|This|in) { in(this) }
 
 	override Error[] errors()									{ errorsFunc().errors() }
 	override Void add(Err err, Bool skipEventRaising := false)	{ errorsFunc().add(err, skipEventRaising) }
-	
-	private Errors errorsFunc() {
-		scope.serviceById(ErrorsImpl#.qname)
-	}
 }
 
 @Js
 internal class ErrorsImpl : Errors {
 	@Inject private	RefluxEvents	refluxEvents
 			override Error[]		errors	:= Error[,]
-			internal Int			nextId	:= 1	
+			private Int				nextId	:= 1
+			private	Bool			inErrorHandler
 	
 	new make(|This|in) { in(this) }
 	
@@ -50,8 +46,10 @@ internal class ErrorsImpl : Errors {
 			it.when	= DateTime.now
 		}).last
 		
-		if (!skipEventRaising)
-			refluxEvents.onError(error)
+		if (!skipEventRaising && !inErrorHandler) {
+			inErrorHandler = true
+			try		refluxEvents.onError(error)
+			finally	inErrorHandler = false
+		}
 	}
 }
-
