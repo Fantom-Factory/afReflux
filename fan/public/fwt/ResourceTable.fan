@@ -126,7 +126,8 @@ class ResourceTable {
 
 	** Updates the specified resource in the model before showing it.
 	Void refreshResourceUris(Uri[] resourceUris) {
-		indices := resourceUris.map |uri->Int| { roots.findIndex { it.uri == uri } }
+		// remove uri's that aren't in the root
+		indices := resourceUris.map |uri->Int?| { roots.findIndex { it.uri == uri } }.exclude { it == null }
 		table.refreshRows(indices)
 	}
 
