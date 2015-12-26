@@ -14,11 +14,12 @@ internal class PanelTabPane : ContentPane {
 			tabPane	= TabPane() {
 				it.onSelect.add |e| { this->onSelect(e) }
 			}
-		else
-			tabPane	= CTabPane() {
-				it.onSelect.add |e| { this->onSelect(e) }
-				it.onClose.add  |e| { this->onClose (e) }
-			}
+		else {
+			// see http://fantom.org/forum/topic/2501 for lack of it-block ctor usage
+			ctab := (CTabPane) (tabPane = CTabPane())
+			ctab.onSelect.add |e| { this->onSelect(e) }
+			ctab.onClose.add  |e| { this->onClose (e) }
+		}
 		
 		in(this)
 		this.visible = visible
