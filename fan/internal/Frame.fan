@@ -47,6 +47,7 @@ internal class Frame : Window, RefluxEvents {
 				panelTabs[Halign.right],
 			}
 		}
+		refreshSashPanes()
 
 		this.onClose.add |Event e| { if (!closing) reflux.exit }
 
@@ -76,29 +77,7 @@ internal class Frame : Window, RefluxEvents {
 
 	Void showPanel(Panel panel, Obj prefAlign) {
 		panelTabs[prefAlign].addTab(panel).activate(panel)
-		
-		// in JS, empty panes don't collapse so set their weight to zero 
-		if (Env.cur.runtime == "js") {
-			weights := [25, 50, 25]
-			if (panelTabs[Halign.left].panelTabs.isEmpty) {
-				weights[0] = 0
-				weights[1] += 25
-			}
-			if (panelTabs[Halign.right].panelTabs.isEmpty) {
-				weights[1] += 25
-				weights[2] = 0
-			}
-			if (sash1.weights != weights)
-				sash1.weights = weights
-			
-			weights = [70, 30]
-			if (panelTabs[Valign.bottom].panelTabs.isEmpty) {
-				weights[0] += 30
-				weights[1] = 0
-			}
-			if (sash2.weights != weights)
-				sash2.weights = weights
-		}
+		refreshSashPanes()
 	}
 
 	Void activatePanel(Panel panel, Obj prefAlign) {
@@ -156,5 +135,30 @@ internal class Frame : Window, RefluxEvents {
 		this.title = "${appName} - ${resource.name}"
 		if (isDirty)
 			title += " *"
+	}
+	
+	private Void refreshSashPanes() {
+		// in JS, empty panes don't collapse so set their weight to zero 
+		if (Env.cur.runtime == "js") {
+			weights := [25, 50, 25]
+			if (panelTabs[Halign.left].panelTabs.isEmpty) {
+				weights[0] = 0
+				weights[1] += 25
+			}
+			if (panelTabs[Halign.right].panelTabs.isEmpty) {
+				weights[1] += 25
+				weights[2] = 0
+			}
+			if (sash1.weights != weights)
+				sash1.weights = weights
+			
+			weights = [70, 30]
+			if (panelTabs[Valign.bottom].panelTabs.isEmpty) {
+				weights[0] += 30
+				weights[1] = 0
+			}
+			if (sash2.weights != weights)
+				sash2.weights = weights
+		}		
 	}
 }
