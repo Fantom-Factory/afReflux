@@ -10,7 +10,9 @@ mixin Resource {
 	** The URI that equates to this resource.
 	abstract Uri uri()
 
-	** The full name of this resource.
+	** A short human readable name for this resource - does not need to be unique.
+	**
+	** 'name' is typically displayed in tabs and tables.
 	abstract Str name()
 
 	** An (optional) icon that represents this resource.

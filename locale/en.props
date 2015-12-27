@@ -43,15 +43,15 @@ afReflux.cmdToggleView.accelerator	= F12
 
 // ---- Dialog Properties ----
 
-ok.name=OK
-cancel.name=Cancel
-yes.name=Yes
-no.name=No
-details.name=Details
+ok.name								= OK
+cancel.name							= Cancel
+yes.name							= Yes
+no.name								= No
+details.name						= Details
 
-err.name=Error
-err.image=fan://icons/x32/err.png
-warn.name=Warning
-warn.image=fan://icons/x32/warn.png
-question.name=Question
-question.image=fan://icons/x32/question.png
+err.name							= Error
+err.image							= fan://icons/x32/err.png
+warn.name							= Warning
+warn.image							= fan://icons/x32/warn.png
+question.name						= Question
+question.image						= fan://icons/x32/question.png

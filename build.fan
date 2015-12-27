@@ -5,7 +5,7 @@ class Build : BuildPod {
 
 	new make() {
 		podName = "afReflux"
-		summary = "A framework for creating simple FWT desktop applications"
+		summary = "A framework for creating FWT desktop applications"
 		version = Version("0.1.0")
 
 		meta = [
@@ -28,7 +28,7 @@ class Build : BuildPod {
 			"afIoc        3.0.0  - 3.0"
 		]
 
-		srcDirs = [`fan/`, `fan/public/`, `fan/public/services/`, `fan/public/fwt/`, `fan/public/errors/`, `fan/public/advanced/`, `fan/internal/`, `fan/internal/commands/`]
+		srcDirs = [`fan/`, `fan/internal/`, `fan/internal/commands/`, `fan/public/`, `fan/public/advanced/`, `fan/public/errors/`, `fan/public/fwt/`, `fan/public/services/`]
 		resDirs = [`doc/`, `locale/`, `res/icons-eclipse/`]
 		
 		javaDirs = [`java/`]
