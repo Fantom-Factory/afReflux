@@ -100,6 +100,10 @@ class RefluxBuilder {
 
 				// once we've all started up and settled down, load URIs from the command line
 				onOpen?.call(reflux, frame)
+				
+				// a crappy hack for Chrome - all buttons appear squished until we resize / relayout
+				if (Env.cur.runtime == "js")
+					Desktop.callLater(50ms) |->| { frame.relayout }
 			}
 		}
 		frame.open
