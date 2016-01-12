@@ -1,6 +1,5 @@
-
 syntax: glob
+bin
 build
-lib
-.git
 
+syntax: regexp
