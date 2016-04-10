@@ -121,7 +121,7 @@ Note that the Panel's ctor must take an `it-block` parameter and pass it up to t
 ```
 class AppModule {
     @Contribute { serviceType=Panels# }
-    static Void contributePanels(Configuration config) {
+    Void contributePanels(Configuration config) {
         myPanel := config.autobuild(MyPanel#)
         config.add(myPanel)
     }
@@ -231,7 +231,7 @@ To use `MyResolver` it must be contributed to the `UriResolvers` service in the 
 
 ```
 @Contribute { serviceType=UriResolvers# }
-static Void contributeUriResolvers(Configuration config) {
+Void contributeUriResolvers(Configuration config) {
     config["myResolver"] = config.autobuild(MyResolver#)
 }
 ```
@@ -263,7 +263,7 @@ So, removing the history menu is as simple as:
 
 ```
 @Contribute { serviceId="afReflux.menuBar" }
-static Void contributeMenuBar(Configuration config) {
+Void contributeMenuBar(Configuration config) {
     config.remove("afReflux.historyMenu")
 }
 ```
@@ -272,7 +272,7 @@ And to add your own menu:
 
 ```
 @Contribute { serviceId="afReflux.menuBar" }
-static Void contributeMenuBar(Configuration config) {
+Void contributeMenuBar(Configuration config) {
     config["example"] = Menu() { it.text = "Example"}
 }
 ```
@@ -281,7 +281,7 @@ Use IoC ordering constraints to further position the menu:
 
 ```
 @Contribute { serviceId="afReflux.menuBar" }
-static Void contributeMenuBar(Configuration config) {
+Void contributeMenuBar(Configuration config) {
     menu := Menu() { it.text = "Example"}
     config
         .set("example", menu)
@@ -296,7 +296,7 @@ The menus services take contributions of `MenuItems`, so to add a *Hello Mum!* c
 
 ```
 @Contribute { serviceId="afReflux.editMenu" }
-static Void contributeEditMenu(Configuration config) {
+Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
     config["myCommand"] = MenuItem(command)
 }
@@ -308,7 +308,7 @@ Use IoC ordering constraints to further position any contributed commands / menu
 
 ```
 @Contribute { serviceId="afReflux.editMenu" }
-static Void contributeEditMenu(Configuration config) {
+Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
     config
         .set("myCommand", MenuItem(command))
@@ -324,7 +324,7 @@ The tool bar may be configured in much the same way as the menu bar, with IoC co
 
 ```
 @Contribute { serviceId="afReflux.toolBar" }
-static Void contributeEditMenu(Configuration config) {
+Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
     config["myButton"] = Button(command)
 }
@@ -340,7 +340,7 @@ Global command instances should be contributed to the `GlobalCommands` service:
 
 ```
 @Contribute { serviceType=GlobalCommands# }
-static Void contributeGlobalCommands(Configuration config) {
+Void contributeGlobalCommands(Configuration config) {
     config["myGlobCmd"] = config.autobuild(MyGlobalCommand#)
 }
 ```
@@ -389,7 +389,7 @@ For `MyEvents` to be recognised as an event type it needs to be contributed to t
 
 ```
 @Contribute { serviceType=EventTypes# }
-static Void contributeEventHub(Configuration config) {
+Void contributeEventHub(Configuration config) {
     config.add(MyEvents#)
 }
 ```
@@ -460,7 +460,6 @@ using afReflux
 using fwt
 using gfx
 
-@Js
 class Example {
     Void main() {
         RefluxBuilder(AppModule#).start |Reflux reflux, Window window| {
@@ -471,26 +470,25 @@ class Example {
     }
 }
 
-@Js
-class AppModule {
+const class AppModule {
     @Contribute { serviceType=Panels# }
-    static Void contributePanels(Configuration config) {
-        config["events"]     = config.autobuild(EventsPanel#)
-        config["alienAlert"] = config.autobuild(AlienAlertPanel#)
+    Void contributePanels(Configuration config) {
+        config["events"]     = config.build(EventsPanel#)
+        config["alienAlert"] = config.build(AlienAlertPanel#)
     }
 
     @Contribute { serviceType=UriResolvers# }
-    static Void contributeUriResolvers(Configuration config) {
-        config["myResolver"] = config.autobuild(MyResolver#)
+    Void contributeUriResolvers(Configuration config) {
+        config["myResolver"] = config.build(MyResolver#)
     }
 
     @Contribute { serviceType=GlobalCommands# }
-    static Void contributeGlobalCommands(Configuration config) {
-        config["cmdLaunchNukes"] = config.autobuild(LaunchNukesCommand#)
+    Void contributeGlobalCommands(Configuration config) {
+        config["cmdLaunchNukes"] = config.build(LaunchNukesCommand#)
     }
 
     @Contribute { serviceId="afReflux.menuBar" }
-    static Void contributeMenuBar(Configuration config, Reflux reflux) {
+    Void contributeMenuBar(Configuration config, Reflux reflux) {
         menu := Menu() { it.text = "Example"}
         config
             .set("example", menu)
@@ -506,19 +504,18 @@ class AppModule {
     }
 
     @Contribute { serviceId="afReflux.editMenu" }
-    static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
+    Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
         config["cmdLaunchNukes"] = MenuItem(globalCmds["cmdLaunchNukes"].command)
     }
 
     @Contribute { serviceId="afReflux.toolBar" }
-    static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
+    Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
         button := Button(globalCmds["cmdLaunchNukes"].command)
         button.text = ""
         config["cmdLaunchNukes"] = button
     }
 }
 
-@Js
 class LaunchNukesCommand : GlobalCommand {
     new make(|This|in) : super.make("cmdLaunchNukes", in) {
         command.icon = Image(`fan://icons/x16/sun.png`)
@@ -530,7 +527,6 @@ class LaunchNukesCommand : GlobalCommand {
 }
 
 ** This panel lists all the events it receives
-@Js
 class EventsPanel : Panel, RefluxEvents {
     Table table
     EventsPanelModel model := EventsPanelModel()
@@ -558,10 +554,10 @@ class EventsPanel : Panel, RefluxEvents {
 
     Void update(Str event, Obj? panel := null) {
         model.events.add([event, panel?.typeof?.name ?: ""])
+		//Err("$event + ${panel?.typeof?.name}").trace
         table.refreshAll
     }
 }
-@Js
 class EventsPanelModel : TableModel {
     Str[][] events := Str[][,]
     override Int numCols() { 2 }
@@ -571,7 +567,6 @@ class EventsPanelModel : TableModel {
 }
 
 ** This panel, when active, enables the global cmdLaunchNukes command
-@Js
 class AlienAlertPanel : Panel {
     @Inject GlobalCommands globalCommands
 
@@ -597,7 +592,6 @@ class AlienAlertPanel : Panel {
     }
 }
 
-@Js
 class MyResolver : UriResolver {
     @Inject Registry registry
 
@@ -610,7 +604,6 @@ class MyResolver : UriResolver {
     }
 }
 
-@Js
 class MyResource : Resource {
     override Uri     uri
     override Str     name
@@ -627,7 +620,6 @@ class MyResource : Resource {
     }
 }
 
-@Js
 class MyView : View {
     Label label
 
@@ -717,7 +709,7 @@ class Main {
 
 const class AppModule {
     @Contribute { serviceType=Routes# }
-    static Void contributeRoutes(Configuration config) {
+    Void contributeRoutes(Configuration config) {
         config.add(Route(`/`, IndexPage#html))
     }
 }
