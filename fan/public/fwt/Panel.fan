@@ -59,14 +59,11 @@ abstract class Panel {
 		set { &icon = it; if (content?.parent?.typeof?.qname == "fwt::Tab" || content?.parent?.typeof?.qname == "afReflux::CTab") content.parent->image = it; if (isShowing) this->onModify }
 	}
 
-	@Inject private EventHub eventHub
 	** Subclasses should define the following ctor:
 	**
 	**   new make(|This| in) : super(in) { ... }
 	new make(|This| in) {
 		in(this)
-		// also see RefluxCommand
-		_setup(eventHub)
 
 		baseName := typeof.name
 		if (baseName.endsWith("Panel"))

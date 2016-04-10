@@ -184,7 +184,8 @@ class ProgressDialogue {
 			future = _doWork(ActorPool(), diag, callback)
 		}
 		diag.open
-		return future.get
+		// future could be null if _doWork() never had a chance to execute
+		return future?.get
 	}
 
 	** Hook for handling cancelled events from the user.
@@ -476,6 +477,8 @@ internal class ProgressDialogueCancelCommand : Command {
 	new make() : super.makeLocale(Dialog#.pod, "cancel") { }
 
 	override Void invoked(Event? e)	{
-		worker.cancel
+		// worker could be null if _doWork() never had a chance to execute
+		// if that's the case, the user can still close the dialogue
+		worker?.cancel
 	}
 }
