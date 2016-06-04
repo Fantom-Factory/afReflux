@@ -160,9 +160,10 @@ class ProgressDialogue {
 	private Bool			_inProgress
 	private Label?			_textWidget
 	private Label?			_imageWidget
-	private Text?			_detailsWidget
+	internal Text?			_detailsWidget
 	private Command?		_okCmd
 	private Command?		_cancelCmd
+	internal Command?		_detailsCmd
 	private ProgressBar?	_progressWidget
 
 	@NoDoc	// Boring!
@@ -220,7 +221,7 @@ class ProgressDialogue {
 		// do the work in a separate thread so the UI thread is free to update the dialogue
 		return Synchronized(actorPool).async |->Obj?| {
 			diag 	:= (ProgressDialogue) diagRef.val
-			worker	:= ProgressWorker(diag, diag._progressWidget)
+			worker	:= ProgressWorker(winRef.val, diag, diag._progressWidget)
 			((ProgressDialogueCancelCommand) diag._cancelCmd).worker = worker
 
 			cwfBackup := diag.closeWhenFinished
@@ -304,8 +305,9 @@ class ProgressDialogue {
 			it.visible	= false
 		}
 
-		_cancelCmd = ProgressDialogueCancelCommand()
-		commands := [_cancelCmd, ProgressDialogueDetailsCommand(_detailsWidget)]
+		_cancelCmd	= ProgressDialogueCancelCommand()
+		_detailsCmd	= ProgressDialogueDetailsCommand(_detailsWidget)
+		commands	:= [_cancelCmd, _detailsCmd]
 		if (!closeWhenFinished) {
 			_okCmd = Dialog.ok { it.enabled = false }
 			commands.insert(0, _okCmd)
@@ -398,6 +400,7 @@ class ProgressDialogue {
 ** }
 ** <pre 
 class ProgressWorker {
+	private Window 				window
 	private ProgressDialogue	dialogue
 	private ProgressBar			progressWidget
 	
@@ -424,7 +427,8 @@ class ProgressWorker {
 		internal set
 	}
 
-	internal new make(ProgressDialogue dialogue, ProgressBar progressWidget) {
+	internal new make(Window window, ProgressDialogue dialogue, ProgressBar progressWidget) {
+		this.window			= window
 		this.dialogue		= dialogue
 		this.progressWidget	= progressWidget
 	}
@@ -450,6 +454,35 @@ class ProgressWorker {
 				it.max = workTotal
 			}
 		}
+	}
+	
+	** Call to manually shows / hide the details panel.
+	Void showHideDetails(Bool showHide) {
+		winRef := Unsafe(window)
+		widRef := Unsafe(dialogue._detailsWidget)
+		cmdRef := Unsafe(dialogue._detailsCmd)
+		Desktop.callAsync |->| {
+			if (showHide) {
+				widRef.val->visible = true
+				cmdRef.val->selected = true
+				winRef.val->pack
+			} else {
+				widRef.val->visible = false
+				cmdRef.val->selected = false
+				winRef.val->pack
+			}
+		}
+	}
+
+	** Convenience method for:
+	**  - Changing the dialogue image to a warning image 
+	**  - Opening the detail text and showing the msg
+	**  - Ensuring the dialog doesn't close when finsihed (so users can read the warning msg)
+	Void warn(Str msg) {
+		image = Image(`fan://icons/x32/warn.png`)
+		detailText += "\n\n----\nWARN: ${msg}"
+		showHideDetails(true)
+		dialogue.closeWhenFinished = false
 	}
 	
 	internal Void cancel() {

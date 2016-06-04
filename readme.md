@@ -122,7 +122,7 @@ Note that the Panel's ctor must take an `it-block` parameter and pass it up to t
 class AppModule {
     @Contribute { serviceType=Panels# }
     Void contributePanels(Configuration config) {
-        myPanel := config.autobuild(MyPanel#)
+        myPanel := config.build(MyPanel#)
         config.add(myPanel)
     }
 }
@@ -232,7 +232,7 @@ To use `MyResolver` it must be contributed to the `UriResolvers` service in the 
 ```
 @Contribute { serviceType=UriResolvers# }
 Void contributeUriResolvers(Configuration config) {
-    config["myResolver"] = config.autobuild(MyResolver#)
+    config["myResolver"] = config.build(MyResolver#)
 }
 ```
 
@@ -341,7 +341,7 @@ Global command instances should be contributed to the `GlobalCommands` service:
 ```
 @Contribute { serviceType=GlobalCommands# }
 Void contributeGlobalCommands(Configuration config) {
-    config["myGlobCmd"] = config.autobuild(MyGlobalCommand#)
+    config["myGlobCmd"] = config.build(MyGlobalCommand#)
 }
 ```
 

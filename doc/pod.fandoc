@@ -113,7 +113,7 @@ syntax: fantom
 class AppModule {
     @Contribute { serviceType=Panels# }
     Void contributePanels(Configuration config) {
-        myPanel := config.autobuild(MyPanel#)
+        myPanel := config.build(MyPanel#)
         config.add(myPanel)
     }
 }
@@ -237,7 +237,7 @@ syntax: fantom
 
 @Contribute { serviceType=UriResolvers# }
 Void contributeUriResolvers(Configuration config) {
-    config["myResolver"] = config.autobuild(MyResolver#)
+    config["myResolver"] = config.build(MyResolver#)
 }
 <pre
 
@@ -369,7 +369,7 @@ syntax: fantom
 
 @Contribute { serviceType=GlobalCommands# }
 Void contributeGlobalCommands(Configuration config) {
-    config["myGlobCmd"] = config.autobuild(MyGlobalCommand#)
+    config["myGlobCmd"] = config.build(MyGlobalCommand#)
 }
 <pre
 
