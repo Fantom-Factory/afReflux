@@ -3,6 +3,7 @@ Versions
 v0.1.2
 ======
  - Chg: Dropped 'format' prefix on 'LocaleFormat' methods.
+ - Chg: 'Reflux.resolve()' now takes a 'checked' param.
 
 v0.1.0
 ======

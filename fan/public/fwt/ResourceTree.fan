@@ -298,7 +298,7 @@ internal class TreeNode {
 	TreeNode[]? children {
 		get {
 			if (&children == null)
-				&children = map(reflux, this, resource.children.map { resource.resolveChild(it) ?: reflux.resolve(it.toStr) })
+				&children = map(reflux, this, resource.children.map { resource.resolveChild(it) ?: reflux.resolve(it.toStr, false) }.exclude { it == null })
 			return &children
 		}
 	}

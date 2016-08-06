@@ -18,7 +18,9 @@ mixin Reflux {
 	abstract Void exit()
 
 	** Resolves the given URI into a 'Resource'.
-	abstract Resource resolve(Str uri)
+	** 
+	** Throws 'UnresolvedErr' if not found, or returns 'null' if not checked.
+	abstract Resource? resolve(Str uri, Bool checked := true)
 
 	abstract Void load(Str uri, LoadCtx? ctx := null)
 	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
@@ -57,7 +59,7 @@ internal class RefluxProxy : Reflux {
 	override Window window()											{ reflux().window }
 	override Void exit()												{ reflux().exit() }
 
-	override Resource resolve(Str uri)									{ reflux().resolve(uri) }
+	override Resource? resolve(Str uri, Bool checked := true)			{ reflux().resolve(uri, checked) }
 
 	override Void load(Str uri, LoadCtx? ctx := null)					{ reflux().load(uri, ctx) }
 	override Void loadResource(Resource resource, LoadCtx? ctx := null)	{ reflux().loadResource(resource, ctx) }
@@ -113,8 +115,12 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		}
 	}
 
-	override Resource resolve(Str uri) {
-		uriResolvers.resolve(uri)
+	override Resource? resolve(Str uri, Bool checked := true) {
+		try		return uriResolvers.resolve(uri)
+		catch	(UnresolvedErr err) {
+			if (!checked) return null
+			throw err
+		}
 	}
 
 	override Void load(Str uri, LoadCtx? ctx := null) {
