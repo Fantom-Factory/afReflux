@@ -89,6 +89,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private Panels			panels
 	@Inject private History			history
 	@Inject private Session			session
+	@Inject private Log				log
 	@Inject override Scope			scope
 			override View?			activeView
 			override Window			window
@@ -134,14 +135,19 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 
 		} catch { /* meh */ }
 
-			resource := uriResolvers.resolve(uri)
-			loadResource(resource, ctx)
-//		try {
-//			resource := uriResolvers.resolve(uri)
-//			loadResource(resource, ctx)
-//		} catch (Err err) {
-//			errors.add(err)
-//		}
+		
+		resource := null as Resource
+		try {
+			resource = uriResolvers.resolve(uri)
+		} catch (UnresolvedErr err) {
+			log.warn(err.msg)
+		}
+
+		if (resource != null)
+			try loadResource(resource, ctx)
+			catch (Err err) {
+				errors.add(err)
+			}
 	}
 
 	override Void loadResource(Resource resource, LoadCtx? ctx := null) {
