@@ -14,22 +14,22 @@ mixin LocaleFormat {
 	
 	** Defaults to 'DateTime.tolocale()'.
 	virtual Str dateTime(DateTime? dateTime) {
-		this.dateTime(dateTime)
+		formatDateTime(dateTime)
 	}
 
 	** Defaults to 'Date.tolocale()'.
 	virtual Str date(Date? date) {
-		this.date(date)
+		formatDate(date)
 	}
 
 	** Defaults to 'Time.tolocale()'.
 	virtual Str time(Time? time) {
-		this.time(time)
+		formatTime(time)
 	}
 
 	** Defaults to 'Int.tolocale("B")'.
 	virtual Str fileSize(Int? bytes) {
-		this.fileSize(bytes)		
+		formatFileSize(bytes)		
 	}
 
 	@NoDoc @Deprecated { msg="Use dateTime() instead" }
