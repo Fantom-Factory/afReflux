@@ -1,5 +1,9 @@
 Versions
 ********
+v0.1.2
+======
+ - Chg: Dropped 'format' prefix on 'LocaleFormat' methods.
+
 v0.1.0
 ======
  - New: Reflux now compiles to **Javascript** and runs in a browser!

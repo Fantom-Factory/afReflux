@@ -13,21 +13,41 @@
 mixin LocaleFormat {
 	
 	** Defaults to 'DateTime.tolocale()'.
+	virtual Str dateTime(DateTime? dateTime) {
+		this.dateTime(dateTime)
+	}
+
+	** Defaults to 'Date.tolocale()'.
+	virtual Str date(Date? date) {
+		this.date(date)
+	}
+
+	** Defaults to 'Time.tolocale()'.
+	virtual Str time(Time? time) {
+		this.time(time)
+	}
+
+	** Defaults to 'Int.tolocale("B")'.
+	virtual Str fileSize(Int? bytes) {
+		this.fileSize(bytes)		
+	}
+
+	@NoDoc @Deprecated { msg="Use dateTime() instead" }
 	virtual Str formatDateTime(DateTime? dateTime) {
 		dateTime?.toLocale ?: ""
 	}
 
-	** Defaults to 'Date.tolocale()'.
+	@NoDoc @Deprecated { msg="Use date() instead" }
 	virtual Str formatDate(Date? date) {
 		date?.toLocale ?: ""
 	}
 
-	** Defaults to 'Time.tolocale()'.
+	@NoDoc @Deprecated { msg="Use time() instead" }
 	virtual Str formatTime(Time? time) {
 		time?.toLocale ?: ""
 	}
 
-	** Defaults to 'Int.tolocale("B")'.
+	@NoDoc @Deprecated { msg="Use fileSize() instead" }
 	virtual Str formatFileSize(Int? bytes) {
 		bytes?.toLocale("B") ?: ""		
 	}
