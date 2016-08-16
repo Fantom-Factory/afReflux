@@ -83,8 +83,8 @@ class RefluxBuilder {
 		registry := registryBuilder.build
 		
 		uiScope	:= (Scope?) null
-		registry.rootScope.createChildScope("uiThread") {
-			uiScope = registry.setDefaultScope(it.jailBreak)
+		registry.rootScope.createChild("uiThread") {
+			uiScope = it.jailBreak
 		}
 		
 		reflux	 := (Reflux) uiScope.serviceById(Reflux#.qname)
