@@ -1,7 +1,7 @@
 using afIoc
 using gfx
 
-@NoDoc	// Advanced use only!
+@NoDoc	@Js	// Advanced use only!
 class RefluxIcons {
 	@Inject private const Log	log
 	@Inject private Images		images
@@ -46,7 +46,7 @@ class RefluxIcons {
 	}
 }
 
-@NoDoc
+@NoDoc @Js
 internal class EclipseIcons {
 	static const Str:Uri iconMap := [
 		"cmdExit"				: ``,

@@ -2,6 +2,7 @@ using afBeanUtils
 
 ** (Service) -
 ** Maintains and provides access to 'GlobalCommand' instances.
+@Js
 mixin GlobalCommands {
 	
 	** Returns the command that was contributed with the given id.
@@ -14,6 +15,7 @@ mixin GlobalCommands {
 	abstract GlobalCommand get(Str id)
 }
 
+@Js
 internal class GlobalCommandsImpl : GlobalCommands {
 	
 	Str:GlobalCommand cmds

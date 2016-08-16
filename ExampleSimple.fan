@@ -11,10 +11,10 @@ class Example {
     }
 }
 
-class AppModule {
+const class AppModule {
     @Contribute { serviceType=Panels# }
-    static Void contributePanels(Configuration config) {
-    	myPanel := config.autobuild(MyPanel#)
+    Void contributePanels(Configuration config) {
+    	myPanel := config.build(MyPanel#)
         config.add(myPanel)
     }
 }

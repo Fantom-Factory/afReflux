@@ -3,10 +3,11 @@ using gfx
 using fwt
 
 ** (Service) - The main API for managing a Reflux application.
+@Js
 mixin Reflux {
 
 	// TODO: Fandoc this class
-	abstract Registry registry()
+	abstract Scope scope()
 	abstract Void callLater(Duration delay, |->| f)
 
 	abstract RefluxPrefs preferences()
@@ -17,7 +18,9 @@ mixin Reflux {
 	abstract Void exit()
 
 	** Resolves the given URI into a 'Resource'.
-	abstract Resource resolve(Str uri)
+	** 
+	** Throws 'UnresolvedErr' if not found, or returns 'null' if not checked.
+	abstract Resource? resolve(Str uri, Bool checked := true)
 
 	abstract Void load(Str uri, LoadCtx? ctx := null)
 	abstract Void loadResource(Resource resource, LoadCtx? ctx := null)
@@ -36,6 +39,50 @@ mixin Reflux {
 	abstract Void copyToClipboard(Str text)
 }
 
+@Js
+internal class RefluxProxy : Reflux {
+
+	Reflux?	refluxRef
+	
+	@Inject |->Scope| uiScope
+	@Inject |->RefluxImpl| reflux
+	
+	new make(|This|in) { in(this) }
+
+	override Scope scope()												{ uiScope() }
+
+	override Void callLater(Duration delay, |->| f)						{ reflux().callLater(delay, f) }
+
+	override RefluxPrefs preferences()									{ reflux().preferences() }
+
+	override Void refresh(Resource? resource := null)					{ reflux().refresh(resource) }
+	override Window window()											{ reflux().window }
+	override Void exit()												{ reflux().exit() }
+
+	override Resource? resolve(Str uri, Bool checked := true)			{ reflux().resolve(uri, checked) }
+
+	override Void load(Str uri, LoadCtx? ctx := null)					{ reflux().load(uri, ctx) }
+	override Void loadResource(Resource resource, LoadCtx? ctx := null)	{ reflux().loadResource(resource, ctx) }
+	override View? activeView()											{ reflux().activeView }
+	override Bool closeView(View view, Bool force)						{ reflux().closeView(view, force) }
+	override Void replaceView(View view, Type viewType)					{ reflux().replaceView(view, viewType) }
+
+	override Void saveAll()												{ reflux().saveAll }
+	
+	override Panel? getPanel(Type panelType, Bool checked := true)		{ reflux().getPanel(panelType, checked) }
+	override Panel showPanel(Type panelType)							{ reflux().showPanel(panelType) }
+	override Panel hidePanel(Type panelType)							{ reflux().hidePanel(panelType) }
+
+	override Void copyToClipboard(Str text)								{ reflux().copyToClipboard(text) }
+	
+//	private Reflux reflux() {
+//		if (refluxRef == null)
+//			refluxRef = uiScope().serviceById(RefluxImpl#.qname)
+//		return refluxRef
+//	}
+}
+
+@Js
 internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private UriResolvers	uriResolvers
 	@Inject private RefluxEvents	refluxEvents
@@ -44,16 +91,17 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 	@Inject private Panels			panels
 	@Inject private History			history
 	@Inject private Session			session
-	@Inject override Registry		registry
+	@Inject private Log				log
+	@Inject override Scope			scope
 			override View?			activeView
 			override Window			window
 
 	new make(EventHub eventHub, |This| in) { 
 		in(this)
 		eventHub.register(this)
-		window = registry.autobuild(Frame#, [this])
+		window = scope.build(Frame#, [this])
 	}
-
+	
 	override RefluxPrefs preferences() {
 		prefsCache.loadPrefs(RefluxPrefs#, "afReflux.fog")
 	}
@@ -67,8 +115,12 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 		}
 	}
 
-	override Resource resolve(Str uri) {
-		uriResolvers.resolve(uri)
+	override Resource? resolve(Str uri, Bool checked := true) {
+		try		return uriResolvers.resolve(uri)
+		catch	(UnresolvedErr err) {
+			if (!checked) return null
+			throw err
+		}
 	}
 
 	override Void load(Str uri, LoadCtx? ctx := null) {
@@ -89,12 +141,19 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 
 		} catch { /* meh */ }
 
+		
+		resource := null as Resource
 		try {
-			resource := uriResolvers.resolve(uri)
-			loadResource(resource, ctx)
-		} catch (Err err) {
-			errors.add(err)
+			resource = uriResolvers.resolve(uri)
+		} catch (UnresolvedErr err) {
+			log.warn(err.msg)
 		}
+
+		if (resource != null)
+			try loadResource(resource, ctx)
+			catch (Err err) {
+				errors.add(err)
+			}
 	}
 
 	override Void loadResource(Resource resource, LoadCtx? ctx := null) {
@@ -227,6 +286,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 }
 
 ** Contextual data for loading 'Resources'.
+@Js
 class LoadCtx {
 	** If 'true' then the resource is opened in a new View tab.
 	Bool	newTab

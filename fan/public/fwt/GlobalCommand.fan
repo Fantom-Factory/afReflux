@@ -43,9 +43,10 @@ using fwt
 **  - 'afReflux.cmdSaveAs'
 **  - 'afReflux.cmdToggleView'
 **  - 'afReflux.cmdUndo'
+@Js
 class GlobalCommand {
 	@Inject private RefluxIcons		_refluxIcons
-	@Inject private Registry		_registry
+	@Inject private Scope			_scope
 	@Inject private EventHub		_eventHub
 	
 			private Str:|Event?|	_invokers	:= Str:|Event?|[:]
@@ -67,7 +68,7 @@ class GlobalCommand {
 		name := (base.startsWith("cmd") ? base["cmd".size..-1] : base).toDisplayName
 		icon := _refluxIcons.get(base, false)
 		
-		command = _registry.autobuild(RefluxCommand#, [name, icon, |Event? event| { doInvoke(event) } ])
+		command = _scope.build(RefluxCommand#, [name, icon, |Event? event| { doInvoke(event) } ])
 		command.localise(this.typeof.pod, baseName)
 		command.enabled = false	// use enablers to switch command on
 		

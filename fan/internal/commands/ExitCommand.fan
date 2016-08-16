@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+@Js
 internal class ExitCommand : GlobalCommand {
 	@Inject	private Reflux reflux
 	

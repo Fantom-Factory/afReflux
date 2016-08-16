@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+@Js
 internal class AboutCommand : GlobalCommand {
 	
 	new make(|This|in) : super.make("afReflux.cmdAbout", in) {

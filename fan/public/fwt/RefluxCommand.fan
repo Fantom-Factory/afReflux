@@ -9,6 +9,7 @@ using fwt
 **   syntax: fantom
 **   registry.autobuild(MyRefluxCommand#, [...ctor args...])
 ** 
+@Js
 class RefluxCommand : Command {
 	@Inject private Errors	_errors
 	@Inject private Images	_images

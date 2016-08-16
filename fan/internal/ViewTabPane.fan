@@ -3,12 +3,15 @@ using afBeanUtils
 using gfx
 using fwt
 
+@Js
 internal class ViewTabPane : PanelTabPane, RefluxEvents {
-	@Inject	private Registry		registry
-	@Inject	private Reflux			reflux
+	@Inject	private Scope	scope
+	@Inject	private Reflux	reflux
 
 	new make(Reflux reflux, |This|in) : super(false, false, in) {
-		this.tabPane.tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
+		if (Env.cur.runtime != "js")
+			// tabsValign only available in CTabPane
+			this.tabPane->tabsValign = reflux.preferences.viewTabsOnTop ? Valign.top : Valign.bottom
 	}
 
 	@PostInjection
@@ -23,13 +26,13 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 	View replaceView(View view, Type viewType) {
 		tuple := panelTabs.find { it.panel === view }
 		if (tuple == null)
-			throw ArgNotFoundErr("View '${view} not found", panelTabs.map { it.panel })
+			throw Env.cur.runtime == "js" ? ArgErr("View '${view} not found") : ArgNotFoundErr("View '${view} not found", panelTabs.map { it.panel })
 
 		activate(null)	// deactivate it if its showing
 		tuple.panel.isShowing = false
 		tuple.panel->onHide
 
-		newView := (View) registry.autobuild(viewType)
+		newView := (View) scope.build(viewType)
 		newView._parentFunc = |->Widget| { tuple.tab ?: this }
 		tuple.swapPanel(newView)
 		if (panelTabs.size == 1) {
@@ -84,7 +87,7 @@ internal class ViewTabPane : PanelTabPane, RefluxEvents {
 
 		// create a new View
 		if (view == null || ctx.newTab) {
-			view = registry.autobuild(viewType)
+			view = scope.build(viewType)
 			super.addTab(view)
 		}
 

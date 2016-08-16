@@ -13,6 +13,7 @@ using afIoc
 **   
 **   new make(|This| f) { f(this) }
 ** 
+@Js
 mixin Preferences {
 
 	** Returns an instance of the given preferences object.
@@ -36,11 +37,12 @@ mixin Preferences {
 
 }
 
+@Js
 internal class PreferencesImpl : Preferences {
 			private static const Log 	log 	:= Preferences#.pod.log
 			private Str:CachedPrefs		cache	:= Str:CachedPrefs[:]
 			private Str					appName
-	@Inject private Registry			registry
+	@Inject private Scope				scope
 
 	private new make(RegistryMeta regMeta, |This| in) {
 		in(this)
@@ -61,7 +63,7 @@ internal class PreferencesImpl : Preferences {
 
 		if (prefs == null) {
 			log.debug("Making preferences: $prefsType.name")
-			prefs = registry.autobuild(prefsType)
+			prefs = scope.build(prefsType)
 		}
 
 		cache[name] = CachedPrefs(file, prefs)
@@ -87,7 +89,7 @@ internal class PreferencesImpl : Preferences {
 	override File? findFile(Str name) {
 		pathUri := `etc/${appName}/${name}`
 		if (runtimeIsJs) {
-			log.info("File $pathUri does not exist in JS")
+			log.info("File $pathUri does not exist in Javascript land")
 			return null
 		}
 
@@ -109,7 +111,7 @@ internal class PreferencesImpl : Preferences {
 			if (file != null && file.exists) {
 				log.debug("Loading preferences: $file")
 				value = file.readObj
-				registry.injectIntoFields(value)
+				scope.inject(value)
 			}
 		} catch (Err e) {
 			log.err("Cannot load options: $file", e)
@@ -122,6 +124,7 @@ internal class PreferencesImpl : Preferences {
 	}
 }
 
+@Js
 internal class CachedPrefs {
   	private File? 		file
   	private DateTime? 	modied

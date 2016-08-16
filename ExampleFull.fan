@@ -13,25 +13,25 @@ class Example {
     }
 }
 
-class AppModule {
+const class AppModule {
     @Contribute { serviceType=Panels# }
-    static Void contributePanels(Configuration config) {
-        config["events"]     = config.autobuild(EventsPanel#)
-        config["alienAlert"] = config.autobuild(AlienAlertPanel#)
+    Void contributePanels(Configuration config) {
+        config["events"]     = config.build(EventsPanel#)
+        config["alienAlert"] = config.build(AlienAlertPanel#)
     }
     
     @Contribute { serviceType=UriResolvers# }
-    static Void contributeUriResolvers(Configuration config) {
-        config["myResolver"] = config.autobuild(MyResolver#)
+    Void contributeUriResolvers(Configuration config) {
+        config["myResolver"] = config.build(MyResolver#)
     }
     
     @Contribute { serviceType=GlobalCommands# }
-    static Void contributeGlobalCommands(Configuration config) {
-        config["cmdLaunchNukes"] = config.autobuild(LaunchNukesCommand#)
+    Void contributeGlobalCommands(Configuration config) {
+        config["cmdLaunchNukes"] = config.build(LaunchNukesCommand#)
     }
 
     @Contribute { serviceId="afReflux.menuBar" }
-    static Void contributeMenuBar(Configuration config, Reflux reflux) {
+    Void contributeMenuBar(Configuration config, Reflux reflux) {
         menu := Menu() { it.text = "Example"}
         config
             .set("example", menu)
@@ -47,12 +47,12 @@ class AppModule {
     }
     
     @Contribute { serviceId="afReflux.editMenu" }
-    static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
+    Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
         config["cmdLaunchNukes"] = MenuItem(globalCmds["cmdLaunchNukes"].command)
     }
 
     @Contribute { serviceId="afReflux.toolBar" }
-    static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
+    Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
         button := Button(globalCmds["cmdLaunchNukes"].command) 
         button.text = ""
         config["cmdLaunchNukes"] = button 
@@ -97,6 +97,7 @@ class EventsPanel : Panel, RefluxEvents {
     
     Void update(Str event, Obj? panel := null) {
         model.events.add([event, panel?.typeof?.name ?: ""])
+		//Err("$event + ${panel?.typeof?.name}").trace
         table.refreshAll
     }
 }
