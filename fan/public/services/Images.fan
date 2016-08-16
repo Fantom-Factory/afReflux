@@ -41,6 +41,7 @@ using concurrent::Actor
 ** 
 **   resDirs = [`res/icons/`]
 ** 
+@Js
 mixin Images {
 
 	** Returns (and caches) the image at the given URI.
@@ -68,7 +69,7 @@ mixin Images {
 	abstract Void disposeAll()
 }
 
-@NoDoc	// so maxLoadTime may be overridden
+@NoDoc	@Js // so maxLoadTime may be overridden
 class ImagesImpl : Images {
 	private Uri:Image		images		:= Uri:Image[:]
 	private Uri:Image		fadedImages	:= Uri:Image[:]
@@ -149,6 +150,9 @@ class ImagesImpl : Images {
 	
 	** Fantom has some sort of internal Image caching going on - so we cache bust the URI if needed
 	private Image? makeImage(Uri uri, Bool checked := true) {
+		if (Env.cur.runtime == "js")
+			return Image(uri, checked)
+
 		try {
 			f := (File?) uri.get
 			if (f == null || !f.exists) throw UnresolvedErr("file does not exist: ${f?.normalize ?: uri}")

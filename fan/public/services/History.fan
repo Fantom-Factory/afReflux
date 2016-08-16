@@ -3,6 +3,7 @@ using fwt
 
 ** (Service) - 
 ** Maintains a history of View URIs.
+@Js
 mixin History {
 	
 	** Loads the previous history item.
@@ -29,13 +30,13 @@ mixin History {
 	abstract Void load(Resource resource, LoadCtx ctx)
 }
 
+@Js
 internal class HistoryImpl : History, RefluxEvents {
 			private	Resource[]	backStack		:= Resource[,]
 			private	Resource[]	forwardStack	:= Resource[,]
 			private Resource?	showing
 			override Resource[] history			:= Resource[,]
-	@Inject	private Registry	registry
-//	@Inject	private UriResolvers
+	@Inject	private Scope		scope
 	@Inject	private Reflux		reflux
 
 	new make(EventHub eventHub, |This|in) {
@@ -83,7 +84,11 @@ internal class HistoryImpl : History, RefluxEvents {
 		}
 
 		history.insert(0, resource)
-		history = history.unique
+		
+		// FIXME: JS sys::NotImmutableErr: key is not immutable: refluxWeb::MyResource
+		if (Env.cur.runtime != "js")
+			history = history.unique
+		
 		if (history.size > 50) history.size = 50
 
 		showHistoryMenu
@@ -98,14 +103,17 @@ internal class HistoryImpl : History, RefluxEvents {
 	}
 	
 	private Void showHistoryMenu() {
-		historyMenu := (Menu) registry.serviceById("afReflux.historyMenu")		
+		// FIXME: JS casting issue
+		if (Env.cur.runtime == "js") return
+		
+		historyMenu := (Menu) scope.serviceById("afReflux.historyMenu")		
 		((MenuItem[]) historyMenu.children).each { if (it.command is HistoryCommand) historyMenu.remove(it) }
 		
 		history := history.dup
 		history.insert(0, showing)
 		history = history.unique
 		if (history.size > 13) history.size = 13	// TODO: move to prefs
-		history.each { historyMenu.add(MenuItem.makeCommand(registry.autobuild(HistoryCommand#, [it]))) }		
+		history.each { historyMenu.add(MenuItem.makeCommand(scope.build(HistoryCommand#, [it]))) }		
 	}
 	
 	override Void onViewActivated(View view) {
@@ -126,6 +134,7 @@ internal class HistoryImpl : History, RefluxEvents {
 	}
 }
 
+@Js
 internal class HistoryCommand : RefluxCommand {
 	new make(Resource resource, Reflux reflux, |This|in) : super.make(in) {
 		this.name = (resource.uri.toStr != resource.displayName) ? resource.displayName : Url(resource.uri).minusFrag.toStr

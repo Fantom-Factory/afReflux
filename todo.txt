@@ -13,3 +13,4 @@ Can views manipulate the menu / toolbar?
 	-> NO! Menus are defined at app startup.
 	-> GlobalCommands, however, maybe enabled / disabled
 
+FIXME: deregister commands from EventHub? 

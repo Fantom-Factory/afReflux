@@ -1,6 +1,7 @@
 using afIoc
 using fwt
 
+@Js
 internal class UndoCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 	

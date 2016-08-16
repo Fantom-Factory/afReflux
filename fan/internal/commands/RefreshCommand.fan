@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+@Js
 internal class RefreshCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 	

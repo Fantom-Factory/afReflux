@@ -19,6 +19,7 @@ using fwt
 ** 
 ** Note that instances of 'Panels', 'Views' and 'GlobalCommands' are already automatically added 
 ** to 'EventHub' by default. 
+@Js
 mixin EventHub {
 
 	** Registers an object to receive events. 
@@ -36,6 +37,7 @@ mixin EventHub {
 
 }
 
+@Js
 internal class EventHubImpl : EventHub {
 	@Inject private EventTypes	eventTypes
 	@Inject private Errors		errors
@@ -68,11 +70,12 @@ internal class EventHubImpl : EventHub {
 			?: throw ArgNotFoundErr("Method '${method.qname}' does not belong to an event type ", eventTypes.eventTypes)
 		
 		sinks := eventSinks.findAll { it.typeof.fits(method.parent) }
-		
+
 		sinks.each {
 			try	method.callOn(it, args)
-			catch (Err err)
+			catch (Err err) {
 				errors.add(err)
+			}
 		}
 	}
 	

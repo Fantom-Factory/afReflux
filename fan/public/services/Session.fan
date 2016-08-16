@@ -2,6 +2,7 @@ using afIoc
 
 ** (Service) - 
 ** A general dumping ground for data to be saved between applications.
+@Js
 mixin Session {
 	** The session data.
 	abstract Str:Obj? data
@@ -18,7 +19,7 @@ mixin Session {
 
 }
 
-@NoDoc	// so others can change the ctor argument
+@NoDoc	@Js	// so others can change the ctor argument
 class SessionImpl : Session {
 	@Inject private Preferences		preferences
 	@Inject private RefluxEvents	events
@@ -36,7 +37,7 @@ class SessionImpl : Session {
 	override Void load() {
 		try {
 			file := preferences.findFile("sessionData.fog")
-			data = file.exists ? file.readObj : data
+			data = file != null && file.exists ? file.readObj : data
 		} catch (Err err)
 			errors.add(err)
 		
@@ -46,7 +47,7 @@ class SessionImpl : Session {
 	override Void save() {
 		events.onSaveSession(data)
 
-		try	preferences.findFile("sessionData.fog").writeObj(data, ["indent":2])
+		try	preferences.findFile("sessionData.fog")?.writeObj(data, ["indent":2])
 		catch (Err err)
 			errors.add(err)
 	}

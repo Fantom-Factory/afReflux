@@ -5,7 +5,7 @@ using gfx
 ** (Service) - 
 ** A wrapper around the FWT Dialog class that allows you to redefine / intercept the commands by 
 ** overriding the service.
-@NoDoc
+@NoDoc @Js
 class Dialogues {
 	@Inject private Reflux reflux
 

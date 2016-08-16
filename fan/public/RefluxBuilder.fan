@@ -1,5 +1,6 @@
 using afIoc
 using fwt
+using afPlastic
 
 ** Use to build and launch a Reflux application. Example:
 **
@@ -9,6 +10,7 @@ using fwt
 **	   reflux.showPanel(MyPanel#)
 **	   ...
 **   }
+@Js
 class RefluxBuilder {
 	private const static Log log := RefluxBuilder#.pod.log
 
@@ -28,43 +30,40 @@ class RefluxBuilder {
 		private set { throw Err("Read only") }
 	}
 	
-	** Creates a 'BedSheetBuilder'. 
+	** Creates a 'RefluxBuilder'. 
 	** 'modOrPodName' may be a pod name or a qualified 'AppModule' type name. 
 	** 'addPodDependencies' is only used if a pod name is passed in.
 	new makeFromName(Str modOrPodName, Bool addPodDependencies := true) {
-		initModules(registryBuilder, modOrPodName, addPodDependencies)
-		initBanner()
+		_initModules(registryBuilder, modOrPodName, addPodDependencies)
+		_initBanner()
 	}
 	
-	** Creates a 'BedSheetBuilder' from the given 'AppModule'.
-	new makeFromAppModule(Type appModule) {
-		initModules(registryBuilder, appModule.qname, true)
-		initBanner()
-	}
-
-	** Creates a 'BedSheetBuilder' with the given 'AppModules'.
-	new makeFromAppModules(Type[] appModules) {
-		if (appModules.isEmpty)
-			throw ArgErr("appModules must not be empty")
-		initModules(registryBuilder, appModules.first.qname, true)
-		initBanner()
-		registryBuilder.addModules(appModules)
+	** Creates a 'RefluxBuilder' from the given 'AppModule'.
+	new makeFromModule(Type appModule) {
+		_initModules(registryBuilder, appModule.qname, true)
+		_initBanner()
 	}
 	
-	** Adds a module to the registry. 
-	** Any modules defined with the '@SubModule' facet are also added.
-	** 
-	** Convenience for 'registryBuilder.addModule()'
-	This addModule(Type moduleType) {
-		registryBuilder.addModule(moduleType)
+	** Creates a 'RefluxBuilder' from the given 'AppModule'.
+	new makeFromModules(Type[] modules) {
+		_initModules(registryBuilder, modules[0].qname, true)
+		_initBanner()
+		
+		if (modules.size > 1)
+			modules.eachRange(1..-1) {
+				addModule(it)
+			}
+	}
+	
+	** Adds an IoC module to the registry. 
+	This addModule(Obj module) {
+		registryBuilder.addModule(module)
 		return this
 	}
 	
-	** Adds many modules to the registry.
-	** 
-	** Convenience for 'registryBuilder.addModules()'
-	This addModules(Type[] moduleTypes) {
-		registryBuilder.addModules(moduleTypes)
+	** Adds many IoC modules to the registry. 
+	This addModules(Obj[] modules) {
+		registryBuilder.addModules(modules)
 		return this
 	}
 	
@@ -81,8 +80,14 @@ class RefluxBuilder {
 	}
 	
 	Void start(|Reflux, Window|? onOpen := null) {
-		registry := registryBuilder.build.startup
-		reflux	 := (Reflux) registry.serviceById(Reflux#.qname)
+		registry := registryBuilder.build
+		
+		uiScope	:= (Scope?) null
+		registry.rootScope.createChildScope("uiThread") {
+			uiScope = registry.setDefaultScope(it.jailBreak)
+		}
+		
+		reflux	 := (Reflux) uiScope.serviceById(Reflux#.qname)
 		frame	 := (Frame)  reflux.window
 
 		// onActive -> onFocus -> onOpen
@@ -90,28 +95,33 @@ class RefluxBuilder {
 			// Give the widgets a chance to display themselves and set defaults
 			Desktop.callLater(50ms) |->| {
 				// load the session before we start loading URIs and opening tabs
-				session := (Session) registry.serviceById(Session#.qname)
+				session := (Session) uiScope.serviceById(Session#.qname)
 				session.load
 
 				// once we've all started up and settled down, load URIs from the command line
 				onOpen?.call(reflux, frame)
+				
+				// a crappy hack for Chrome - all buttons appear squished until we resize / relayout
+				if (Env.cur.runtime == "js")
+					Desktop.callLater(50ms) |->| { frame.relayout }
 			}
 		}
-
 		frame.open
-		registry.shutdown
+		
+		// JS is non-blocking - so don't shutdown the registry!
+		if (Env.cur.runtime != "js")
+			registry.shutdown
 	}
 	
-	private Void initBanner() {
-		pod := (Pod?) registryBuilder[RefluxConstants.meta_appPod]
+	private Void _initBanner() {
+		pod := (Pod?) registryBuilder.options[RefluxConstants.meta_appPod]
 		ver  := pod?.version ?: "???"
-		registryBuilder["afIoc.bannerText"] = "$appName v$ver"
+		registryBuilder.options["afIoc.bannerText"] = "$appName v$ver"
 	}
 
-	private static Void initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
+	private static Void _initModules(RegistryBuilder bob, Str moduleName, Bool transDeps) {
 		Pod?  pod
 		Type? mod
-		Type[] mods := Type#.emptyList
 		
 		// Pod name given...
 		// lots of start up checks looking for pods and modules... 
@@ -119,8 +129,13 @@ class RefluxBuilder {
 		if (!moduleName.contains("::")) {
 			pod = Pod.find(moduleName, true)
 			log.info(LogMsgs.refluxBuilder_foundPod(pod))
-			mods = findModFromPod(pod)
+			mods := _findModFromPod(pod)
 			mod = mods.first
+			
+			if (!transDeps)
+				log.info("Suppressing transitive dependencies...")
+			bob.addModulesFromPod(pod.name, transDeps)
+			mods.each { bob.addModule(it) }
 		}
 
 		// AppModule name given...
@@ -128,36 +143,32 @@ class RefluxBuilder {
 			mod = Type.find(moduleName, true)
 			log.info(LogMsgs.refluxBuilder_foundType(mod))
 			pod = mod.pod
+			
+			bob.addModule(mod)
 		}
 
 		// we're screwed! No module = no web app!
 		if (mod == null)
 			log.warn(LogMsgs.refluxBuilder_noModuleFound)
 		
-		if (pod != null) {
-			if (!transDeps)
-				log.info("Suppressing transitive dependencies...")
-			bob.addModulesFromPod(pod.name, transDeps)
-		}
-		if (mod != null) {
-			if (!bob.moduleTypes.contains(mod))
-				bob.addModule(mod)
-		}
-		bob.addModules(mods)
-		
 		// A simple thing - ensure the Reflux module is added! 
 		// (transitive dependencies are added explicitly via @SubModule)
-		if (!bob.moduleTypes.contains(RefluxModule#))
-			 bob.addModule(RefluxModule#)
+		bob.addModule(RefluxModule#)
+		if (Env.cur.runtime != "js")
+			bob.addModule(PlasticModule#)
 
-		regOpts := bob.options
-		regOpts[RefluxConstants.meta_appName]	= (pod?.meta?.get("proj.name") ?: pod?.name) ?: "Unknown"
+		projName := (Str?) null
+		try pod?.meta?.get("proj.name")
+		catch { /* JS F4 Errs */ }
+
+		regOpts	 := bob.options
+		regOpts[RefluxConstants.meta_appName]	= (projName ?: pod?.name) ?: "Unknown"
 		regOpts[RefluxConstants.meta_appPod]	= pod
 		regOpts[RefluxConstants.meta_appModule]	= mod
 	}
 
 	** Looks for an 'AppModule' in the given pod. 
-	private static Type[] findModFromPod(Pod pod) {
+	private static Type[] _findModFromPod(Pod pod) {
 		mods := Type#.emptyList
 		modNames := pod.meta["afIoc.module"]
 		if (modNames != null) {

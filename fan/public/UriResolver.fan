@@ -22,6 +22,7 @@
 ** 	     config["myResolver"] = resolver
 ** 	 }
 ** 
+@Js
 mixin UriResolver {
 	
 	** Return 'null' if the URI is not applicable to this resolver.

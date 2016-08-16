@@ -1,6 +1,7 @@
 using afIoc
 using fwt
 
+@Js
 internal class RedoCommand : GlobalCommand, RefluxEvents {
 	@Inject	private Reflux	reflux
 	

@@ -1,6 +1,7 @@
 using afIoc
 using fwt
 
+@Js
 internal class NavForwardCommand : GlobalCommand, RefluxEvents {
 	@Inject	private History history
 	

@@ -1,7 +1,7 @@
-#Reflux v0.0.14
+#Reflux v0.1.0
 ---
 [![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom.org/)
-[![pod: v0.0.14](http://img.shields.io/badge/pod-v0.0.14-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
+[![pod: v0.1.0](http://img.shields.io/badge/pod-v0.1.0-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
 ![Licence: MIT](http://img.shields.io/badge/licence-MIT-blue.svg)
 
 ## Overview
@@ -29,7 +29,7 @@ Install `Reflux` with the Fantom Repository Manager ( [fanr](http://fantom.org/d
 
 To use in a [Fantom](http://fantom.org/) project, add a dependency to `build.fan`:
 
-    depends = ["sys 1.0", ..., "afReflux 0.0"]
+    depends = ["sys 1.0", ..., "afReflux 0.1"]
 
 ## Documentation
 
@@ -91,6 +91,14 @@ Start the `Explorer` application from the command line:
 
     C:\> fan afExplorer
 
+## IoC Container
+
+Reflux is an IoC container. That is, it creates and looks after a `Registry` instance, using it to create classes and provide access to services.
+
+In a [Reflux](http://pods.fantomfactory.org/pods/afReflux) application all processing happens in the UI thread. As such, Reflux defines a single threaded scope called `uiThread` and all services are created from this. This means all your services can be non-const, and you don't have to even think about scopes.
+
+*Happy days!*
+
 ## Panels
 
 [Panels](http://pods.fantomfactory.org/pods/afReflux/api/Panel) are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shuts down.
@@ -113,8 +121,8 @@ Note that the Panel's ctor must take an `it-block` parameter and pass it up to t
 ```
 class AppModule {
     @Contribute { serviceType=Panels# }
-    static Void contributePanels(Configuration config) {
-        myPanel := config.autobuild(MyPanel#)
+    Void contributePanels(Configuration config) {
+        myPanel := config.build(MyPanel#)
         config.add(myPanel)
     }
 }
@@ -223,8 +231,8 @@ To use `MyResolver` it must be contributed to the `UriResolvers` service in the 
 
 ```
 @Contribute { serviceType=UriResolvers# }
-static Void contributeUriResolvers(Configuration config) {
-    config["myResolver"] = config.autobuild(MyResolver#)
+Void contributeUriResolvers(Configuration config) {
+    config["myResolver"] = config.build(MyResolver#)
 }
 ```
 
@@ -255,7 +263,7 @@ So, removing the history menu is as simple as:
 
 ```
 @Contribute { serviceId="afReflux.menuBar" }
-static Void contributeMenuBar(Configuration config) {
+Void contributeMenuBar(Configuration config) {
     config.remove("afReflux.historyMenu")
 }
 ```
@@ -264,7 +272,7 @@ And to add your own menu:
 
 ```
 @Contribute { serviceId="afReflux.menuBar" }
-static Void contributeMenuBar(Configuration config) {
+Void contributeMenuBar(Configuration config) {
     config["example"] = Menu() { it.text = "Example"}
 }
 ```
@@ -273,7 +281,7 @@ Use IoC ordering constraints to further position the menu:
 
 ```
 @Contribute { serviceId="afReflux.menuBar" }
-static Void contributeMenuBar(Configuration config) {
+Void contributeMenuBar(Configuration config) {
     menu := Menu() { it.text = "Example"}
     config
         .set("example", menu)
@@ -288,7 +296,7 @@ The menus services take contributions of `MenuItems`, so to add a *Hello Mum!* c
 
 ```
 @Contribute { serviceId="afReflux.editMenu" }
-static Void contributeEditMenu(Configuration config) {
+Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
     config["myCommand"] = MenuItem(command)
 }
@@ -300,7 +308,7 @@ Use IoC ordering constraints to further position any contributed commands / menu
 
 ```
 @Contribute { serviceId="afReflux.editMenu" }
-static Void contributeEditMenu(Configuration config) {
+Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
     config
         .set("myCommand", MenuItem(command))
@@ -316,7 +324,7 @@ The tool bar may be configured in much the same way as the menu bar, with IoC co
 
 ```
 @Contribute { serviceId="afReflux.toolBar" }
-static Void contributeEditMenu(Configuration config) {
+Void contributeEditMenu(Configuration config) {
     command := Command("Hello Mum!", null) |Event event| { echo("Hello Mum!") }
     config["myButton"] = Button(command)
 }
@@ -332,8 +340,8 @@ Global command instances should be contributed to the `GlobalCommands` service:
 
 ```
 @Contribute { serviceType=GlobalCommands# }
-static Void contributeGlobalCommands(Configuration config) {
-    config["myGlobCmd"] = config.autobuild(MyGlobalCommand#)
+Void contributeGlobalCommands(Configuration config) {
+    config["myGlobCmd"] = config.build(MyGlobalCommand#)
 }
 ```
 
@@ -381,7 +389,7 @@ For `MyEvents` to be recognised as an event type it needs to be contributed to t
 
 ```
 @Contribute { serviceType=EventTypes# }
-static Void contributeEventHub(Configuration config) {
+Void contributeEventHub(Configuration config) {
     config.add(MyEvents#)
 }
 ```
@@ -462,25 +470,25 @@ class Example {
     }
 }
 
-class AppModule {
+const class AppModule {
     @Contribute { serviceType=Panels# }
-    static Void contributePanels(Configuration config) {
-        config["events"]     = config.autobuild(EventsPanel#)
-        config["alienAlert"] = config.autobuild(AlienAlertPanel#)
+    Void contributePanels(Configuration config) {
+        config["events"]     = config.build(EventsPanel#)
+        config["alienAlert"] = config.build(AlienAlertPanel#)
     }
 
     @Contribute { serviceType=UriResolvers# }
-    static Void contributeUriResolvers(Configuration config) {
-        config["myResolver"] = config.autobuild(MyResolver#)
+    Void contributeUriResolvers(Configuration config) {
+        config["myResolver"] = config.build(MyResolver#)
     }
 
     @Contribute { serviceType=GlobalCommands# }
-    static Void contributeGlobalCommands(Configuration config) {
-        config["cmdLaunchNukes"] = config.autobuild(LaunchNukesCommand#)
+    Void contributeGlobalCommands(Configuration config) {
+        config["cmdLaunchNukes"] = config.build(LaunchNukesCommand#)
     }
 
     @Contribute { serviceId="afReflux.menuBar" }
-    static Void contributeMenuBar(Configuration config, Reflux reflux) {
+    Void contributeMenuBar(Configuration config, Reflux reflux) {
         menu := Menu() { it.text = "Example"}
         config
             .set("example", menu)
@@ -496,12 +504,12 @@ class AppModule {
     }
 
     @Contribute { serviceId="afReflux.editMenu" }
-    static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
+    Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
         config["cmdLaunchNukes"] = MenuItem(globalCmds["cmdLaunchNukes"].command)
     }
 
     @Contribute { serviceId="afReflux.toolBar" }
-    static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
+    Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
         button := Button(globalCmds["cmdLaunchNukes"].command)
         button.text = ""
         config["cmdLaunchNukes"] = button
@@ -546,6 +554,7 @@ class EventsPanel : Panel, RefluxEvents {
 
     Void update(Str event, Obj? panel := null) {
         model.events.add([event, panel?.typeof?.name ?: ""])
+		//Err("$event + ${panel?.typeof?.name}").trace
         table.refreshAll
     }
 }
@@ -626,6 +635,111 @@ class MyView : View {
     }
 }
 ```
+
+## Javascript
+
+Reflux is also available in Javascript, meaning it runs in an Internet Browser! Here's the above sample application:
+
+![Example Javascript Screenshot](http://pods.fantomfactory.org/pods/afReflux/doc/exampleJs.png)
+
+As great as it is, there are some known limitations, mostly around the limited FWT support in Javascript. Some of these include:
+
+- Menu Bars aren't available.
+- Right click context menu's are available.
+- Tabs don't have close buttons.
+- Custom Event classes aren't dynamically compiled.
+
+Still, it's a fantastic and easy way to kick start your web applications!
+
+### BedSheet
+
+For a Reflux application to run in a browser, it first needs to be served up by a web server. The easiest way to do this is with a [BedSheet](http://pods.fantomfactory.org/pods/afBedSheet) application, using [Duvet](http://pods.fantomfactory.org/pods/afDuvet) to inject your Reflux application into a web page.
+
+A simple bed app that does that is given below:
+
+`build.fan`
+
+```
+using build
+
+class Build : BuildPod {
+    new make() {
+        podName = "refluxWebApp"
+        summary = "Reflux Web Application"
+        version = Version("0.0.1")
+
+        depends = [
+            "sys        1.0.68 - 1.0",
+            "gfx        1.0.68 - 1.0",
+            "fwt        1.0.68 - 1.0",
+
+            // ---- Core ------------------------
+            "afIoc      3.0.0  - 3.0",
+            "afReflux   0.1.0  - 1.0",
+
+            // ---- Web -------------------------
+            "afBedSheet 1.5.0  - 1.5",
+            "afDuvet    1.1.0  - 1.1",
+            "afColdFeet 1.4.0  - 1.4"
+        ]
+
+        srcDirs = [`fan/`]
+    }
+}
+```
+
+`fan/Main.fan`
+
+```
+using afIoc::Contribute
+using afIoc::Configuration
+using afIoc::Inject
+using afBedSheet
+using afReflux::RefluxModule
+using afDuvet::HtmlInjector
+
+class Main {
+    Void main() {
+        BedSheetBuilder("refluxWeb")
+            .removeModule(RefluxModule#)
+            .startWisp(8069, true)
+    }
+}
+
+
+const class AppModule {
+    @Contribute { serviceType=Routes# }
+    Void contributeRoutes(Configuration config) {
+        config.add(Route(`/`, IndexPage#html))
+    }
+}
+
+
+const class IndexPage {
+    @Inject private const HtmlInjector htmlInjector
+
+    new make(|This|in) { in(this) }
+
+    Text html() {
+        // inject the main method of your Reflux application here
+        htmlInjector.injectFantomMethod(Example#main)
+
+        return Text.fromHtml(
+            "<!DOCTYPE html>
+             <html>
+             <head>
+                 <title>Reflux - On a WebPage!</title>
+             </head>
+             <body>
+             </body>
+             </html>")
+    }
+}
+```
+
+Just substitute the above `Example#main` with the main method of your Reflux application. The Reflux application may be in the same, or a different pod.
+
+Oh, and don't forget to annotate the classes in your Reflux application with `@Js`!
 
 Have fun!
 

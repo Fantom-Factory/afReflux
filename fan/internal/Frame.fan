@@ -2,6 +2,7 @@ using afIoc
 using gfx
 using fwt
 
+@Js
 internal class Frame : Window, RefluxEvents {
 
 	private Obj:PanelTabPane	panelTabs	:= [:]
@@ -11,44 +12,47 @@ internal class Frame : Window, RefluxEvents {
 	private SashPane			sash1
 	private SashPane			sash2
 
-	internal new make(Reflux reflux, Registry registry, RegistryMeta regMeta) : super() {
+	internal new make(Reflux reflux, Scope scope, RegistryMeta regMeta) : super() {
 		this.appName= regMeta[RefluxConstants.meta_appName]
 		this.title	= regMeta[RefluxConstants.meta_appName]
 		this.icon	= Image(`fan://icons/x32/flux.png`)
 		this.size	= Size(640, 480)
 
-		eventHub	:= (EventHub) registry.serviceById(EventHub#.qname)
+		eventHub	:= (EventHub) scope.serviceById(EventHub#.qname)
 		eventHub.register(this)
 
-		panelTabs[Halign.left]	= registry.autobuild(PanelTabPane#, [false, false])
-		panelTabs[Halign.right]	= registry.autobuild(PanelTabPane#, [false, false])
-		panelTabs[Valign.bottom]= registry.autobuild(PanelTabPane#, [false, true])
-		viewTabs				= registry.autobuild(ViewTabPane#,  [reflux])
+		panelTabs[Halign.left]	= scope.build(PanelTabPane#, [false, false])
+		panelTabs[Halign.right]	= scope.build(PanelTabPane#, [false, false])
+		panelTabs[Valign.bottom]= scope.build(PanelTabPane#, [false, true])
+		viewTabs				= scope.build(ViewTabPane#,  [reflux])
 
-		navBar := (RefluxBar) registry.autobuild(RefluxBar#)
+		navBar := (RefluxBar) scope.build(RefluxBar#)
 
-		this.menuBar	= registry.serviceById("afReflux.menuBar")
+		// see http://fantom.org/forum/topic/2324
+		if (Env.cur.runtime != "js")
+			this.menuBar	= scope.serviceById("afReflux.menuBar")
 
-		this.content 	= EdgePane {
+		this.content = EdgePane {
 			top = navBar
 			center = sash1 = SashPane {
 				it.orientation = Orientation.horizontal
-				it.weights = [200, 600, 200]
+				it.weights = [25, 50, 25]
 				panelTabs[Halign.left],
 				sash2 = SashPane {
 					it.orientation = Orientation.vertical
-					it.weights = [600, 200]
+					it.weights = [70, 30]
 					viewTabs,
 					panelTabs[Valign.bottom],
 				},
 				panelTabs[Halign.right],
 			}
 		}
+		refreshSashPanes()
 
 		this.onClose.add |Event e| { if (!closing) reflux.exit }
 
 		// Handle file drops -> open up FWT's back door!
-		dialogues := (Dialogues) registry.serviceById(Dialogues#.qname)
+		dialogues := (Dialogues) scope.serviceById(Dialogues#.qname)
 		this.onDrop = |Obj data| {
 			files 	:= (File[]) data
 			handled := reflux.activeView?.onDrop(files) ?: false
@@ -73,6 +77,7 @@ internal class Frame : Window, RefluxEvents {
 
 	Void showPanel(Panel panel, Obj prefAlign) {
 		panelTabs[prefAlign].addTab(panel).activate(panel)
+		refreshSashPanes()
 	}
 
 	Void activatePanel(Panel panel, Obj prefAlign) {
@@ -130,5 +135,30 @@ internal class Frame : Window, RefluxEvents {
 		this.title = "${appName} - ${resource.name}"
 		if (isDirty)
 			title += " *"
+	}
+	
+	private Void refreshSashPanes() {
+		// in JS, empty panes don't collapse so set their weight to zero 
+		if (Env.cur.runtime == "js") {
+			weights := [25, 50, 25]
+			if (panelTabs[Halign.left].panelTabs.isEmpty) {
+				weights[0] = 0
+				weights[1] += 25
+			}
+			if (panelTabs[Halign.right].panelTabs.isEmpty) {
+				weights[1] += 25
+				weights[2] = 0
+			}
+			if (sash1.weights != weights)
+				sash1.weights = weights
+			
+			weights = [70, 30]
+			if (panelTabs[Valign.bottom].panelTabs.isEmpty) {
+				weights[0] += 30
+				weights[1] = 0
+			}
+			if (sash2.weights != weights)
+				sash2.weights = weights
+		}		
 	}
 }

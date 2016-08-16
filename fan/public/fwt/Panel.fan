@@ -16,6 +16,7 @@ using fwt
 **   }
 **
 ** 'Panels' are automatically added to the 'EventHub', so to receive events they only need to implement the required event mixin.
+@Js
 abstract class Panel {
 
 	@Inject private Log				_log
@@ -50,12 +51,12 @@ abstract class Panel {
 	** As displayed in the panel's tab.
 	** If no name is given, it defaults the the Panel's type, minus any 'Panel' suffix.
 	Str name := "" {
-		set { &name = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->text = it; if (isShowing) this->onModify }
+		set { &name = it; if (content?.parent?.typeof?.qname == "fwt::Tab" || content?.parent?.typeof?.qname == "afReflux::CTab") content.parent->text = it; if (isShowing) this->onModify }
 	}
 
 	** As displayed in the panel's tab.
 	Image? icon {
-		set { &icon = it; if (content?.parent is Tab || content?.parent is CTab) content.parent->image = it; if (isShowing) this->onModify }
+		set { &icon = it; if (content?.parent?.typeof?.qname == "fwt::Tab" || content?.parent?.typeof?.qname == "afReflux::CTab") content.parent->image = it; if (isShowing) this->onModify }
 	}
 
 	** Subclasses should define the following ctor:
@@ -76,6 +77,7 @@ abstract class Panel {
 
 	@PostInjection
 	private Void _setup(EventHub eventHub) {
+		// also see RefluxCommand
 		eventHub.register(this, false)
 	}
 
@@ -130,7 +132,10 @@ abstract class Panel {
 	** Simple Err handling without fuss!
 	override Obj? trap(Str name, Obj?[]? args := null) {
 		retVal := null
-		try retVal = super.trap(name, args)
+
+		// FIXME: see super.trap() in Javascript - http://fantom.org/forum/topic/2457
+//		try retVal = super.trap(name, args)
+		try retVal = this.typeof.method(name).callOn(this, args)
 		catch (Err err) {
 			// because we handle the err and return null, we want to make sure we only do it for fwt events
 			if (name.startsWith("on") && typeof.method(name, false)?.returns == Void#) {
