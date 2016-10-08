@@ -4,6 +4,7 @@ Versions
 v0.1.4
 ======
  - Chg: 'Dialogues.openMsgBox()' now takes a func param to customise the Dialog.
+ - Chg: Added config placeholders to Menus and renamed the separator IDs.
 
 v0.1.2
 ======
