@@ -150,23 +150,26 @@ const class RefluxModule {
 	@Contribute { serviceId="afReflux.fileMenu" }
 	static Void contributeFileMenu(Configuration config, GlobalCommands globalCmds) {
 		config["afReflux.cmdNew"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdNew"].command)
-		config["separator.01"]			= MenuItem { it.mode = MenuItemMode.sep }
+		config["afReflux.separator01"]	= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.cmdSave"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdSave"].command)
 		config["afReflux.cmdSaveAs"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSaveAs"].command)
 		config["afReflux.cmdSaveAll"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdSaveAll"].command)
-		config["separator.02"]			= MenuItem { it.mode = MenuItemMode.sep }
+		config.addPlaceholder("afReflux.menuPlaceholder01")
+		config.addPlaceholder("afReflux.menuPlaceholder02")
+		config["afReflux.separator02"]	= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.cmdExit"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdExit"].command)
 	}
 
 	@Contribute { serviceId="afReflux.editMenu" }
 	static Void contributeEditMenu(Configuration config, GlobalCommands globalCmds) {
-		config["afReflux.cmdUndo"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdUndo"].command)
-		config["afReflux.cmdRedo"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdRedo"].command)
-		config["separator.01"]		= MenuItem { it.mode = MenuItemMode.sep }
-		config["afReflux.cmdCut"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdCut"].command)
-		config["afReflux.cmdCopy"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdCopy"].command)
-		config["afReflux.cmdPaste"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdPaste"].command)
-		config["separator.02"]		= MenuItem { it.mode = MenuItemMode.sep }
+		config["afReflux.cmdUndo"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdUndo"].command)
+		config["afReflux.cmdRedo"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdRedo"].command)
+		config["afReflux.separator01"]	= MenuItem { it.mode = MenuItemMode.sep }
+		config["afReflux.cmdCut"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdCut"].command)
+		config["afReflux.cmdCopy"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdCopy"].command)
+		config["afReflux.cmdPaste"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdPaste"].command)
+		config.addPlaceholder("afReflux.menuPlaceholder01")
+		config.addPlaceholder("afReflux.menuPlaceholder02")
 	}
 
 	@Contribute { serviceId="afReflux.viewMenu" }
@@ -188,7 +191,9 @@ const class RefluxModule {
 			}	
 		}
 
-		config["separator.01"]				= MenuItem { it.mode = MenuItemMode.sep }
+		config.addPlaceholder("afReflux.menuPlaceholder01")
+		config.addPlaceholder("afReflux.menuPlaceholder02")
+		config["afReflux.separator01"]		= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.cmdRefresh"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdRefresh"].command)
 		config["afReflux.cmdToggleView"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdToggleView"].command)
 	}
@@ -199,13 +204,22 @@ const class RefluxModule {
 		config["afReflux.cmdNavForward"]	= MenuItem.makeCommand(globalCmds["afReflux.cmdNavForward"].command)
 		config["afReflux.cmdNavUp"]			= MenuItem.makeCommand(globalCmds["afReflux.cmdNavUp"].command)
 		config["afReflux.cmdNavHome"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdNavHome"].command)
-		config["separator.01"]				= MenuItem { it.mode = MenuItemMode.sep }
+		config["afReflux.separator01"]		= MenuItem { it.mode = MenuItemMode.sep }
 		config["afReflux.cmdNavClear"]		= MenuItem.makeCommand(globalCmds["afReflux.cmdNavClear"].command)
-		config["separator.02"]				= MenuItem { it.mode = MenuItemMode.sep }
+		config.addPlaceholder("afReflux.menuPlaceholder01")
+		config.addPlaceholder("afReflux.menuPlaceholder02")
+	}
+
+	@Contribute { serviceId="afReflux.PrefsMenu" }
+	static Void contributePrefsMenu(Configuration config, GlobalCommands globalCmds) {
+		config.addPlaceholder("afReflux.menuPlaceholder01")
+		config.addPlaceholder("afReflux.menuPlaceholder02")
 	}
 
 	@Contribute { serviceId="afReflux.helpMenu" }
 	static Void contributeHelpMenu(Configuration config, GlobalCommands globalCmds) {
+		config.addPlaceholder("afReflux.menuPlaceholder01")
+		config.addPlaceholder("afReflux.menuPlaceholder02")
 		config["afReflux.cmdAbout"]			= MenuItem.makeCommand(globalCmds["afReflux.cmdAbout"].command)
 	}
 	
@@ -222,7 +236,7 @@ const class RefluxModule {
 	static Void contributeToolBar(Configuration config, GlobalCommands globalCmds) {
 		config["afReflux.cmdSave"]			= toolBarCommand(globalCmds["afReflux.cmdSave"].command)
 		config["afReflux.cmdSaveAll"]		= toolBarCommand(globalCmds["afReflux.cmdSaveAll"].command)
-		config["separator.01"]				= Button { mode = ButtonMode.sep }
+		config["afReflux.separator01"]		= Button { mode = ButtonMode.sep }
 		config["afReflux.cmdNavBackward"]	= toolBarCommand(globalCmds["afReflux.cmdNavBackward"].command)
 		config["afReflux.cmdNavForward"]	= toolBarCommand(globalCmds["afReflux.cmdNavForward"].command)
 		config["afReflux.cmdNavUp"]			= toolBarCommand(globalCmds["afReflux.cmdNavUp"].command)
