@@ -59,7 +59,25 @@ class Dialogues {
 		return field.text
 	}
 
-	virtual Obj? openMsgBox(Pod pod, Str keyBase, Obj body, Obj? details := null, Command[]? commands := null) {
-		Dialog.openMsgBox(pod, keyBase, reflux.window, body, details, commands ?: [ok])
+	virtual Obj? openMsgBox(Pod pod, Str keyBase, Obj body, Obj? details := null, Command[]? commands := null, |Dialog|? func := null) {
+		// mostly copied from Dialog.openMsgBox()
+
+		// get localized props
+		title := pod.locale("${keyBase}.name")
+		locImage := pod.locale("${keyBase}.image")
+		Image? image
+		try { image = Image(locImage.toUri) } catch {}
+		
+		// swizzle details if passed commands
+		if (details is Command[]) { commands = details; details = null }
+		dialog := Dialog(reflux.window) {
+			it.title	= title
+			it.image	= image
+			it.body		= body
+			it.details	= details
+			it.commands	= commands
+			func?.call(it)
+		}
+		return dialog.open
 	}
 }
