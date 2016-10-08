@@ -1,5 +1,10 @@
 Versions
 ********
+
+v0.1.4
+======
+ - Chg: 'Dialogues.openMsgBox()' now takes a func param to customise the Dialog.
+
 v0.1.2
 ======
  - Chg: Updated to work with [IoC 3.0.4]`pod:afIoc`.
