@@ -6,7 +6,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afReflux"
 		summary = "A framework and IoC container for creating FWT applications"
-		version = Version("0.1.3")
+		version = Version("0.1.4")
 
 		meta = [
 			"pod.displayName"	: "Reflux",
