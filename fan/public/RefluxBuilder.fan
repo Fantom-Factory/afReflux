@@ -98,6 +98,9 @@ class RefluxBuilder {
 				session := (Session) uiScope.serviceById(Session#.qname)
 				session.load
 
+				refluxEvents := (RefluxEvents) uiScope.serviceById(RefluxEvents#.qname)
+				refluxEvents.onApplicationStart
+				
 				// once we've all started up and settled down, load URIs from the command line
 				onOpen?.call(reflux, frame)
 				

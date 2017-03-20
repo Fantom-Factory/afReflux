@@ -20,6 +20,9 @@ using afIoc
 ** to 'EventHub' by default. 
 @Js
 mixin RefluxEvents {
+	** Called once Reflux has started and the windows are displayed
+	virtual Void onApplicationStart() { }
+
 	virtual Void onLoadSession(Str:Obj? session) { }
 	virtual Void onSaveSession(Str:Obj? session) { }
 	
@@ -50,6 +53,8 @@ internal class RefluxEventsImpl : RefluxEvents {
 	
 	new make(|This|in) { in(this) }
 	
+	override Void onApplicationStart()				{ eventHub().fireEvent(RefluxEvents#onApplicationStart,	[,]) }
+
 	override Void onLoadSession(Str:Obj? session)	{ eventHub().fireEvent(RefluxEvents#onLoadSession, 		[session]) }
 	override Void onSaveSession(Str:Obj? session)	{ eventHub().fireEvent(RefluxEvents#onSaveSession, 		[session]) }
 	
