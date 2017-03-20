@@ -1,8 +1,9 @@
 #Reflux v0.1.4
 ---
-[![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom.org/)
+
+[![Written in: Fantom](http://img.shields.io/badge/written%20in-Fantom-lightgray.svg)](http://fantom-lang.org/)
 [![pod: v0.1.4](http://img.shields.io/badge/pod-v0.1.4-yellow.svg)](http://www.fantomfactory.org/pods/afReflux)
-![Licence: MIT](http://img.shields.io/badge/licence-MIT-blue.svg)
+![Licence: ISC](http://img.shields.io/badge/licence-ISC-blue.svg)
 
 ## Overview
 
@@ -23,17 +24,21 @@ Reflux was inspired by Fantom's core `flux` library.
 
 ## Install
 
-Install `Reflux` with the Fantom Repository Manager ( [fanr](http://fantom.org/doc/docFanr/Tool.html#install) ):
+Install `Reflux` with the Fantom Pod Manager ( [FPM](http://eggbox.fantomfactory.org/pods/afFpm) ):
 
-    C:\> fanr install -r http://pods.fantomfactory.org/fanr/ afReflux
+    C:\> fpm install afReflux
 
-To use in a [Fantom](http://fantom.org/) project, add a dependency to `build.fan`:
+Or install `Reflux` with [fanr](http://fantom.org/doc/docFanr/Tool.html#install):
+
+    C:\> fanr install -r http://eggbox.fantomfactory.org/fanr/ afReflux
+
+To use in a [Fantom](http://fantom-lang.org/) project, add a dependency to `build.fan`:
 
     depends = ["sys 1.0", ..., "afReflux 0.1"]
 
 ## Documentation
 
-Full API & fandocs are available on the [Fantom Pod Repository](http://pods.fantomfactory.org/pods/afReflux/).
+Full API & fandocs are available on the [Eggbox](http://eggbox.fantomfactory.org/pods/afReflux/) - the Fantom Pod Repository.
 
 ## Quick Start
 
@@ -55,7 +60,7 @@ Full API & fandocs are available on the [Fantom Pod Repository](http://pods.fant
 
 
 
-  ![Example Screenshot](http://pods.fantomfactory.org/pods/afReflux/doc/example.png)
+  ![Example Screenshot](http://eggbox.fantomfactory.org/pods/afReflux/doc/example.png)
 
 
 
@@ -71,17 +76,17 @@ A Reflux application is made up of:
 - Panels
 - Views
 
-![Screenshot of the Alien-Factory Explorer application](http://pods.fantomfactory.org/pods/afReflux/doc/afExplorer.png)
+![Screenshot of the Alien-Factory Explorer application](http://eggbox.fantomfactory.org/pods/afReflux/doc/afExplorer.png)
 
 URIs are typed into the address bar. The typed URI is then resolved to a `Resource`. Resource objects hold meta data that describe how it should be displayed / interacted with. Views are used to view and / or edit resources. Panels are extra tabs that show arbitrary data.
 
 The menu and tool bars are customisable via IoC contributions. Global commands wrap standard FWT commands to make them context sensitive; for example, the Save global command is only enabled when the current view is dirty.
 
-Note that Reflux itself is just a toolkit. See the [Alien-Factory Explorer](http://pods.fantomfactory.org/pods/afExplorer) application for a concrete example of Reflux use.
+Note that Reflux itself is just a toolkit. See the [Alien-Factory Explorer](http://eggbox.fantomfactory.org/pods/afExplorer) application for a concrete example of Reflux use.
 
 ### Explorer
 
-[Alien-Factory Explorer](http://pods.fantomfactory.org/pods/afExplorer) is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
+[Alien-Factory Explorer](http://eggbox.fantomfactory.org/pods/afExplorer) is a sample Reflux application that contains, amoungst other things, a file explorer and fandoc editor.
 
 Install `Explorer` with [fanr](http://fantom.org/doc/docFanr/Tool.html):
 
@@ -95,15 +100,15 @@ Start the `Explorer` application from the command line:
 
 Reflux is an IoC container. That is, it creates and looks after a `Registry` instance, using it to create classes and provide access to services.
 
-In a [Reflux](http://pods.fantomfactory.org/pods/afReflux) application all processing happens in the UI thread. As such, Reflux defines a single threaded scope called `uiThread` and all services are created from this. This means all your services can be non-const, and you don't have to even think about scopes.
+In a [Reflux](http://eggbox.fantomfactory.org/pods/afReflux) application all processing happens in the UI thread. As such, Reflux defines a single threaded scope called `uiThread` and all services are created from this. This means all your services can be non-const, and you don't have to even think about scopes.
 
 *Happy days!*
 
 ## Panels
 
-[Panels](http://pods.fantomfactory.org/pods/afReflux/api/Panel) are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shuts down.
+[Panels](http://eggbox.fantomfactory.org/pods/afReflux/api/Panel) are widget panes that decorate the edges of the main window. Only one instance of each panel type may exist. They are typically created at application startup and live until the application shuts down.
 
-To create a custom panel, first create a class that extends [Panel](http://pods.fantomfactory.org/pods/afReflux/api/Panel). Panels must set the `content` field in order to display anything. This example just sets its FWT content to a yellow label:
+To create a custom panel, first create a class that extends [Panel](http://eggbox.fantomfactory.org/pods/afReflux/api/Panel). Panels must set the `content` field in order to display anything. This example just sets its FWT content to a yellow label:
 
 ```
 class MyPanel : Panel {
@@ -132,7 +137,7 @@ Panels need to be *autobuilt* so IoC injects all the dependencies (via that it-b
 
 Panels are automatically added to the `View -> Panels` menu. If the panel does not set a name it defaults the Panel's type, minus any `Panel` suffix. When displayed, our simple panel should look like:
 
-![Screenshot of Panel Example](http://pods.fantomfactory.org/pods/afReflux/doc/panelExample.png)
+![Screenshot of Panel Example](http://eggbox.fantomfactory.org/pods/afReflux/doc/panelExample.png)
 
 Note that Panels are not displayed by default; but the user's display settings are saved from one session to the next. To force the user to always start with the panel displayed, show it programmatically on application startup:
 
@@ -155,9 +160,9 @@ Panels are automatically added to the `EventHub` - see [Eventing](#eventing) for
 
 ## Views
 
-[Views](http://pods.fantomfactory.org/pods/afReflux/api/View) are `Panels` that are associated with an (editable) resource. They are displayed in the centre of the Window.
+[Views](http://eggbox.fantomfactory.org/pods/afReflux/api/View) are `Panels` that are associated with an (editable) resource. They are displayed in the centre of the Window.
 
-Custom views must extends [View](http://pods.fantomfactory.org/pods/afReflux/api/View), which in turn extends `Panel`. Like panels, views must set the `content` field to display anything. This example view just displays the resource name in a green box:
+Custom views must extends [View](http://eggbox.fantomfactory.org/pods/afReflux/api/View), which in turn extends `Panel`. Like panels, views must set the `content` field to display anything. This example view just displays the resource name in a green box:
 
 ```
 class MyView : View {
@@ -211,7 +216,7 @@ It holds it's name, has a *database* icon and the `viewTypes()` method says it s
 
 Should `viewTypes()` return more than one type, the user may cycle between them using drop down in the address bar or an `F12` shortcut. This useful for toggling between view and edit modes.
 
-It is the job of [UriResolvers](http://pods.fantomfactory.org/pods/afReflux/api/UriResolver) to convert URI strings, as entered in the address bar, into resource instances. The following URI resolver will convert any URI with the scheme `example:` into a `MyResource` object:
+It is the job of [UriResolvers](http://eggbox.fantomfactory.org/pods/afReflux/api/UriResolver) to convert URI strings, as entered in the address bar, into resource instances. The following URI resolver will convert any URI with the scheme `example:` into a `MyResource` object:
 
 ```
 class MyResolver : UriResolver {
@@ -244,7 +249,7 @@ When `example:foo-bar` is entered into the address bar, the following should hap
 
 And this should be displayed:
 
-![Screenshot of View Example](http://pods.fantomfactory.org/pods/afReflux/doc/viewExample.png)
+![Screenshot of View Example](http://eggbox.fantomfactory.org/pods/afReflux/doc/viewExample.png)
 
 ## Menu Bar
 
@@ -433,7 +438,7 @@ Because it is common for them to receive events, all instances of `Panels`, `Vie
 
 ## Example Code
 
-Following is a basic Reflux app that incorporates ideas and example code shown in previous sections. When learning Reflux, it is suggested that you start here and then look at the source code of the [Explorer](http://pods.fantomfactory.org/pods/afExplorer) application.
+Following is a basic Reflux app that incorporates ideas and example code shown in previous sections. When learning Reflux, it is suggested that you start here and then look at the source code of the [Explorer](http://eggbox.fantomfactory.org/pods/afExplorer) application.
 
 The sample application contains:
 
@@ -445,7 +450,7 @@ The sample application contains:
 
 As you will see, the **Launch Nukes** global command is only active when the Alien Attack panel is *not* displayed.
 
-![Example Screenshot](http://pods.fantomfactory.org/pods/afReflux/doc/example.png)
+![Example Screenshot](http://eggbox.fantomfactory.org/pods/afReflux/doc/example.png)
 
 Things to try:
 
@@ -640,7 +645,7 @@ class MyView : View {
 
 Reflux is also available in Javascript, meaning it runs in an Internet Browser! Here's the above sample application:
 
-![Example Javascript Screenshot](http://pods.fantomfactory.org/pods/afReflux/doc/exampleJs.png)
+![Example Javascript Screenshot](http://eggbox.fantomfactory.org/pods/afReflux/doc/exampleJs.png)
 
 As great as it is, there are some known limitations, mostly around the limited FWT support in Javascript. Some of these include:
 
@@ -653,7 +658,7 @@ Still, it's a fantastic and easy way to kick start your web applications!
 
 ### BedSheet
 
-For a Reflux application to run in a browser, it first needs to be served up by a web server. The easiest way to do this is with a [BedSheet](http://pods.fantomfactory.org/pods/afBedSheet) application, using [Duvet](http://pods.fantomfactory.org/pods/afDuvet) to inject your Reflux application into a web page.
+For a Reflux application to run in a browser, it first needs to be served up by a web server. The easiest way to do this is with a [BedSheet](http://eggbox.fantomfactory.org/pods/afBedSheet) application, using [Duvet](http://eggbox.fantomfactory.org/pods/afDuvet) to inject your Reflux application into a web page.
 
 A simple bed app that does that is given below:
 

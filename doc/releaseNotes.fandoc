@@ -1,6 +1,10 @@
 Versions
 ********
 
+v0.1.6
+======
+ - New: Added 'RefluxEvents.onApplicationStart'.
+
 v0.1.4
 ======
  - Chg: 'Dialogues.openMsgBox()' now takes a func param to customise the Dialog.

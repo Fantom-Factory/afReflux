@@ -9,10 +9,10 @@ class Build : BuildPod {
 		version = Version("0.1.5")
 
 		meta = [
-			"pod.displayName"	: "Reflux",
-			"afIoc.module"		: "afReflux::RefluxModule",
-			"repo.tags"			: "system",
-			"repo.public"		: "true"
+			"pod.dis"		: "Reflux",
+			"afIoc.module"	: "afReflux::RefluxModule",
+			"repo.tags"		: "system",
+			"repo.public"	: "true"
 		]
 
 		depends = [	
