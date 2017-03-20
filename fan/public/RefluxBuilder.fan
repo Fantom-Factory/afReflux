@@ -17,7 +17,7 @@ class RefluxBuilder {
 	** The underlying IoC 'RegistryBuilder'. 
 	RegistryBuilder registryBuilder := RegistryBuilder() { private set }
 	
-	** The application name. Taken from the app pod's 'proj.name' meta, or the pod name if the meta doesn't exist.
+	** The application name. Taken from the app pod's 'pod.dis' meta, or the pod name if the meta doesn't exist.
 	** Read only.
 	Str appName {
 		get { options[RefluxConstants.meta_appName] }
@@ -161,7 +161,7 @@ class RefluxBuilder {
 			bob.addModule(PlasticModule#)
 
 		projName := (Str?) null
-		try pod?.meta?.get("proj.name")
+		try pod?.meta?.get("pod.dis")
 		catch { /* JS F4 Errs */ }
 
 		regOpts	 := bob.options
