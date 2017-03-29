@@ -229,6 +229,7 @@ internal class RefluxImpl : Reflux, RefluxEvents {
 			closeView(view, true)
 		}
 
+		refluxEvents.onApplicationEnd
 		session.save
 		frame.close
 	}
