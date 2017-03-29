@@ -23,6 +23,9 @@ mixin RefluxEvents {
 	** Called once Reflux has started and the windows are displayed
 	virtual Void onApplicationStart() { }
 
+	** Called when Reflux is closing 
+	virtual Void onApplicationEnd() { }
+
 	virtual Void onLoadSession(Str:Obj? session) { }
 	virtual Void onSaveSession(Str:Obj? session) { }
 	
