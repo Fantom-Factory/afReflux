@@ -4,6 +4,7 @@ Versions
 v0.1.6
 ======
  - New: Added 'RefluxEvents.onApplicationStart' and 'RefluxEvents.onApplicationEnd'.
+ - Chg: Removed deprecated 'LocalFormat' methods.
  - Chg: App name is now take from 'pod.dis' meta (and no longer 'proj.name').
 
 v0.1.4
