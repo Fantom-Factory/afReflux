@@ -73,7 +73,7 @@ internal class ErrorsPanelModel : TableModel {
 		switch (col) {
 			case 0:	return error.err.typeof.qname
 			case 1:	return error.err.msg
-			case 2:	return locale.formatDateTime(error.when)
+			case 2:	return locale.dateTime(error.when)
 			default: return "???"
 		}
 	}

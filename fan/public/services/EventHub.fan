@@ -47,7 +47,7 @@ internal class EventHubImpl : EventHub {
 		in(this)
 	}
 
-	// TODO: save into map of sinks, for optomidation
+	// TODO: save into map of sinks, for optimisation
 	override Void register(Obj eventSink, Bool checked := true) {
 		if (!eventTypes.eventTypes.any { eventSink.typeof.fits(it) })
 			if (checked) throw ArgNotFoundErr("EventSink ${eventSink.typeof} does not implement a contributed EventType", eventTypes.eventTypes); else return
